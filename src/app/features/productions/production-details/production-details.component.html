@@ -1,0 +1,136 @@
+<div class="container mt-4">
+  <!-- Loading spinner -->
+  <div *ngIf="loading" class="text-center my-5">
+    <mat-spinner diameter="50" class="mx-auto"></mat-spinner>
+    <p class="mt-3">Loading production details...</p>
+  </div>
+
+  <!-- Error message -->
+  <div *ngIf="error && !loading" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="production && !loading">
+    <!-- Header with actions -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <button mat-icon-button color="primary" (click)="backToList()" matTooltip="Back to Productions">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <h1 class="d-inline-block ms-2 mb-0">{{ production.title }}</h1>
+        <span class="badge ms-3" [ngClass]="{
+          'bg-success': production.status === 'active',
+          'bg-warning': production.status === 'pre-production',
+          'bg-danger': production.status === 'cancelled',
+          'bg-info': production.status === 'completed',
+          'bg-secondary': !production.status
+        }">
+          {{ production.status || 'No Status' }}
+        </span>
+      </div>
+      <div>
+        <button mat-raised-button color="primary" (click)="editProduction()" class="me-2">
+          <mat-icon>edit</mat-icon>
+          Edit
+        </button>
+        <button mat-raised-button color="warn" (click)="deleteProduction()">
+          <mat-icon>delete</mat-icon>
+          Delete
+        </button>
+      </div>
+    </div>
+
+    <!-- Production details card -->
+    <mat-card class="mb-4">
+      <mat-card-content>
+        <div class="row">
+          <div class="col-md-8">
+            <h3>Description</h3>
+            <p>{{ production.description || 'No description available.' }}</p>
+          </div>
+          <div class="col-md-4">
+            <h3>Details</h3>
+            <p><strong>Start Date:</strong> {{ production.startDate | date || 'Not set' }}</p>
+            <p><strong>End Date:</strong> {{ production.endDate | date || 'Not set' }}</p>
+            <p><strong>Created:</strong> {{ production.createdAt | date }}</p>
+            <p><strong>Last Updated:</strong> {{ production.updatedAt | date }}</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Scripts section -->
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h2 class="mb-0">Scripts</h2>
+        <button mat-raised-button color="primary" (click)="createNewScript()">
+          <mat-icon>add</mat-icon>
+          Add Script
+        </button>
+      </div>
+      <div class="card-body">
+        <div *ngIf="scripts.length === 0" class="text-center my-4">
+          <mat-icon style="font-size: 48px; height: 48px; width: 48px;" color="primary">description</mat-icon>
+          <p class="mt-3">No scripts added yet</p>
+        </div>
+
+        <div *ngIf="scripts.length > 0" class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Version</th>
+                <th>Created</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let script of scripts" (click)="viewScript(script.id)" style="cursor: pointer;">
+                <td>{{ script.title }}</td>
+                <td>{{ script.author || 'N/A' }}</td>
+                <td>{{ script.version || 'N/A' }}</td>
+                <td>{{ script.createdAt | date }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team Members section -->
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h2 class="mb-0">Team Members</h2>
+        <button mat-raised-button color="primary" (click)="addUser()">
+          <mat-icon>person_add</mat-icon>
+          Add User
+        </button>
+      </div>
+      <div class="card-body">
+        <div *ngIf="productionUsers.length === 0" class="text-center my-4">
+          <mat-icon style="font-size: 48px; height: 48px; width: 48px;" color="primary">people</mat-icon>
+          <p class="mt-3">No team members added yet</p>
+        </div>
+
+        <div *ngIf="productionUsers.length > 0" class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let productionUser of productionUsers">
+                <td>{{ productionUser.user?.name || 'Unknown' }}</td>
+                <td>{{ productionUser.user?.email || 'N/A' }}</td>
+                <td>{{ productionUser.role }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
