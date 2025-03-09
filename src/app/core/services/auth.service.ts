@@ -23,7 +23,7 @@ interface AuthResponse {
 export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
-  private apiUrl = `${environment.apiUrl}/auth`;
+  private apiUrl = `${environment.apiUrl}/v1/auth`;
 
   constructor(
     private http: HttpClient,
@@ -51,11 +51,11 @@ export class AuthService {
       .pipe(
         map(response => {
           const user = { ...response.user, token: response.token };
-          
+
           // Store user and token in local storage
           localStorage.setItem('current_user', JSON.stringify(user));
           localStorage.setItem('auth_token', response.token);
-          
+
           // Update the current user subject
           this.currentUserSubject.next(user);
           return user;
@@ -68,11 +68,11 @@ export class AuthService {
       .pipe(
         map(response => {
           const user = { ...response.user, token: response.token };
-          
+
           // Store user and token in local storage
           localStorage.setItem('current_user', JSON.stringify(user));
           localStorage.setItem('auth_token', response.token);
-          
+
           // Update the current user subject
           this.currentUserSubject.next(user);
           return user;
