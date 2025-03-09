@@ -47,7 +47,7 @@ export class ProductionDetailsComponent implements OnInit {
 
   loadProductionData(id: number): void {
     this.loading = true;
-    
+
     this.productionService.getProduction(id).subscribe({
       next: (production) => {
         this.production = production;

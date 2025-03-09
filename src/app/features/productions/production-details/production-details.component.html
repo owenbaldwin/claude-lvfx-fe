@@ -46,14 +46,14 @@
         <div class="row">
           <div class="col-md-8">
             <h3>Description</h3>
-            <p>{{ production.description || 'No description available.' }}</p>
+            <p>{{ production.description ?? 'No description available.' }}</p>
           </div>
           <div class="col-md-4">
             <h3>Details</h3>
-            <p><strong>Start Date:</strong> {{ production.startDate | date || 'Not set' }}</p>
-            <p><strong>End Date:</strong> {{ production.endDate | date || 'Not set' }}</p>
+            <p><strong>Start Date:</strong> {{ production.startDate ? (production.startDate | date) : 'Not set' }}</p>
+            <!-- <p><strong>End Date:</strong> {{ production.endDate | date || 'Not set' }}</p>
             <p><strong>Created:</strong> {{ production.createdAt | date }}</p>
-            <p><strong>Last Updated:</strong> {{ production.updatedAt | date }}</p>
+            <p><strong>Last Updated:</strong> {{ production.updatedAt | date }}</p> -->
           </div>
         </div>
       </mat-card-content>
