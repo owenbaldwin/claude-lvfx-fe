@@ -1,0 +1,14 @@
+<div class="alert alert-danger d-flex align-items-center">
+  <mat-icon class="error-icon me-2">error_outline</mat-icon>
+  <div>
+    <span>{{ message }}</span>
+    <button 
+      *ngIf="retryAction"
+      mat-button 
+      color="warn" 
+      class="ms-2" 
+      (click)="retryAction()">
+      Retry
+    </button>
+  </div>
+</div>
