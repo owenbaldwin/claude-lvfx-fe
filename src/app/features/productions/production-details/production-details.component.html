@@ -139,7 +139,11 @@
       
       <!-- Breakdown Tab -->
       <mat-tab label="Breakdown">
-        <app-production-breakdown></app-production-breakdown>
+        <div class="mt-4">
+          <!-- This is where we'll place our breakdown component -->
+          <!-- Pass the production ID directly as an input to avoid route issues -->
+          <app-production-breakdown [productionId]="productionId"></app-production-breakdown>
+        </div>
       </mat-tab>
       
       <!-- Budget Tab (placeholder for future implementation) -->
