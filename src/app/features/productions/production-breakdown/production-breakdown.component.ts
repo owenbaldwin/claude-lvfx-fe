@@ -6,7 +6,13 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { BreakdownService } from '@app/core/services/breakdown.service';
-import { ProductionBreakdown, SequenceWithRelations, SceneWithRelations, ActionBeatWithRelations, ShotWithRelations } from '@app/shared/models/breakdown.model';
+import { 
+  ProductionBreakdown, 
+  SequenceDetail, 
+  SceneDetail, 
+  ActionBeatDetail, 
+  ShotDetail 
+} from '@app/shared/models/breakdown.model';
 import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog/confirm-dialog.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -199,7 +205,7 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
       this.selectedScenes.push(sceneId);
       
       // Find the scene to get its action beats
-      let scene: SceneWithRelations | undefined;
+      let scene: SceneDetail | undefined;
       
       // Look in sequences
       for (const seq of this.breakdown.sequences) {
@@ -224,7 +230,7 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
       this.selectedScenes = this.selectedScenes.filter(id => id !== sceneId);
       
       // Find the scene to get its action beats
-      let scene: SceneWithRelations | undefined;
+      let scene: SceneDetail | undefined;
       
       // Look in sequences
       for (const seq of this.breakdown.sequences) {
@@ -253,7 +259,7 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
       this.selectedActionBeats.push(actionBeatId);
       
       // Find the action beat to get its shots
-      let actionBeat: ActionBeatWithRelations | undefined;
+      let actionBeat: ActionBeatDetail | undefined;
       
       // Look in all scenes
       for (const seq of this.breakdown.sequences) {
@@ -281,7 +287,7 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
       this.selectedActionBeats = this.selectedActionBeats.filter(id => id !== actionBeatId);
       
       // Find the action beat to get its shots
-      let actionBeat: ActionBeatWithRelations | undefined;
+      let actionBeat: ActionBeatDetail | undefined;
       
       // Look in all scenes
       for (const seq of this.breakdown.sequences) {
@@ -360,7 +366,7 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
   addSequence(): void {
     if (this.sequenceForm.valid) {
       const formData = this.sequenceForm.value;
-      const newSequence: Partial<SequenceWithRelations> = {
+      const newSequence: Partial<SequenceDetail> = {
         name: formData.name,
         prefix: formData.prefix,
         order_number: formData.insertAfter + 1, // Position after the selected order number
@@ -388,7 +394,7 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
     }
   }
 
-  editSequence(sequence: SequenceWithRelations): void {
+  editSequence(sequence: SequenceDetail): void {
     // Implementation for editing a sequence
     // This would typically open a dialog with a form
     // For now, we'll keep it simple
@@ -440,7 +446,7 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
     });
   }
 
-  editScene(scene: SceneWithRelations): void {
+  editScene(scene: SceneDetail): void {
     // Implementation for editing a scene
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
@@ -489,7 +495,7 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
     });
   }
 
-  editActionBeat(actionBeat: ActionBeatWithRelations): void {
+  editActionBeat(actionBeat: ActionBeatDetail): void {
     // Implementation for editing an action beat
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
@@ -538,7 +544,7 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
     });
   }
 
-  editShot(shot: ShotWithRelations): void {
+  editShot(shot: ShotDetail): void {
     // Implementation for editing a shot
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
