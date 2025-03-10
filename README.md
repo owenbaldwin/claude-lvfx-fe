@@ -90,6 +90,23 @@ src/
 └── environments/           # Environment configurations
 ```
 
+## Recent Changes
+
+### Production Breakdown Feature
+
+The production breakdown feature allows users to:
+- View a hierarchical breakdown of sequences, scenes, action beats, and shots
+- Add, edit, and delete items at each level
+- Generate shots based on action beats
+- Estimate VFX requirements and costs for shots
+
+#### Important Implementation Notes:
+
+- Added `ProductionBreakdownComponent` that can be included in the `ProductionDetailsComponent`
+- Used `@Input()` decorator for passing productionId properly between components
+- Implemented a hierarchical data model for the breakdown structure
+- Added breadcrumb navigation for easy traversal through the breakdown hierarchy
+
 ## Testing
 
 ```bash
