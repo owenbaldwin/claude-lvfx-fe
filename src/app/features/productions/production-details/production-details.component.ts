@@ -21,6 +21,9 @@ export class ProductionDetailsComponent implements OnInit {
   productionId: number = 0;
   loading = true;
   error = '';
+  
+  // Tab management
+  selectedTabIndex = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -33,6 +36,13 @@ export class ProductionDetailsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // Check if there's a tab parameter in the URL
+    this.route.queryParams.subscribe(params => {
+      if (params['tab']) {
+        this.selectedTabIndex = this.getTabIndexFromName(params['tab']);
+      }
+    });
+
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
@@ -138,5 +148,36 @@ export class ProductionDetailsComponent implements OnInit {
 
   backToList(): void {
     this.router.navigate(['/productions']);
+  }
+
+  // Tab handling
+  onTabChanged(index: number): void {
+    // Update URL with the selected tab
+    const tabName = this.getTabNameFromIndex(index);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab: tabName },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  private getTabNameFromIndex(index: number): string {
+    switch (index) {
+      case 0: return 'overview';
+      case 1: return 'breakdown';
+      case 2: return 'budget';
+      case 3: return 'assets';
+      default: return 'overview';
+    }
+  }
+
+  private getTabIndexFromName(name: string): number {
+    switch (name.toLowerCase()) {
+      case 'overview': return 0;
+      case 'breakdown': return 1;
+      case 'budget': return 2;
+      case 'assets': return 3;
+      default: return 0;
+    }
   }
 }
