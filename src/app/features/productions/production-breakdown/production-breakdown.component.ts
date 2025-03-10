@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject } from 'rxjs';
@@ -51,6 +51,7 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private breakdownService: BreakdownService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
@@ -64,14 +65,46 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Try multiple ways to get the production ID
+    
+    // First attempt: Try to get it from the parent route
     this.route.parent?.paramMap.subscribe(params => {
+      console.log('Parent route params:', params);
       const id = params.get('id');
+      console.log('Parent route id:', id);
+      
       if (id) {
         this.productionId = +id;
         this.loadBreakdown();
       } else {
-        this.error = 'No production ID provided';
-        this.loading = false;
+        // Second attempt: Try to get it from the current route
+        this.route.paramMap.subscribe(routeParams => {
+          console.log('Current route params:', routeParams);
+          const routeId = routeParams.get('id');
+          console.log('Current route id:', routeId);
+          
+          if (routeId) {
+            this.productionId = +routeId;
+            this.loadBreakdown();
+          } else {
+            // Third attempt: Try to get it from the queryParams
+            this.route.queryParamMap.subscribe(queryParams => {
+              console.log('Query params:', queryParams);
+              const queryId = queryParams.get('productionId');
+              console.log('Query param id:', queryId);
+              
+              if (queryId) {
+                this.productionId = +queryId;
+                this.loadBreakdown();
+              } else {
+                // If all attempts fail, show error
+                this.error = 'No production ID provided';
+                this.loading = false;
+                console.error('Failed to get production ID from any route parameter');
+              }
+            });
+          }
+        });
       }
     });
   }
@@ -83,14 +116,18 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
 
   loadBreakdown(): void {
     this.loading = true;
+    console.log('Loading breakdown for production ID:', this.productionId);
+    
     this.breakdownService.getProductionBreakdown(this.productionId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
+          console.log('Breakdown data received:', data);
           this.breakdown = data;
           this.loading = false;
         },
         error: (err) => {
+          console.error('Error loading breakdown data:', err);
           this.error = err.message || 'Failed to load breakdown data';
           this.loading = false;
         }
