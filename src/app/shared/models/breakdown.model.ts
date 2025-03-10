@@ -1,21 +1,21 @@
 // Detailed models for the Production Breakdown feature
-// These are separate from but compatible with the basic models defined in index.ts
+// These are completely separate from the basic models defined in index.ts
 
-import { ActionBeat, Scene, Sequence, Shot } from '.';
+// We do NOT import or extend any models from index.ts
+// This avoids TypeScript errors from incompatible types
 
 export interface ProductionBreakdown {
-  sequences: SequenceWithRelations[];
-  unsequencedScenes: SceneWithRelations[];
+  sequences: SequenceDetail[];
+  unsequencedScenes: SceneDetail[];
 }
 
-// Instead of extending, we'll include all properties we need
-export interface SequenceWithRelations {
+export interface SequenceDetail {
   id: number;
   name: string;
   description?: string;
   scriptId: number;
   script?: any;
-  scenes: SceneWithRelations[];
+  scenes: SceneDetail[];
   createdAt?: string;
   updatedAt?: string;
   // Additional properties for the breakdown view
@@ -23,7 +23,7 @@ export interface SequenceWithRelations {
   order_number: number;
 }
 
-export interface SceneWithRelations {
+export interface SceneDetail {
   id: number;
   sceneNumber: string;
   name?: string;
@@ -32,7 +32,7 @@ export interface SceneWithRelations {
   timeOfDay?: string;
   sequenceId: number;
   sequence?: any;
-  actionBeats: ActionBeatWithRelations[];
+  actionBeats: ActionBeatDetail[];
   createdAt?: string;
   updatedAt?: string;
   // Additional properties for the breakdown view
@@ -45,12 +45,12 @@ export interface SceneWithRelations {
   day_night?: string;
 }
 
-export interface ActionBeatWithRelations {
+export interface ActionBeatDetail {
   id: number;
   description: string;
   sceneId: number;
   scene?: any;
-  shots: ShotWithRelations[];
+  shots: ShotDetail[];
   createdAt?: string;
   updatedAt?: string;
   // Additional properties for the breakdown view
@@ -60,7 +60,7 @@ export interface ActionBeatWithRelations {
   characters?: ActionCharacter[];
 }
 
-export interface ShotWithRelations {
+export interface ShotDetail {
   id: number;
   shotNumber: string;
   description?: string;
