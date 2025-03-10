@@ -1,0 +1,253 @@
+.breakdown-container {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+// Sticky header with action buttons
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: white;
+  padding: 10px 0;
+  margin-bottom: 16px;
+  
+  .search-container {
+    width: 300px;
+    
+    .search-field {
+      width: 100%;
+      margin-bottom: 0;
+      
+      ::ng-deep .mat-form-field-wrapper {
+        margin-bottom: -1.25em;
+      }
+    }
+  }
+}
+
+// Table header
+.breakdown-header {
+  position: sticky;
+  top: 70px;
+  z-index: 9;
+  background-color: #f5f5f5;
+  
+  .header-row {
+    font-weight: bold;
+  }
+}
+
+// Row styling
+.sequence-row,
+.scene-row,
+.action-beat-row,
+.shot-row {
+  margin-bottom: 8px;
+}
+
+.selected-row {
+  background-color: rgba(33, 150, 243, 0.1);
+}
+
+// Expandable columns
+.sequence-expand-col,
+.scene-expand-col,
+.action-beat-expand-col,
+.shot-expand-col {
+  display: flex;
+  align-items: center;
+}
+
+// ID display
+.sequence-id,
+.scene-id,
+.action-beat-id,
+.shot-id {
+  font-family: monospace;
+  margin-left: 4px;
+}
+
+// Small icons in table
+.small-icon {
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+}
+
+// Character count display
+.character-count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  .small-icon {
+    margin-right: 4px;
+  }
+}
+
+// Shot Details
+.shot-details-container {
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+}
+
+// Modal styling
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.modal-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  width: 90%;
+  max-width: 600px;
+  
+  .modal-content {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e0e0e0;
+      margin-bottom: 16px;
+    }
+    
+    .modal-body {
+      margin-bottom: 16px;
+    }
+    
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 16px;
+      border-top: 1px solid #e0e0e0;
+      
+      button {
+        margin-left: 8px;
+      }
+    }
+  }
+}
+
+// Nested containers spacing
+.sequences-container {
+  margin-bottom: 24px;
+}
+
+.scenes-container,
+.action-beats-container,
+.shots-container {
+  margin-bottom: 16px;
+}
+
+// Different hierarchical levels
+.scenes-container {
+  padding-left: 24px;
+  border-left: 1px dashed #e0e0e0;
+}
+
+.action-beats-container {
+  padding-left: 24px;
+  border-left: 1px dashed #e0e0e0;
+}
+
+.shots-container {
+  padding-left: 24px;
+  border-left: 1px dashed #e0e0e0;
+}
+
+// Storyboard thumbnails
+.storyboard-thumbnail {
+  cursor: pointer;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  
+  &.approved {
+    border-color: #4caf50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.3);
+  }
+  
+  .storyboard-badge {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+  }
+}
+
+// Element badges
+.element-badge {
+  display: inline-block;
+  margin-right: 4px;
+  margin-bottom: 4px;
+  
+  .badge-icon {
+    margin-right: 4px;
+  }
+}
+
+// Animation for expanding rows
+.row-collapse-enter-active, .row-collapse-leave-active {
+  transition: max-height 0.3s ease-out;
+  max-height: 500px;
+  overflow: hidden;
+}
+
+.row-collapse-enter, .row-collapse-leave-to {
+  max-height: 0;
+  overflow: hidden;
+}
+
+// Responsive adjustments
+@media (max-width: 1200px) {
+  .breakdown-container {
+    font-size: 0.9em;
+  }
+  
+  .sticky-header {
+    flex-direction: column;
+    
+    .search-container {
+      width: 100%;
+      margin-top: 16px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .breakdown-container {
+    font-size: 0.8em;
+  }
+  
+  .col-1, .col-2, .col-4 {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+  
+  .small-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+  }
+  
+  .scenes-container,
+  .action-beats-container,
+  .shots-container {
+    padding-left: 12px;
+  }
+}
