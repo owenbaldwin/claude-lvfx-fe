@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -22,7 +22,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./production-breakdown.component.scss']
 })
 export class ProductionBreakdownComponent implements OnInit, OnDestroy {
-  productionId!: number;
+  @Input() productionId!: number;
   breakdown!: ProductionBreakdown;
   loading = true;
   error = '';
@@ -65,9 +65,14 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Try multiple ways to get the production ID
+    // Check if productionId exists from @Input
+    if (this.productionId) {
+      console.log('Using productionId from @Input:', this.productionId);
+      this.loadBreakdown();
+      return;
+    }
     
-    // First attempt: Try to get it from the parent route
+    // If no @Input productionId provided, try route parameters as fallback
     this.route.parent?.paramMap.subscribe(params => {
       console.log('Parent route params:', params);
       const id = params.get('id');
