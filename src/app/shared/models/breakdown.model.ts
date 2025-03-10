@@ -1,5 +1,5 @@
 // Detailed models for the Production Breakdown feature
-// These extend the basic models defined in index.ts
+// These are separate from but compatible with the basic models defined in index.ts
 
 import { ActionBeat, Scene, Sequence, Shot } from '.';
 
@@ -8,14 +8,34 @@ export interface ProductionBreakdown {
   unsequencedScenes: SceneWithRelations[];
 }
 
-export interface SequenceWithRelations extends Sequence {
+// Instead of extending, we'll include all properties we need
+export interface SequenceWithRelations {
+  id: number;
+  name: string;
+  description?: string;
+  scriptId: number;
+  script?: any;
   scenes: SceneWithRelations[];
+  createdAt?: string;
+  updatedAt?: string;
+  // Additional properties for the breakdown view
   prefix: string;
   order_number: number;
 }
 
-export interface SceneWithRelations extends Scene {
+export interface SceneWithRelations {
+  id: number;
+  sceneNumber: string;
+  name?: string;
+  description?: string;
+  setting?: string;
+  timeOfDay?: string;
+  sequenceId: number;
+  sequence?: any;
   actionBeats: ActionBeatWithRelations[];
+  createdAt?: string;
+  updatedAt?: string;
+  // Additional properties for the breakdown view
   characters?: SceneCharacter[];
   order_number: string; 
   type: 'scene' | 'general' | 'transition';
@@ -25,15 +45,39 @@ export interface SceneWithRelations extends Scene {
   day_night?: string;
 }
 
-export interface ActionBeatWithRelations extends ActionBeat {
+export interface ActionBeatWithRelations {
+  id: number;
+  description: string;
+  sceneId: number;
+  scene?: any;
   shots: ShotWithRelations[];
+  createdAt?: string;
+  updatedAt?: string;
+  // Additional properties for the breakdown view
   number: string;
   type: 'action' | 'dialogue';
   title: string;
   characters?: ActionCharacter[];
 }
 
-export interface ShotWithRelations extends Shot {
+export interface ShotWithRelations {
+  id: number;
+  shotNumber: string;
+  description?: string;
+  type?: string;
+  camera?: string;
+  framing?: string;
+  movement?: string;
+  notes?: string;
+  duration?: number;
+  status?: string;
+  sceneId: number;
+  actionBeatId?: number;
+  scene?: any;
+  actionBeat?: any;
+  createdAt?: string;
+  updatedAt?: string;
+  // Additional properties for the breakdown view
   title: string;
   order_number: string;
   action?: string;
