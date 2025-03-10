@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
-import { 
+import {
   ProductionBreakdown,
   SequenceDetail,
   SceneDetail,
@@ -17,7 +17,7 @@ import {
   providedIn: 'root'
 })
 export class BreakdownService {
-  private apiUrl = `${environment.apiUrl}/api/v1`;
+  private apiUrl = `${environment.apiUrl}/v1`;
 
   constructor(private http: HttpClient) { }
 
