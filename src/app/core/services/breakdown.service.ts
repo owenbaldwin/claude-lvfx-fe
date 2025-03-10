@@ -4,10 +4,10 @@ import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
 import { 
   ProductionBreakdown,
-  SequenceWithRelations,
-  SceneWithRelations,
-  ActionBeatWithRelations,
-  ShotWithRelations,
+  SequenceDetail,
+  SceneDetail,
+  ActionBeatDetail,
+  ShotDetail,
   ShotAsset,
   ShotAssumption,
   ShotFx
@@ -27,12 +27,12 @@ export class BreakdownService {
   }
 
   // SEQUENCE OPERATIONS
-  createSequence(sequence: Partial<SequenceWithRelations>): Observable<SequenceWithRelations> {
-    return this.http.post<SequenceWithRelations>(`${this.apiUrl}/sequences`, sequence);
+  createSequence(sequence: Partial<SequenceDetail>): Observable<SequenceDetail> {
+    return this.http.post<SequenceDetail>(`${this.apiUrl}/sequences`, sequence);
   }
 
-  updateSequence(id: number, sequence: Partial<SequenceWithRelations>): Observable<SequenceWithRelations> {
-    return this.http.put<SequenceWithRelations>(`${this.apiUrl}/sequences/${id}`, sequence);
+  updateSequence(id: number, sequence: Partial<SequenceDetail>): Observable<SequenceDetail> {
+    return this.http.put<SequenceDetail>(`${this.apiUrl}/sequences/${id}`, sequence);
   }
 
   deleteSequence(id: number): Observable<void> {
@@ -40,12 +40,12 @@ export class BreakdownService {
   }
 
   // SCENE OPERATIONS
-  createScene(scene: Partial<SceneWithRelations>): Observable<SceneWithRelations> {
-    return this.http.post<SceneWithRelations>(`${this.apiUrl}/scenes`, scene);
+  createScene(scene: Partial<SceneDetail>): Observable<SceneDetail> {
+    return this.http.post<SceneDetail>(`${this.apiUrl}/scenes`, scene);
   }
 
-  updateScene(id: number, scene: Partial<SceneWithRelations>): Observable<SceneWithRelations> {
-    return this.http.put<SceneWithRelations>(`${this.apiUrl}/scenes/${id}`, scene);
+  updateScene(id: number, scene: Partial<SceneDetail>): Observable<SceneDetail> {
+    return this.http.put<SceneDetail>(`${this.apiUrl}/scenes/${id}`, scene);
   }
 
   deleteScene(id: number): Observable<void> {
@@ -53,12 +53,12 @@ export class BreakdownService {
   }
 
   // ACTION BEAT OPERATIONS
-  createActionBeat(actionBeat: Partial<ActionBeatWithRelations>): Observable<ActionBeatWithRelations> {
-    return this.http.post<ActionBeatWithRelations>(`${this.apiUrl}/action-beats`, actionBeat);
+  createActionBeat(actionBeat: Partial<ActionBeatDetail>): Observable<ActionBeatDetail> {
+    return this.http.post<ActionBeatDetail>(`${this.apiUrl}/action-beats`, actionBeat);
   }
 
-  updateActionBeat(id: number, actionBeat: Partial<ActionBeatWithRelations>): Observable<ActionBeatWithRelations> {
-    return this.http.put<ActionBeatWithRelations>(`${this.apiUrl}/action-beats/${id}`, actionBeat);
+  updateActionBeat(id: number, actionBeat: Partial<ActionBeatDetail>): Observable<ActionBeatDetail> {
+    return this.http.put<ActionBeatDetail>(`${this.apiUrl}/action-beats/${id}`, actionBeat);
   }
 
   deleteActionBeat(id: number): Observable<void> {
@@ -66,12 +66,12 @@ export class BreakdownService {
   }
 
   // SHOT OPERATIONS
-  createShot(shot: Partial<ShotWithRelations>): Observable<ShotWithRelations> {
-    return this.http.post<ShotWithRelations>(`${this.apiUrl}/shots`, shot);
+  createShot(shot: Partial<ShotDetail>): Observable<ShotDetail> {
+    return this.http.post<ShotDetail>(`${this.apiUrl}/shots`, shot);
   }
 
-  updateShot(id: number, shot: Partial<ShotWithRelations>): Observable<ShotWithRelations> {
-    return this.http.put<ShotWithRelations>(`${this.apiUrl}/shots/${id}`, shot);
+  updateShot(id: number, shot: Partial<ShotDetail>): Observable<ShotDetail> {
+    return this.http.put<ShotDetail>(`${this.apiUrl}/shots/${id}`, shot);
   }
 
   deleteShot(id: number): Observable<void> {
