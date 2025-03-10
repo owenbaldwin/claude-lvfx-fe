@@ -367,7 +367,8 @@
                           <div class="row">
                             <div *ngFor="let shotMedia of shot.media" class="col-md-2 mb-3">
                               <div class="card">
-                                <img *ngIf="shotMedia.media?.path" 
+                                <!-- Fix: Add null check for media and path -->
+                                <img *ngIf="shotMedia.media && shotMedia.media.path" 
                                      [src]="shotMedia.media.path" 
                                      class="card-img-top img-fluid" 
                                      alt="Storyboard">
