@@ -123,6 +123,9 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
     this.loading = true;
     console.log('Loading breakdown for production ID:', this.productionId);
     
+    // Ensure the production ID is set in the service
+    this.breakdownService.setProductionContext(this.productionId);
+    
     this.breakdownService.getProductionBreakdown(this.productionId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -451,6 +454,7 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
             this.loadBreakdown(); // Reload data
           },
           error: (err) => {
+            console.error('Error creating sequence:', err);
             this.snackBar.open(err.message || 'Failed to create sequence', 'Close', { duration: 5000 });
           }
         });
