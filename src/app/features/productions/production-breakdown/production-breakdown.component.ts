@@ -156,6 +156,27 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
     this.expandedShots[shotId] = !this.expandedShots[shotId];
   }
 
+  // New checkbox event handlers
+  onSequenceCheckboxChange(event: Event, sequenceId: number): void {
+    const checkbox = event.target as HTMLInputElement;
+    this.toggleSelectSequence(sequenceId, checkbox.checked);
+  }
+
+  onSceneCheckboxChange(event: Event, sceneId: number): void {
+    const checkbox = event.target as HTMLInputElement;
+    this.toggleSelectScene(sceneId, checkbox.checked);
+  }
+
+  onActionBeatCheckboxChange(event: Event, actionBeatId: number): void {
+    const checkbox = event.target as HTMLInputElement;
+    this.toggleSelectActionBeat(actionBeatId, checkbox.checked);
+  }
+
+  onShotCheckboxChange(event: Event, shotId: number): void {
+    const checkbox = event.target as HTMLInputElement;
+    this.toggleSelectShot(shotId, checkbox.checked);
+  }
+
   // Selection functions
   toggleSelectAll(): void {
     this.selectAllChecked = !this.selectAllChecked;
@@ -770,5 +791,17 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
       default:
         return 'bg-secondary';
     }
+  }
+
+  // Safe text display methods
+  getShotDisplayText(shot: ShotDetail): string {
+    if (shot.title) {
+      return shot.title;
+    } else if (shot.description) {
+      return shot.description.length > 50 
+        ? shot.description.substring(0, 50) + '...' 
+        : shot.description;
+    }
+    return 'No description';
   }
 }
