@@ -19,11 +19,20 @@ import {
 })
 export class BreakdownService {
   private apiUrl = `${environment.apiUrl}/v1`;
+  private productionId: number | null = null;
 
   constructor(private http: HttpClient) { }
 
+  // Helper to set the current production ID context
+  setProductionContext(productionId: number): void {
+    this.productionId = productionId;
+  }
+
   // Get full production breakdown (sequences, scenes, action beats, shots)
   getProductionBreakdown(productionId: number): Observable<ProductionBreakdown> {
+    // Set production context for other methods to use
+    this.setProductionContext(productionId);
+    
     // Instead of a single API call, we'll make separate calls for each type of data
     // and then combine them into the expected structure
     return forkJoin({
@@ -130,7 +139,10 @@ export class BreakdownService {
 
   // SEQUENCE OPERATIONS
   createSequence(sequence: Partial<SequenceDetail>): Observable<SequenceDetail> {
-    return this.http.post<SequenceDetail>(`${this.apiUrl}/sequences`, sequence);
+    if (!this.productionId) {
+      throw new Error('Production ID not set. Call setProductionContext or getProductionBreakdown first');
+    }
+    return this.http.post<SequenceDetail>(`${this.apiUrl}/productions/${this.productionId}/sequences`, sequence);
   }
 
   updateSequence(id: number, sequence: Partial<SequenceDetail>): Observable<SequenceDetail> {
@@ -143,7 +155,10 @@ export class BreakdownService {
 
   // SCENE OPERATIONS
   createScene(scene: Partial<SceneDetail>): Observable<SceneDetail> {
-    return this.http.post<SceneDetail>(`${this.apiUrl}/scenes`, scene);
+    if (!this.productionId) {
+      throw new Error('Production ID not set. Call setProductionContext or getProductionBreakdown first');
+    }
+    return this.http.post<SceneDetail>(`${this.apiUrl}/productions/${this.productionId}/scenes`, scene);
   }
 
   updateScene(id: number, scene: Partial<SceneDetail>): Observable<SceneDetail> {
@@ -156,7 +171,11 @@ export class BreakdownService {
 
   // ACTION BEAT OPERATIONS
   createActionBeat(actionBeat: Partial<ActionBeatDetail>): Observable<ActionBeatDetail> {
-    return this.http.post<ActionBeatDetail>(`${this.apiUrl}/action-beats`, actionBeat);
+    const sceneId = actionBeat.sceneId;
+    if (!sceneId) {
+      throw new Error('Scene ID is required to create an action beat');
+    }
+    return this.http.post<ActionBeatDetail>(`${this.apiUrl}/scenes/${sceneId}/action-beats`, actionBeat);
   }
 
   updateActionBeat(id: number, actionBeat: Partial<ActionBeatDetail>): Observable<ActionBeatDetail> {
@@ -169,7 +188,16 @@ export class BreakdownService {
 
   // SHOT OPERATIONS
   createShot(shot: Partial<ShotDetail>): Observable<ShotDetail> {
-    return this.http.post<ShotDetail>(`${this.apiUrl}/shots`, shot);
+    const actionBeatId = shot.actionBeatId;
+    const sceneId = shot.sceneId;
+    
+    if (actionBeatId) {
+      return this.http.post<ShotDetail>(`${this.apiUrl}/action-beats/${actionBeatId}/shots`, shot);
+    } else if (sceneId) {
+      return this.http.post<ShotDetail>(`${this.apiUrl}/scenes/${sceneId}/shots`, shot);
+    } else {
+      throw new Error('Either action beat ID or scene ID is required to create a shot');
+    }
   }
 
   updateShot(id: number, shot: Partial<ShotDetail>): Observable<ShotDetail> {
@@ -197,14 +225,23 @@ export class BreakdownService {
 
   // BULK OPERATIONS
   generateShots(data: { actionBeatIds?: number[], sceneIds?: number[], sequenceIds?: number[] }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/generate/shots`, data);
+    if (!this.productionId) {
+      throw new Error('Production ID not set. Call setProductionContext or getProductionBreakdown first');
+    }
+    return this.http.post(`${this.apiUrl}/productions/${this.productionId}/generate/shots`, data);
   }
 
   generateVfxAssumptions(shotIds: number[]): Observable<any> {
-    return this.http.post(`${this.apiUrl}/generate/assumptions`, { shotIds });
+    if (!this.productionId) {
+      throw new Error('Production ID not set. Call setProductionContext or getProductionBreakdown first');
+    }
+    return this.http.post(`${this.apiUrl}/productions/${this.productionId}/generate/assumptions`, { shotIds });
   }
 
   generateCostEstimates(shotIds: number[]): Observable<any> {
-    return this.http.post(`${this.apiUrl}/generate/cost-estimates`, { shotIds });
+    if (!this.productionId) {
+      throw new Error('Production ID not set. Call setProductionContext or getProductionBreakdown first');
+    }
+    return this.http.post(`${this.apiUrl}/productions/${this.productionId}/generate/cost-estimates`, { shotIds });
   }
 }
