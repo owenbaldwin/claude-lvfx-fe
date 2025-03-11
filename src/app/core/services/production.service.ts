@@ -9,7 +9,7 @@ import { ProductionBreakdown } from '@app/shared/models/production-breakdown.mod
   providedIn: 'root'
 })
 export class ProductionService {
-  private apiUrl = `${environment.apiUrl}/productions`;
+  private apiUrl = `${environment.apiUrl}/v1/productions`;
 
   constructor(private http: HttpClient) { }
 
@@ -58,7 +58,7 @@ export class ProductionService {
     return this.http.get<Shot[]>(`${this.apiUrl}/${productionId}/shots`);
   }
 
-  // Get the complete production breakdown (all elements) 
+  // Get the complete production breakdown (all elements)
   getProductionBreakdown(productionId: number): Observable<ProductionBreakdown> {
     return forkJoin({
       production: this.getProduction(productionId),
