@@ -20,7 +20,7 @@ export interface SequenceDetail {
   updatedAt?: string;
   // Additional properties for the breakdown view
   prefix: string;
-  order_number: number;
+  number: number;
 }
 
 export interface SceneDetail {
@@ -37,7 +37,7 @@ export interface SceneDetail {
   updatedAt?: string;
   // Additional properties for the breakdown view
   characters?: SceneCharacter[];
-  order_number: string; 
+  order_number: string;
   type: 'scene' | 'general' | 'transition';
   int_ext: 'interior' | 'exterior' | null;
   title: string;

@@ -6,12 +6,12 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { BreakdownService } from '@app/core/services/breakdown.service';
-import { 
-  ProductionBreakdown, 
-  SequenceDetail, 
-  SceneDetail, 
-  ActionBeatDetail, 
-  ShotDetail 
+import {
+  ProductionBreakdown,
+  SequenceDetail,
+  SceneDetail,
+  ActionBeatDetail,
+  ShotDetail
 } from '@app/shared/models/breakdown.model';
 import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog/confirm-dialog.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -71,13 +71,13 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
       this.loadBreakdown();
       return;
     }
-    
+
     // If no @Input productionId provided, try route parameters as fallback
     this.route.parent?.paramMap.subscribe(params => {
       console.log('Parent route params:', params);
       const id = params.get('id');
       console.log('Parent route id:', id);
-      
+
       if (id) {
         this.productionId = +id;
         this.loadBreakdown();
@@ -87,7 +87,7 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
           console.log('Current route params:', routeParams);
           const routeId = routeParams.get('id');
           console.log('Current route id:', routeId);
-          
+
           if (routeId) {
             this.productionId = +routeId;
             this.loadBreakdown();
@@ -97,7 +97,7 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
               console.log('Query params:', queryParams);
               const queryId = queryParams.get('productionId');
               console.log('Query param id:', queryId);
-              
+
               if (queryId) {
                 this.productionId = +queryId;
                 this.loadBreakdown();
@@ -122,10 +122,10 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
   loadBreakdown(): void {
     this.loading = true;
     console.log('Loading breakdown for production ID:', this.productionId);
-    
+
     // Ensure the production ID is set in the service
     this.breakdownService.setProductionContext(this.productionId);
-    
+
     this.breakdownService.getProductionBreakdown(this.productionId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -227,7 +227,7 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
   toggleSelectSequence(sequenceId: number, isChecked: boolean): void {
     if (isChecked) {
       this.selectedSequences.push(sequenceId);
-      
+
       // Select all related scenes, action beats, and shots
       const sequence = this.breakdown.sequences.find(seq => seq.id === sequenceId);
       if (sequence) {
@@ -244,18 +244,18 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
     } else {
       // Remove sequence and all its descendants from selection
       this.selectedSequences = this.selectedSequences.filter(id => id !== sequenceId);
-      
+
       // Find the sequence to get its scenes
       const sequence = this.breakdown.sequences.find(seq => seq.id === sequenceId);
       if (sequence) {
         // Remove all related scenes
         sequence.scenes.forEach(scene => {
           this.selectedScenes = this.selectedScenes.filter(id => id !== scene.id);
-          
+
           // Remove all related action beats
           scene.actionBeats.forEach(ab => {
             this.selectedActionBeats = this.selectedActionBeats.filter(id => id !== ab.id);
-            
+
             // Remove all related shots
             ab.shots.forEach(shot => {
               this.selectedShots = this.selectedShots.filter(id => id !== shot.id);
@@ -269,21 +269,21 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
   toggleSelectScene(sceneId: number, isChecked: boolean): void {
     if (isChecked) {
       this.selectedScenes.push(sceneId);
-      
+
       // Find the scene to get its action beats
       let scene: SceneDetail | undefined;
-      
+
       // Look in sequences
       for (const seq of this.breakdown.sequences) {
         scene = seq.scenes.find(s => s.id === sceneId);
         if (scene) break;
       }
-      
+
       // If not found, look in unsequenced scenes
       if (!scene) {
         scene = this.breakdown.unsequencedScenes.find(s => s.id === sceneId);
       }
-      
+
       if (scene) {
         scene.actionBeats.forEach(ab => {
           this.selectedActionBeats.push(ab.id);
@@ -294,21 +294,21 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
       }
     } else {
       this.selectedScenes = this.selectedScenes.filter(id => id !== sceneId);
-      
+
       // Find the scene to get its action beats
       let scene: SceneDetail | undefined;
-      
+
       // Look in sequences
       for (const seq of this.breakdown.sequences) {
         scene = seq.scenes.find(s => s.id === sceneId);
         if (scene) break;
       }
-      
+
       // If not found, look in unsequenced scenes
       if (!scene) {
         scene = this.breakdown.unsequencedScenes.find(s => s.id === sceneId);
       }
-      
+
       if (scene) {
         scene.actionBeats.forEach(ab => {
           this.selectedActionBeats = this.selectedActionBeats.filter(id => id !== ab.id);
@@ -323,10 +323,10 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
   toggleSelectActionBeat(actionBeatId: number, isChecked: boolean): void {
     if (isChecked) {
       this.selectedActionBeats.push(actionBeatId);
-      
+
       // Find the action beat to get its shots
       let actionBeat: ActionBeatDetail | undefined;
-      
+
       // Look in all scenes
       for (const seq of this.breakdown.sequences) {
         for (const scene of seq.scenes) {
@@ -335,7 +335,7 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
         }
         if (actionBeat) break;
       }
-      
+
       // If not found, look in unsequenced scenes
       if (!actionBeat) {
         for (const scene of this.breakdown.unsequencedScenes) {
@@ -343,7 +343,7 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
           if (actionBeat) break;
         }
       }
-      
+
       if (actionBeat) {
         actionBeat.shots.forEach(shot => {
           this.selectedShots.push(shot.id);
@@ -351,10 +351,10 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
       }
     } else {
       this.selectedActionBeats = this.selectedActionBeats.filter(id => id !== actionBeatId);
-      
+
       // Find the action beat to get its shots
       let actionBeat: ActionBeatDetail | undefined;
-      
+
       // Look in all scenes
       for (const seq of this.breakdown.sequences) {
         for (const scene of seq.scenes) {
@@ -363,7 +363,7 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
         }
         if (actionBeat) break;
       }
-      
+
       // If not found, look in unsequenced scenes
       if (!actionBeat) {
         for (const scene of this.breakdown.unsequencedScenes) {
@@ -371,7 +371,7 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
           if (actionBeat) break;
         }
       }
-      
+
       if (actionBeat) {
         actionBeat.shots.forEach(shot => {
           this.selectedShots = this.selectedShots.filter(id => id !== shot.id);
@@ -435,7 +435,7 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
       const newSequence: Partial<SequenceDetail> = {
         name: formData.name,
         prefix: formData.prefix,
-        order_number: formData.insertAfter + 1, // Position after the selected order number
+        number: formData.insertAfter + 1, // Position after the selected order number
         scenes: []
       };
 
@@ -782,7 +782,7 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
 
   getShotStatusBadgeClass(status: string | undefined): string {
     if (!status) return 'bg-secondary';
-    
+
     switch (status.toLowerCase()) {
       case 'completed':
         return 'bg-success';
@@ -802,8 +802,8 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
     if (shot.title) {
       return shot.title;
     } else if (shot.description) {
-      return shot.description.length > 50 
-        ? shot.description.substring(0, 50) + '...' 
+      return shot.description.length > 50
+        ? shot.description.substring(0, 50) + '...'
         : shot.description;
     }
     return 'No description';

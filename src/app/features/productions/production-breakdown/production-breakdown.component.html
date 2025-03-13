@@ -56,9 +56,9 @@
             </div>
             <div class="selection-counter small text-muted">
               <span *ngIf="selectedSequences.length + selectedScenes.length + selectedActionBeats.length + selectedShots.length > 0">
-                Selected: {{selectedSequences.length}} sequences, 
-                {{selectedScenes.length}} scenes, 
-                {{selectedActionBeats.length}} action beats, 
+                Selected: {{selectedSequences.length}} sequences,
+                {{selectedScenes.length}} scenes,
+                {{selectedActionBeats.length}} action beats,
                 {{selectedShots.length}} shots
               </span>
               <span *ngIf="selectedSequences.length + selectedScenes.length + selectedActionBeats.length + selectedShots.length === 0">
@@ -478,7 +478,7 @@
             <label for="insertAfter" class="form-label">Position</label>
             <select class="form-select" id="insertAfter" formControlName="insertAfter">
               <option [value]="0">At the beginning</option>
-              <option *ngFor="let sequence of breakdown?.sequences" [value]="sequence.order_number || 0">
+              <option *ngFor="let sequence of breakdown?.sequences" [value]="sequence.number || 0">
                 After {{sequence.name}}
               </option>
             </select>
