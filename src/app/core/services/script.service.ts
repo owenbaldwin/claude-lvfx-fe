@@ -8,7 +8,7 @@ import { Script } from '@app/shared/models';
   providedIn: 'root'
 })
 export class ScriptService {
-  private apiUrl = `${environment.apiUrl}/scripts`;
+  private apiUrl = `${environment.apiUrl}/v1/scripts`;
 
   constructor(private http: HttpClient) { }
 

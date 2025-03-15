@@ -41,10 +41,12 @@ export interface Script {
 }
 
 export interface Sequence {
-  id: number;
+  id?: number;
   name: string;
+  number: number;
   description?: string;
-  scriptId: number;
+  scriptId?: number;
+  productionId: number;
   script?: Script;
   scenes?: Scene[];
   createdAt?: string;

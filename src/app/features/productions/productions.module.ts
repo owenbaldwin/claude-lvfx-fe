@@ -7,6 +7,8 @@ import { ProductionsListComponent } from './productions-list/productions-list.co
 import { ProductionDetailsComponent } from './production-details/production-details.component';
 import { ProductionFormComponent } from './production-form/production-form.component';
 import { SharedModule } from '@app/shared/shared.module';
+import { SequenceListComponent } from '@app/features/sequences/sequence-list/sequence-list.component';
+
 
 const routes: Routes = [
   { path: '', component: ProductionsListComponent },
@@ -18,14 +20,15 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     ProductionsListComponent,
-    ProductionDetailsComponent,
-    ProductionFormComponent
+    ProductionFormComponent,
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     SharedModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    ProductionDetailsComponent,
+    SequenceListComponent
   ]
 })
 export class ProductionsModule { }
