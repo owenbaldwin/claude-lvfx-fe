@@ -9,7 +9,7 @@ import { Sequence } from '@app/shared/models';
 })
 
 export class SequenceService {
-  private apiUrl = `${environment.apiUrl}/productions`;
+  private apiUrl = `${environment.apiUrl}/v1/productions`;
 
   constructor(private http: HttpClient) {}
 

@@ -8,7 +8,7 @@ import { ProductionUser } from '@app/shared/models';
   providedIn: 'root'
 })
 export class ProductionUserService {
-  private apiUrl = `${environment.apiUrl}/production-users`;
+  private apiUrl = `${environment.apiUrl}/v1/production-users`;
 
   constructor(private http: HttpClient) { }
 
