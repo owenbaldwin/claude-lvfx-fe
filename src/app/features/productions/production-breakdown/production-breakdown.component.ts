@@ -53,12 +53,21 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
 
   // Selection state
   selection$: Observable<BreakdownSelection>;
+  
+  // Selected items arrays
+  selectedSequences: number[] = [];
+  selectedScenes: number[] = [];
+  selectedActionBeats: number[] = [];
+  selectedShots: number[] = [];
+  
+  // Select all state
+  selectAllChecked = false;
 
   constructor(
     private route: ActivatedRoute,
     private breakdownService: BreakdownService,
     private breakdownUtils: BreakdownUtilsService,
-    private selectionService: BreakdownSelectionService,
+    public selectionService: BreakdownSelectionService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private fb: FormBuilder
@@ -71,6 +80,17 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
 
     // Get selection observable
     this.selection$ = this.selectionService.getSelection$();
+
+    // Subscribe to selection changes
+    this.selection$.pipe(takeUntil(this.destroy$)).subscribe(selection => {
+      this.selectedSequences = selection.sequenceIds;
+      this.selectedScenes = selection.sceneIds;
+      this.selectedActionBeats = selection.actionBeatIds;
+      this.selectedShots = selection.shotIds;
+      
+      // Update selectAllChecked based on selection state
+      this.selectAllChecked = this.selectionService.isSelectAllActive;
+    });
 
     // Setup search debounce
     this.searchTextChanged.pipe(
@@ -194,26 +214,26 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
     // Filter sequences
     filtered.sequences = this.breakdown.sequences.filter(seq => {
       // Check if sequence matches
-      let sequenceMatches = seq.name.toLowerCase().includes(lowerCaseText) ||
-                            seq.prefix.toLowerCase().includes(lowerCaseText);
+      let sequenceMatches = (seq.name?.toLowerCase() || '').includes(lowerCaseText) ||
+                            (seq.prefix?.toLowerCase() || '').includes(lowerCaseText);
 
       // Filter scenes within the sequence
       const filteredScenes = seq.scenes.filter(scene => {
         // Check if scene matches
-        let sceneMatches = scene.title?.toLowerCase().includes(lowerCaseText) ||
-                           scene.name?.toLowerCase().includes(lowerCaseText) ||
+        let sceneMatches = (scene.title?.toLowerCase() || '').includes(lowerCaseText) ||
+                           (scene.name?.toLowerCase() || '').includes(lowerCaseText) ||
                            scene.sceneNumber.toLowerCase().includes(lowerCaseText);
 
         // Filter action beats within the scene
         const filteredActionBeats = scene.actionBeats.filter(ab => {
           // Check if action beat matches
-          let actionBeatMatches = ab.title?.toLowerCase().includes(lowerCaseText) ||
-                                 ab.description?.toLowerCase().includes(lowerCaseText);
+          let actionBeatMatches = (ab.title?.toLowerCase() || '').includes(lowerCaseText) ||
+                                 (ab.description?.toLowerCase() || '').includes(lowerCaseText);
 
           // Filter shots within the action beat
           const filteredShots = ab.shots.filter(shot =>
-            shot.title?.toLowerCase().includes(lowerCaseText) ||
-            shot.description?.toLowerCase().includes(lowerCaseText) ||
+            (shot.title?.toLowerCase() || '').includes(lowerCaseText) ||
+            (shot.description?.toLowerCase() || '').includes(lowerCaseText) ||
             shot.shotNumber.toLowerCase().includes(lowerCaseText)
           );
 
@@ -256,20 +276,20 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
     // Apply same filtering logic to unsequenced scenes
     filtered.unsequencedScenes = this.breakdown.unsequencedScenes.filter(scene => {
       // Check if scene matches
-      let sceneMatches = scene.title?.toLowerCase().includes(lowerCaseText) ||
-                         scene.name?.toLowerCase().includes(lowerCaseText) ||
+      let sceneMatches = (scene.title?.toLowerCase() || '').includes(lowerCaseText) ||
+                         (scene.name?.toLowerCase() || '').includes(lowerCaseText) ||
                          scene.sceneNumber.toLowerCase().includes(lowerCaseText);
 
       // Filter action beats within the scene
       const filteredActionBeats = scene.actionBeats.filter(ab => {
         // Check if action beat matches
-        let actionBeatMatches = ab.title?.toLowerCase().includes(lowerCaseText) ||
-                               ab.description?.toLowerCase().includes(lowerCaseText);
+        let actionBeatMatches = (ab.title?.toLowerCase() || '').includes(lowerCaseText) ||
+                               (ab.description?.toLowerCase() || '').includes(lowerCaseText);
 
         // Filter shots within the action beat
         const filteredShots = ab.shots.filter(shot =>
-          shot.title?.toLowerCase().includes(lowerCaseText) ||
-          shot.description?.toLowerCase().includes(lowerCaseText) ||
+          (shot.title?.toLowerCase() || '').includes(lowerCaseText) ||
+          (shot.description?.toLowerCase() || '').includes(lowerCaseText) ||
           shot.shotNumber.toLowerCase().includes(lowerCaseText)
         );
 
@@ -317,6 +337,11 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
     this.expandedShots[shotId] = !this.expandedShots[shotId];
   }
 
+  // Toggle select all
+  toggleSelectAll(): void {
+    this.selectionService.toggleSelectAll(this.selectAllChecked);
+  }
+
   // Selection handler methods
   handleItemSelection(event: { id: number, isSelected: boolean }, itemType: string): void {
     switch (itemType) {
@@ -333,172 +358,6 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
         this.selectionService.toggleShotSelection(event.id, event.isSelected);
         break;
     }
-  }
-
-  toggleSelectSequence(sequenceId: number, isChecked: boolean): void {
-    if (isChecked) {
-      this.selectedSequences.push(sequenceId);
-
-      // Select all related scenes, action beats, and shots
-      const sequence = this.breakdown.sequences.find(seq => seq.id === sequenceId);
-      if (sequence) {
-        sequence.scenes.forEach(scene => {
-          this.selectedScenes.push(scene.id);
-          scene.actionBeats.forEach(ab => {
-            this.selectedActionBeats.push(ab.id);
-            ab.shots.forEach(shot => {
-              this.selectedShots.push(shot.id);
-            });
-          });
-        });
-      }
-    } else {
-      // Remove sequence and all its descendants from selection
-      this.selectedSequences = this.selectedSequences.filter(id => id !== sequenceId);
-
-      // Find the sequence to get its scenes
-      const sequence = this.breakdown.sequences.find(seq => seq.id === sequenceId);
-      if (sequence) {
-        // Remove all related scenes
-        sequence.scenes.forEach(scene => {
-          this.selectedScenes = this.selectedScenes.filter(id => id !== scene.id);
-
-          // Remove all related action beats
-          scene.actionBeats.forEach(ab => {
-            this.selectedActionBeats = this.selectedActionBeats.filter(id => id !== ab.id);
-
-            // Remove all related shots
-            ab.shots.forEach(shot => {
-              this.selectedShots = this.selectedShots.filter(id => id !== shot.id);
-            });
-          });
-        });
-      }
-    }
-  }
-
-  toggleSelectScene(sceneId: number, isChecked: boolean): void {
-    if (isChecked) {
-      this.selectedScenes.push(sceneId);
-
-      // Find the scene to get its action beats
-      let scene: SceneDetail | undefined;
-
-      // Look in sequences
-      for (const seq of this.breakdown.sequences) {
-        scene = seq.scenes.find(s => s.id === sceneId);
-        if (scene) break;
-      }
-
-      // If not found, look in unsequenced scenes
-      if (!scene) {
-        scene = this.breakdown.unsequencedScenes.find(s => s.id === sceneId);
-      }
-
-      if (scene) {
-        scene.actionBeats.forEach(ab => {
-          this.selectedActionBeats.push(ab.id);
-          ab.shots.forEach(shot => {
-            this.selectedShots.push(shot.id);
-          });
-        });
-      }
-    } else {
-      this.selectedScenes = this.selectedScenes.filter(id => id !== sceneId);
-
-      // Find the scene to get its action beats
-      let scene: SceneDetail | undefined;
-
-      // Look in sequences
-      for (const seq of this.breakdown.sequences) {
-        scene = seq.scenes.find(s => s.id === sceneId);
-        if (scene) break;
-      }
-
-      // If not found, look in unsequenced scenes
-      if (!scene) {
-        scene = this.breakdown.unsequencedScenes.find(s => s.id === sceneId);
-      }
-
-      if (scene) {
-        scene.actionBeats.forEach(ab => {
-          this.selectedActionBeats = this.selectedActionBeats.filter(id => id !== ab.id);
-          ab.shots.forEach(shot => {
-            this.selectedShots = this.selectedShots.filter(id => id !== shot.id);
-          });
-        });
-      }
-    }
-  }
-
-  toggleSelectActionBeat(actionBeatId: number, isChecked: boolean): void {
-    if (isChecked) {
-      this.selectedActionBeats.push(actionBeatId);
-
-      // Find the action beat to get its shots
-      let actionBeat: ActionBeatDetail | undefined;
-
-      // Look in all scenes
-      for (const seq of this.breakdown.sequences) {
-        for (const scene of seq.scenes) {
-          actionBeat = scene.actionBeats.find(ab => ab.id === actionBeatId);
-          if (actionBeat) break;
-        }
-        if (actionBeat) break;
-      }
-
-      // If not found, look in unsequenced scenes
-      if (!actionBeat) {
-        for (const scene of this.breakdown.unsequencedScenes) {
-          actionBeat = scene.actionBeats.find(ab => ab.id === actionBeatId);
-          if (actionBeat) break;
-        }
-      }
-
-      if (actionBeat) {
-        actionBeat.shots.forEach(shot => {
-          this.selectedShots.push(shot.id);
-        });
-      }
-    } else {
-      this.selectedActionBeats = this.selectedActionBeats.filter(id => id !== actionBeatId);
-
-      // Find the action beat to get its shots
-      let actionBeat: ActionBeatDetail | undefined;
-
-      // Look in all scenes
-      for (const seq of this.breakdown.sequences) {
-        for (const scene of seq.scenes) {
-          actionBeat = scene.actionBeats.find(ab => ab.id === actionBeatId);
-          if (actionBeat) break;
-        }
-        if (actionBeat) break;
-      }
-
-      // If not found, look in unsequenced scenes
-      if (!actionBeat) {
-        for (const scene of this.breakdown.unsequencedScenes) {
-          actionBeat = scene.actionBeats.find(ab => ab.id === actionBeatId);
-          if (actionBeat) break;
-        }
-      }
-
-      if (actionBeat) {
-        actionBeat.shots.forEach(shot => {
-          this.selectedShots = this.selectedShots.filter(id => id !== shot.id);
-        });
-      }
-    }
-  }
-
-  toggleSelectShot(shotId: number, isChecked: boolean): void {
-    if (isChecked) {
-      this.selectedShots.push(shotId);
-    } else {
-      this.selectedShots = this.selectedShots.filter(id => id !== shotId);
-    }
-  // toggleSelectAll(isChecked: boolean): void {
-  //   this.selectionService.toggleSelectAll(isChecked);
   }
 
   // Actions for buttons
@@ -738,25 +597,10 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
     });
   }
 
-
-  // Helper methods
-  isSequenceSelected(sequenceId: number): boolean {
-    return this.selectedSequences.includes(sequenceId);
-  }
-
-  isSceneSelected(sceneId: number): boolean {
-    return this.selectedScenes.includes(sceneId);
-  }
-
-  isActionBeatSelected(actionBeatId: number): boolean {
-    return this.selectedActionBeats.includes(actionBeatId);
-  }
-
-  isShotSelected(shotId: number): boolean {
-    return this.selectedShots.includes(shotId);
-  }
-
-  getSceneTypeBadgeClass(sceneType: string): string {
+  // Helper methods for styling
+  getSceneTypeBadgeClass(sceneType: string | undefined): string {
+    if (!sceneType) return 'bg-secondary';
+    
     switch (sceneType) {
       case 'scene':
         return 'bg-primary';
@@ -769,7 +613,8 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
     }
   }
 
-  getActionBeatTypeIcon(type: string): string {
+  getActionBeatTypeIcon(type: string | undefined): string {
+    if (!type) return 'chat';
     return type === 'action' ? 'stars' : 'chat';
   }
 
@@ -801,5 +646,4 @@ export class ProductionBreakdownComponent implements OnInit, OnDestroy {
     }
     return 'No description';
   }
-
 }
