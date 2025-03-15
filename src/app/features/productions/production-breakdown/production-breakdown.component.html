@@ -51,7 +51,6 @@
   <!-- Bulk action bar -->
   <div class="row mb-3">
     <div class="col-12">
-<<<<<<< HEAD
       <div class="card bg-light">
         <div class="card-body py-2">
           <div class="d-flex align-items-center justify-content-between flex-wrap">
@@ -82,63 +81,10 @@
               <button class="btn btn-sm btn-outline-success" (click)="generateCostEstimates()" [disabled]="selectedShots.length === 0">
                 <i class="bi bi-currency-dollar"></i> Generate Cost Estimates
               </button>
-=======
-      <ng-container *ngIf="selection$ | async as selection">
-        <div class="card bg-light">
-          <div class="card-body py-2">
-            <div class="d-flex align-items-center justify-content-between flex-wrap">
-              <div class="form-check">
-                <input 
-                  class="form-check-input" 
-                  type="checkbox" 
-                  id="selectAll" 
-                  [checked]="selection.sequenceIds.length > 0 && 
-                            selection.sequenceIds.length === filteredBreakdown.sequences.length" 
-                  (change)="toggleSelectAll($event.target.checked)"
-                >
-                <label class="form-check-label" for="selectAll">
-                  Select All
-                </label>
-              </div>
-              <div class="selection-counter small text-muted">
-                <span *ngIf="selection.sequenceIds.length + selection.sceneIds.length + selection.actionBeatIds.length + selection.shotIds.length > 0">
-                  Selected: {{selection.sequenceIds.length}} sequences, 
-                  {{selection.sceneIds.length}} scenes, 
-                  {{selection.actionBeatIds.length}} action beats, 
-                  {{selection.shotIds.length}} shots
-                </span>
-                <span *ngIf="selection.sequenceIds.length + selection.sceneIds.length + selection.actionBeatIds.length + selection.shotIds.length === 0">
-                  No items selected
-                </span>
-              </div>
-              <div class="btn-group">
-                <button 
-                  class="btn btn-sm btn-outline-primary" 
-                  (click)="generateShots()" 
-                  [disabled]="selection.actionBeatIds.length === 0 && selection.sceneIds.length === 0 && selection.sequenceIds.length === 0"
-                >
-                  <i class="bi bi-camera-reels"></i> Generate Shots
-                </button>
-                <button 
-                  class="btn btn-sm btn-outline-info" 
-                  (click)="generateVfxAssumptions()" 
-                  [disabled]="selection.shotIds.length === 0"
-                >
-                  <i class="bi bi-magic"></i> Generate VFX Assumptions
-                </button>
-                <button 
-                  class="btn btn-sm btn-outline-success" 
-                  (click)="generateCostEstimates()" 
-                  [disabled]="selection.shotIds.length === 0"
-                >
-                  <i class="bi bi-currency-dollar"></i> Generate Cost Estimates
-                </button>
-              </div>
->>>>>>> 8545465fa4856371cd8bb6d0e54c2a33de87de40
             </div>
           </div>
         </div>
-      </ng-container>
+      </div>
     </div>
   </div>
 
@@ -366,11 +312,7 @@
             <label for="insertAfter" class="form-label">Position</label>
             <select class="form-select" id="insertAfter" formControlName="insertAfter">
               <option [value]="0">At the beginning</option>
-<<<<<<< HEAD
-              <option *ngFor="let sequence of breakdown?.sequences" [value]="sequence.number || 0">
-=======
-              <option *ngFor="let sequence of filteredBreakdown?.sequences" [value]="sequence.order_number || 0">
->>>>>>> 8545465fa4856371cd8bb6d0e54c2a33de87de40
+              <option *ngFor="let sequence of filteredBreakdown?.sequences" [value]="sequence?.order_number || 0">
                 After {{sequence.name}}
               </option>
             </select>
