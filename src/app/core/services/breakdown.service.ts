@@ -92,19 +92,19 @@ export class BreakdownService {
     const sequences = results.sequences.map(sequence => {
       const sequenceScenes = results.scenes
         .filter(scene => scene.sequenceId === sequence.id)
-        .sort((a, b) => a.order_number.localeCompare(b.order_number));
+        .sort((a, b) => this.safeCompare(a.order_number, b.order_number));
 
       // For each scene, find its action beats
       const scenesWithActionBeats = sequenceScenes.map(scene => {
         const sceneActionBeats = results.actionBeats
           .filter(ab => ab.sceneId === scene.id)
-          .sort((a, b) => a.number.localeCompare(b.number));
+          .sort((a, b) => this.safeCompare(a.number, b.number));
 
         // For each action beat, find its shots
         const actionBeatsWithShots = sceneActionBeats.map(ab => {
           const abShots = results.shots
             .filter(shot => shot.actionBeatId === ab.id)
-            .sort((a, b) => a.order_number.localeCompare(b.order_number));
+            .sort((a, b) => this.safeCompare(a.order_number, b.order_number));
           return {...ab, shots: abShots};
         });
 
@@ -112,24 +112,24 @@ export class BreakdownService {
       });
 
       return {...sequence, scenes: scenesWithActionBeats};
-    }).sort((a, b) => a.number - b.number);
+    }).sort((a, b) => (a.number || 0) - (b.number || 0));
 
     // Find scenes that aren't associated with any sequence
     const unsequencedScenes = results.scenes
       .filter(scene => !scene.sequenceId || scene.sequenceId === 0)
-      .sort((a, b) => a.order_number.localeCompare(b.order_number));
+      .sort((a, b) => this.safeCompare(a.order_number, b.order_number));
 
     // Add action beats to unsequenced scenes
     const unsequencedScenesWithActionBeats = unsequencedScenes.map(scene => {
       const sceneActionBeats = results.actionBeats
         .filter(ab => ab.sceneId === scene.id)
-        .sort((a, b) => a.number.localeCompare(b.number));
+        .sort((a, b) => this.safeCompare(a.number, b.number));
 
       // For each action beat, find its shots
       const actionBeatsWithShots = sceneActionBeats.map(ab => {
         const abShots = results.shots
           .filter(shot => shot.actionBeatId === ab.id)
-          .sort((a, b) => a.order_number.localeCompare(b.order_number));
+          .sort((a, b) => this.safeCompare(a.order_number, b.order_number));
         return {...ab, shots: abShots};
       });
 
@@ -141,6 +141,16 @@ export class BreakdownService {
       sequences: sequences,
       unsequencedScenes: unsequencedScenesWithActionBeats
     } as ProductionBreakdown;
+  }
+
+  /**
+   * Helper method for safely comparing possibly undefined values
+   */
+  private safeCompare(a: string | undefined, b: string | undefined): number {
+    if (a === undefined && b === undefined) return 0;
+    if (a === undefined) return -1;
+    if (b === undefined) return 1;
+    return a.localeCompare(b);
   }
 
   /**
