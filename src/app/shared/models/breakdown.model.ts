@@ -38,7 +38,7 @@ export interface SequenceDetail extends BreakdownItem {
   name?: string;
   prefix: string;
   number?: number;
-  order_number?: number; // Added this property to fix the errors
+  order_number?: string; // Changed to string to match sorting method
   scenes: SceneDetail[];
 }
 
@@ -48,6 +48,8 @@ export interface SceneDetail extends BreakdownItem {
   name?: string;
   title?: string;
   type?: string;
+  sequenceId?: number; // Added field
+  order_number?: string; // Added field
   actionBeats: ActionBeatDetail[];
 }
 
@@ -57,6 +59,7 @@ export interface ActionBeatDetail extends BreakdownItem {
   title?: string;
   description?: string;
   type?: string;
+  sceneId?: number; // Added field
   shots: ShotDetail[];
 }
 
@@ -67,6 +70,37 @@ export interface ShotDetail extends BreakdownItem {
   description?: string;
   type?: string;
   status?: string;
-  assets?: any[];
-  fx?: any[];
+  actionBeatId?: number; // Added field
+  sceneId?: number; // Added field
+  order_number?: string; // Added field
+  assets?: ShotAsset[];
+  fx?: ShotFx[];
+  assumptions?: ShotAssumption[];
+}
+
+// Shot Asset model
+export interface ShotAsset extends BreakdownItem {
+  name: string;
+  description?: string;
+  type?: string;
+  status?: string;
+  shotId: number;
+}
+
+// Shot Assumption model 
+export interface ShotAssumption extends BreakdownItem {
+  description: string;
+  type?: string;
+  status?: string;
+  shotId: number;
+}
+
+// Shot FX model
+export interface ShotFx extends BreakdownItem {
+  name: string;
+  description?: string;
+  type?: string;
+  complexity?: string;
+  status?: string;
+  shotId: number;
 }
