@@ -32,6 +32,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
+import { BreakdownItemComponent } from './components/breakdown-item/breakdown-item.component';
 
 const materialModules = [
   MatButtonModule,
@@ -61,7 +62,8 @@ const materialModules = [
 const sharedComponents = [
   ConfirmDialogComponent,
   LoadingComponent,
-  ErrorMessageComponent
+  ErrorMessageComponent,
+  BreakdownItemComponent
 ];
 
 @NgModule({
