@@ -54,34 +54,33 @@ export interface Sequence {
 }
 
 export interface Scene {
-  id: number;
-  sceneNumber: string;
+  id?: number;
+  number: number;
   name?: string;
   description?: string;
-  setting?: string;
+  location?: string;
   timeOfDay?: string;
   sequenceId: number;
-  sequence?: Sequence;
-  actionBeats?: ActionBeat[];
-  shots?: Shot[];
+  productionId: number;
   createdAt?: string;
   updatedAt?: string;
 }
 
 export interface ActionBeat {
-  id: number;
+  id?: number;
+  number: number;
   description: string;
-  characters?: string;
+  type: string;
   sceneId: number;
-  scene?: Scene;
-  shots?: Shot[];
+  sequenceId: number;
+  productionId: number;
   createdAt?: string;
   updatedAt?: string;
 }
 
 export interface Shot {
-  id: number;
-  shotNumber: string;
+  id?: number;
+  number: string;
   description?: string;
   type?: string;
   camera?: string;
@@ -90,10 +89,10 @@ export interface Shot {
   notes?: string;
   duration?: number;
   status?: string;
+  sequenceId: number;
   sceneId: number;
   actionBeatId?: number;
-  scene?: Scene;
-  actionBeat?: ActionBeat;
+  productionId: number;
   createdAt?: string;
   updatedAt?: string;
 }
