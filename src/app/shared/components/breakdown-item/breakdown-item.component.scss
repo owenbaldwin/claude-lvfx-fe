@@ -1,0 +1,33 @@
+:host {
+  display: contents; // Allow tr to be a direct child of tbody in the parent template
+}
+
+.sequence-row {
+  background-color: rgba(0, 0, 0, 0.02);
+  
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+}
+
+.scene-row {
+  background-color: rgba(0, 0, 0, 0.01);
+  
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+}
+
+.action-beat-row {
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+}
+
+.shot-row {
+  font-size: 0.95rem;
+  
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+}
