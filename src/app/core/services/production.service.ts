@@ -8,7 +8,7 @@ import { Production } from '@app/shared/models';
   providedIn: 'root'
 })
 export class ProductionService {
-  private apiUrl = `${environment.apiUrl}/productions`;
+  private apiUrl = `${environment.apiUrl}/v1/productions`;
 
   constructor(private http: HttpClient) { }
 

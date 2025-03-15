@@ -7,38 +7,34 @@ import { Sequence } from '@app/shared/models';
 @Injectable({
   providedIn: 'root'
 })
+
 export class SequenceService {
-  private apiUrl = `${environment.apiUrl}/sequences`;
+  private apiUrl = `${environment.apiUrl}/productions`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  // Get all sequences
-  getSequences(): Observable<Sequence[]> {
-    return this.http.get<Sequence[]>(this.apiUrl);
+  // Get all sequences for a production
+  getSequences(productionId: number): Observable<Sequence[]> {
+    return this.http.get<Sequence[]>(`${this.apiUrl}/${productionId}/sequences`);
   }
 
-  // Get sequences for a specific script
-  getSequencesByScript(scriptId: number): Observable<Sequence[]> {
-    return this.http.get<Sequence[]>(`${environment.apiUrl}/scripts/${scriptId}/sequences`);
-  }
-
-  // Get a specific sequence by ID
-  getSequence(id: number): Observable<Sequence> {
-    return this.http.get<Sequence>(`${this.apiUrl}/${id}`);
+  // Get a single sequence by ID
+  getSequence(productionId: number, sequenceId: number): Observable<Sequence> {
+    return this.http.get<Sequence>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}`);
   }
 
   // Create a new sequence
-  createSequence(sequence: Partial<Sequence>): Observable<Sequence> {
-    return this.http.post<Sequence>(this.apiUrl, sequence);
+  createSequence(productionId: number, sequence: Sequence): Observable<Sequence> {
+    return this.http.post<Sequence>(`${this.apiUrl}/${productionId}/sequences`, sequence);
   }
 
   // Update an existing sequence
-  updateSequence(id: number, sequence: Partial<Sequence>): Observable<Sequence> {
-    return this.http.put<Sequence>(`${this.apiUrl}/${id}`, sequence);
+  updateSequence(productionId: number, sequenceId: number, sequence: Sequence): Observable<Sequence> {
+    return this.http.put<Sequence>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}`, sequence);
   }
 
   // Delete a sequence
-  deleteSequence(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  deleteSequence(productionId: number, sequenceId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}`);
   }
 }
