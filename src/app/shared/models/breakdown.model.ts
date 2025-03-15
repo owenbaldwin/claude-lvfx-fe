@@ -1,41 +1,41 @@
 // Detailed models for the Production Breakdown feature
-// These are completely separate from the basic models defined in index.ts
 
-// We do NOT import or extend any models from index.ts
-// This avoids TypeScript errors from incompatible types
+// Base interface for all breakdown items
+export interface BreakdownItem {
+  id: number;
+  name?: string;
+  description?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// Base interface for hierarchical items that can be expanded
+export interface ExpandableItem extends BreakdownItem {
+  isExpanded?: boolean;
+  isSelected?: boolean;
+}
 
 export interface ProductionBreakdown {
   sequences: SequenceDetail[];
   unsequencedScenes: SceneDetail[];
 }
 
-export interface SequenceDetail {
-  id: number;
-  name: string;
-  description?: string;
+export interface SequenceDetail extends ExpandableItem {
   scriptId: number;
   script?: any;
   scenes: SceneDetail[];
-  createdAt?: string;
-  updatedAt?: string;
-  // Additional properties for the breakdown view
   prefix: string;
   order_number: number;
+  title?: string; // For display consistency
 }
 
-export interface SceneDetail {
-  id: number;
+export interface SceneDetail extends ExpandableItem {
   sceneNumber: string;
-  name?: string;
-  description?: string;
   setting?: string;
   timeOfDay?: string;
   sequenceId: number;
   sequence?: any;
   actionBeats: ActionBeatDetail[];
-  createdAt?: string;
-  updatedAt?: string;
-  // Additional properties for the breakdown view
   characters?: SceneCharacter[];
   order_number: string; 
   type: 'scene' | 'general' | 'transition';
@@ -45,25 +45,18 @@ export interface SceneDetail {
   day_night?: string;
 }
 
-export interface ActionBeatDetail {
-  id: number;
-  description: string;
+export interface ActionBeatDetail extends ExpandableItem {
   sceneId: number;
   scene?: any;
   shots: ShotDetail[];
-  createdAt?: string;
-  updatedAt?: string;
-  // Additional properties for the breakdown view
   number: string;
   type: 'action' | 'dialogue';
   title: string;
   characters?: ActionCharacter[];
 }
 
-export interface ShotDetail {
-  id: number;
+export interface ShotDetail extends ExpandableItem {
   shotNumber: string;
-  description?: string;
   type?: string;
   camera?: string;
   framing?: string;
@@ -75,9 +68,6 @@ export interface ShotDetail {
   actionBeatId?: number;
   scene?: any;
   actionBeat?: any;
-  createdAt?: string;
-  updatedAt?: string;
-  // Additional properties for the breakdown view
   title: string;
   order_number: string;
   action?: string;
@@ -87,6 +77,15 @@ export interface ShotDetail {
   media?: ShotMedia[];
 }
 
+// Selection interfaces
+export interface BreakdownSelection {
+  sequenceIds: number[];
+  sceneIds: number[];
+  actionBeatIds: number[];
+  shotIds: number[];
+}
+
+// Relations and metadata interfaces
 export interface SceneCharacter {
   id: number;
   scene_id: number;
@@ -133,4 +132,23 @@ export interface Media {
   id: number;
   path: string;
   type: string;
+}
+
+// Type guards
+export function isSequence(item: BreakdownItem): item is SequenceDetail {
+  return (item as SequenceDetail).scenes !== undefined;
+}
+
+export function isScene(item: BreakdownItem): item is SceneDetail {
+  return (item as SceneDetail).actionBeats !== undefined && 
+         (item as SceneDetail).sceneNumber !== undefined;
+}
+
+export function isActionBeat(item: BreakdownItem): item is ActionBeatDetail {
+  return (item as ActionBeatDetail).shots !== undefined && 
+         (item as ActionBeatDetail).sceneId !== undefined;
+}
+
+export function isShot(item: BreakdownItem): item is ShotDetail {
+  return (item as ShotDetail).shotNumber !== undefined;
 }
