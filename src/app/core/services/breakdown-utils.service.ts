@@ -328,7 +328,9 @@ export class BreakdownUtilsService {
   /**
    * Get the appropriate CSS class for a scene type badge
    */
-  getSceneTypeBadgeClass(sceneType: string): string {
+  getSceneTypeBadgeClass(sceneType: string | undefined): string {
+    if (!sceneType) return 'bg-secondary';
+    
     switch (sceneType) {
       case 'scene':
         return 'bg-primary';
@@ -344,7 +346,8 @@ export class BreakdownUtilsService {
   /**
    * Get the appropriate icon for an action beat type
    */
-  getActionBeatTypeIcon(type: string): string {
+  getActionBeatTypeIcon(type: string | undefined): string {
+    if (!type) return 'chat';
     return type === 'action' ? 'stars' : 'chat';
   }
 
