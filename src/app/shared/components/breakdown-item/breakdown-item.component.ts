@@ -128,7 +128,7 @@ export class BreakdownItemComponent {
     if (this.isSequence) {
       return 'bg-primary';
     } else if (this.isScene) {
-      return this.breakdownUtils.getSceneTypeBadgeClass(this.asScene.type);
+      return this.breakdownUtils.getSceneTypeBadgeClass(this.asScene.type || '');
     } else if (this.isActionBeat) {
       return this.asActionBeat.type === 'action' ? 'bg-success' : 'bg-warning text-dark';
     } else if (this.isShot) {
@@ -143,9 +143,8 @@ export class BreakdownItemComponent {
     } else if (this.isScene) {
       return 'bi-card-text';
     } else if (this.isActionBeat) {
-      return this.breakdownUtils.getActionBeatTypeIcon(this.asActionBeat.type) === 'stars' 
-        ? 'bi-stars' 
-        : 'bi-chat-left-text';
+      const iconType = this.breakdownUtils.getActionBeatTypeIcon(this.asActionBeat.type || '');
+      return iconType === 'stars' ? 'bi-stars' : 'bi-chat-left-text';
     } else if (this.isShot) {
       return 'bi-camera';
     }
