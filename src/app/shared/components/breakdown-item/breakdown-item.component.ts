@@ -72,8 +72,11 @@ export class BreakdownItemComponent {
     } else if (this.isScene) {
       return this.asScene.title || this.asScene.name || 'Untitled Scene';
     } else if (this.isActionBeat) {
-      return this.asActionBeat.title || this.asActionBeat.description.substring(0, 50) + 
-        (this.asActionBeat.description.length > 50 ? '...' : '');
+      return this.asActionBeat.title || 
+        (this.asActionBeat.description ? 
+          this.asActionBeat.description.substring(0, 50) + 
+          (this.asActionBeat.description.length > 50 ? '...' : '') : 
+          'No description');
     } else if (this.isShot) {
       return this.breakdownUtils.getShotDisplayText(this.asShot);
     }
