@@ -18,13 +18,19 @@
 </div>
 
 <!-- Main content when data loaded -->
-<div *ngIf="!loading && !error && breakdown" class="breakdown-container">
+<div *ngIf="!loading && !error && filteredBreakdown" class="breakdown-container">
   <!-- Search and controls -->
   <div class="row mb-3">
     <div class="col-md-6 mb-2 mb-md-0">
       <div class="input-group">
         <span class="input-group-text"><i class="bi bi-search"></i></span>
-        <input type="text" class="form-control" placeholder="Search breakdown items..." [(ngModel)]="searchText" (input)="filterBreakdown()">
+        <input 
+          type="text" 
+          class="form-control" 
+          placeholder="Search breakdown items..." 
+          [(ngModel)]="searchText" 
+          (input)="onSearchChange($event)"
+        >
       </div>
     </div>
     <div class="col-md-6 text-md-end">
@@ -45,40 +51,61 @@
   <!-- Bulk action bar -->
   <div class="row mb-3">
     <div class="col-12">
-      <div class="card bg-light">
-        <div class="card-body py-2">
-          <div class="d-flex align-items-center justify-content-between flex-wrap">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="selectAll" [(ngModel)]="selectAllChecked" (change)="toggleSelectAll()">
-              <label class="form-check-label" for="selectAll">
-                Select All
-              </label>
-            </div>
-            <div class="selection-counter small text-muted">
-              <span *ngIf="selectedSequences.length + selectedScenes.length + selectedActionBeats.length + selectedShots.length > 0">
-                Selected: {{selectedSequences.length}} sequences, 
-                {{selectedScenes.length}} scenes, 
-                {{selectedActionBeats.length}} action beats, 
-                {{selectedShots.length}} shots
-              </span>
-              <span *ngIf="selectedSequences.length + selectedScenes.length + selectedActionBeats.length + selectedShots.length === 0">
-                No items selected
-              </span>
-            </div>
-            <div class="btn-group">
-              <button class="btn btn-sm btn-outline-primary" (click)="generateShots()" [disabled]="selectedActionBeats.length === 0 && selectedScenes.length === 0 && selectedSequences.length === 0">
-                <i class="bi bi-camera-reels"></i> Generate Shots
-              </button>
-              <button class="btn btn-sm btn-outline-info" (click)="generateVfxAssumptions()" [disabled]="selectedShots.length === 0">
-                <i class="bi bi-magic"></i> Generate VFX Assumptions
-              </button>
-              <button class="btn btn-sm btn-outline-success" (click)="generateCostEstimates()" [disabled]="selectedShots.length === 0">
-                <i class="bi bi-currency-dollar"></i> Generate Cost Estimates
-              </button>
+      <ng-container *ngIf="selection$ | async as selection">
+        <div class="card bg-light">
+          <div class="card-body py-2">
+            <div class="d-flex align-items-center justify-content-between flex-wrap">
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="checkbox" 
+                  id="selectAll" 
+                  [checked]="selection.sequenceIds.length > 0 && 
+                            selection.sequenceIds.length === filteredBreakdown.sequences.length" 
+                  (change)="toggleSelectAll($event.target.checked)"
+                >
+                <label class="form-check-label" for="selectAll">
+                  Select All
+                </label>
+              </div>
+              <div class="selection-counter small text-muted">
+                <span *ngIf="selection.sequenceIds.length + selection.sceneIds.length + selection.actionBeatIds.length + selection.shotIds.length > 0">
+                  Selected: {{selection.sequenceIds.length}} sequences, 
+                  {{selection.sceneIds.length}} scenes, 
+                  {{selection.actionBeatIds.length}} action beats, 
+                  {{selection.shotIds.length}} shots
+                </span>
+                <span *ngIf="selection.sequenceIds.length + selection.sceneIds.length + selection.actionBeatIds.length + selection.shotIds.length === 0">
+                  No items selected
+                </span>
+              </div>
+              <div class="btn-group">
+                <button 
+                  class="btn btn-sm btn-outline-primary" 
+                  (click)="generateShots()" 
+                  [disabled]="selection.actionBeatIds.length === 0 && selection.sceneIds.length === 0 && selection.sequenceIds.length === 0"
+                >
+                  <i class="bi bi-camera-reels"></i> Generate Shots
+                </button>
+                <button 
+                  class="btn btn-sm btn-outline-info" 
+                  (click)="generateVfxAssumptions()" 
+                  [disabled]="selection.shotIds.length === 0"
+                >
+                  <i class="bi bi-magic"></i> Generate VFX Assumptions
+                </button>
+                <button 
+                  class="btn btn-sm btn-outline-success" 
+                  (click)="generateCostEstimates()" 
+                  [disabled]="selection.shotIds.length === 0"
+                >
+                  <i class="bi bi-currency-dollar"></i> Generate Cost Estimates
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </ng-container>
     </div>
   </div>
 
@@ -97,7 +124,7 @@
       </thead>
       <tbody>
         <!-- No data message -->
-        <tr *ngIf="breakdown.sequences.length === 0 && breakdown.unsequencedScenes.length === 0">
+        <tr *ngIf="filteredBreakdown.sequences.length === 0 && filteredBreakdown.unsequencedScenes.length === 0">
           <td colspan="6" class="text-center py-4">
             <p class="text-muted mb-2">No breakdown items found for this production.</p>
             <button class="btn btn-sm btn-primary" (click)="openAddSequenceModal()">
@@ -107,338 +134,166 @@
         </tr>
 
         <!-- Sequences -->
-        <ng-container *ngFor="let sequence of breakdown.sequences">
-          <tr class="sequence-row">
-            <td>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" [checked]="isSequenceSelected(sequence.id)" (change)="onSequenceCheckboxChange($event, sequence.id)">
-              </div>
-            </td>
-            <td>
-              <button class="btn btn-sm btn-link text-dark" (click)="toggleSequence(sequence.id)">
-                <i class="bi" [ngClass]="expandedSequences[sequence.id] ? 'bi-dash-square' : 'bi-plus-square'"></i>
-              </button>
-            </td>
-            <td>
-              <span class="sequence-prefix badge bg-secondary">{{sequence.prefix}}</span>
-              <span class="ms-2">{{sequence.name}}</span>
-            </td>
-            <td>
-              <span class="badge bg-primary">Sequence</span>
-            </td>
-            <td>
-              {{sequence.scenes.length || 0}} scenes
-            </td>
-            <td>
-              <div class="btn-group btn-group-sm">
-                <button class="btn btn-outline-primary" (click)="addScene(sequence.id)" title="Add Scene">
-                  <i class="bi bi-plus-circle"></i>
-                </button>
-                <button class="btn btn-outline-secondary" (click)="editSequence(sequence)" title="Edit Sequence">
-                  <i class="bi bi-pencil"></i>
-                </button>
-                <button class="btn btn-outline-danger" (click)="deleteSequence(sequence.id)" title="Delete Sequence">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-
+        <ng-container *ngFor="let sequence of filteredBreakdown.sequences">
+          <!-- Sequence row -->
+          <app-breakdown-item
+            [item]="sequence"
+            [isExpanded]="expandedSequences[sequence.id]"
+            [isSelected]="selectionService.isSequenceSelected(sequence.id)"
+            (toggleExpand)="toggleSequence($event)"
+            (toggleSelect)="handleItemSelection($event, 'sequence')"
+            (editItem)="editItem($event)"
+            (deleteItem)="deleteItem($event, 'sequence')"
+            (addChild)="addChild($event, 'sequence')"
+          ></app-breakdown-item>
+          
           <!-- Scenes within sequence (shown when expanded) -->
           <ng-container *ngIf="expandedSequences[sequence.id]">
             <ng-container *ngFor="let scene of sequence.scenes">
-              <tr class="scene-row">
-                <td>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" [checked]="isSceneSelected(scene.id)" (change)="onSceneCheckboxChange($event, scene.id)">
-                  </div>
-                </td>
-                <td>
-                  <button class="btn btn-sm btn-link text-dark" (click)="toggleScene(scene.id)">
-                    <i class="bi" [ngClass]="expandedScenes[scene.id] ? 'bi-dash-square' : 'bi-plus-square'"></i>
-                  </button>
-                </td>
-                <td class="ps-4">
-                  <span class="scene-number badge" [ngClass]="getSceneTypeBadgeClass(scene.type)">{{scene.sceneNumber}}</span>
-                  <span class="ms-2">{{scene.title || scene.name || 'Untitled Scene'}}</span>
-                </td>
-                <td>
-                  <span class="badge bg-info">
-                    {{scene.int_ext ? (scene.int_ext === 'interior' ? 'INT.' : 'EXT.') : ''}}
-                    {{scene.day_night ? scene.day_night.toUpperCase() : ''}}
-                  </span>
-                </td>
-                <td>
-                  {{scene.actionBeats.length || 0}} action beats
-                </td>
-                <td>
-                  <div class="btn-group btn-group-sm">
-                    <button class="btn btn-outline-primary" (click)="addActionBeat(scene.id)" title="Add Action Beat">
-                      <i class="bi bi-plus-circle"></i>
-                    </button>
-                    <button class="btn btn-outline-secondary" (click)="editScene(scene)" title="Edit Scene">
-                      <i class="bi bi-pencil"></i>
-                    </button>
-                    <button class="btn btn-outline-danger" (click)="deleteScene(scene.id)" title="Delete Scene">
-                      <i class="bi bi-trash"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-
+              <!-- Scene row -->
+              <app-breakdown-item
+                [item]="scene"
+                [level]="1"
+                [isExpanded]="expandedScenes[scene.id]"
+                [isSelected]="selectionService.isSceneSelected(scene.id)"
+                (toggleExpand)="toggleScene($event)"
+                (toggleSelect)="handleItemSelection($event, 'scene')"
+                (editItem)="editItem($event)"
+                (deleteItem)="deleteItem($event, 'scene')"
+                (addChild)="addChild($event, 'scene')"
+              ></app-breakdown-item>
+              
               <!-- Action Beats within scene (shown when expanded) -->
               <ng-container *ngIf="expandedScenes[scene.id]">
                 <ng-container *ngFor="let actionBeat of scene.actionBeats">
-                  <tr class="action-beat-row">
-                    <td>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" [checked]="isActionBeatSelected(actionBeat.id)" (change)="onActionBeatCheckboxChange($event, actionBeat.id)">
-                      </div>
-                    </td>
-                    <td>
-                      <button class="btn btn-sm btn-link text-dark" (click)="toggleActionBeat(actionBeat.id)">
-                        <i class="bi" [ngClass]="expandedActionBeats[actionBeat.id] ? 'bi-dash-square' : 'bi-plus-square'"></i>
-                      </button>
-                    </td>
-                    <td class="ps-5">
-                      <i class="bi" [ngClass]="getActionBeatTypeIcon(actionBeat.type) === 'stars' ? 'bi-stars' : 'bi-chat-left-text'"></i>
-                      <span class="ms-2">{{actionBeat.title || actionBeat.description.substring(0, 50) + (actionBeat.description.length > 50 ? '...' : '')}}</span>
-                    </td>
-                    <td>
-                      <span class="badge" [ngClass]="actionBeat.type === 'action' ? 'bg-success' : 'bg-warning text-dark'">
-                        {{actionBeat.type === 'action' ? 'Action' : 'Dialogue'}}
-                      </span>
-                    </td>
-                    <td>
-                      {{actionBeat.shots.length || 0}} shots
-                    </td>
-                    <td>
-                      <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-primary" (click)="addShot(actionBeat.id)" title="Add Shot">
-                          <i class="bi bi-plus-circle"></i>
-                        </button>
-                        <button class="btn btn-outline-secondary" (click)="editActionBeat(actionBeat)" title="Edit Action Beat">
-                          <i class="bi bi-pencil"></i>
-                        </button>
-                        <button class="btn btn-outline-danger" (click)="deleteActionBeat(actionBeat.id)" title="Delete Action Beat">
-                          <i class="bi bi-trash"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-
+                  <!-- Action Beat row -->
+                  <app-breakdown-item
+                    [item]="actionBeat"
+                    [level]="2"
+                    [isExpanded]="expandedActionBeats[actionBeat.id]"
+                    [isSelected]="selectionService.isActionBeatSelected(actionBeat.id)"
+                    (toggleExpand)="toggleActionBeat($event)"
+                    (toggleSelect)="handleItemSelection($event, 'actionBeat')"
+                    (editItem)="editItem($event)"
+                    (deleteItem)="deleteItem($event, 'actionBeat')"
+                    (addChild)="addChild($event, 'actionBeat')"
+                  ></app-breakdown-item>
+                  
                   <!-- Shots within action beat (shown when expanded) -->
                   <ng-container *ngIf="expandedActionBeats[actionBeat.id]">
                     <ng-container *ngFor="let shot of actionBeat.shots">
-                      <tr class="shot-row">
-                        <td>
-                          <div class="form-check">
-                            <input class="form-check-input" type="checkbox" [checked]="isShotSelected(shot.id)" (change)="onShotCheckboxChange($event, shot.id)">
-                          </div>
-                        </td>
-                        <td>
-                          <button class="btn btn-sm btn-link text-dark" (click)="toggleShot(shot.id)">
-                            <i class="bi" [ngClass]="expandedShots[shot.id] ? 'bi-dash-square' : 'bi-plus-square'"></i>
-                          </button>
-                        </td>
-                        <td class="ps-6">
-                          <span class="shot-number badge bg-dark">{{shot.shotNumber}}</span>
-                          <span class="ms-2">{{getShotDisplayText(shot)}}</span>
-                        </td>
-                        <td>
-                          <span class="badge" [ngClass]="getShotStatusBadgeClass(shot.status)">
-                            {{shot.status || 'Not Started'}}
-                          </span>
-                        </td>
-                        <td>
-                          {{shot.type || 'Unknown'}} - {{shot.framing || 'N/A'}}
-                        </td>
-                        <td>
-                          <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-secondary" (click)="editShot(shot)" title="Edit Shot">
-                              <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-outline-danger" (click)="deleteShot(shot.id)" title="Delete Shot">
-                              <i class="bi bi-trash"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
+                      <!-- Shot row -->
+                      <app-breakdown-item
+                        [item]="shot"
+                        [level]="3"
+                        [isExpanded]="expandedShots[shot.id]"
+                        [isSelected]="selectionService.isShotSelected(shot.id)"
+                        (toggleExpand)="toggleShot($event)"
+                        (toggleSelect)="handleItemSelection($event, 'shot')"
+                        (editItem)="editItem($event)"
+                        (deleteItem)="deleteItem($event, 'shot')"
+                      ></app-breakdown-item>
                     </ng-container>
-
+                    
                     <!-- No shots message -->
                     <tr *ngIf="!actionBeat.shots || actionBeat.shots.length === 0">
                       <td colspan="6" class="text-center py-2 shot-placeholder">
                         <span class="text-muted small">No shots for this action beat</span>
-                        <button class="btn btn-sm btn-link" (click)="addShot(actionBeat.id)">Add Shot</button>
+                        <button class="btn btn-sm btn-link" (click)="addChild(actionBeat.id, 'actionBeat')">Add Shot</button>
                       </td>
                     </tr>
                   </ng-container>
                 </ng-container>
-
+                
                 <!-- No action beats message -->
                 <tr *ngIf="!scene.actionBeats || scene.actionBeats.length === 0">
                   <td colspan="6" class="text-center py-2 action-beat-placeholder">
                     <span class="text-muted small">No action beats for this scene</span>
-                    <button class="btn btn-sm btn-link" (click)="addActionBeat(scene.id)">Add Action Beat</button>
+                    <button class="btn btn-sm btn-link" (click)="addChild(scene.id, 'scene')">Add Action Beat</button>
                   </td>
                 </tr>
               </ng-container>
             </ng-container>
-
+            
             <!-- No scenes message -->
             <tr *ngIf="!sequence.scenes || sequence.scenes.length === 0">
               <td colspan="6" class="text-center py-2 scene-placeholder">
                 <span class="text-muted small">No scenes in this sequence</span>
-                <button class="btn btn-sm btn-link" (click)="addScene(sequence.id)">Add Scene</button>
+                <button class="btn btn-sm btn-link" (click)="addChild(sequence.id, 'sequence')">Add Scene</button>
               </td>
             </tr>
           </ng-container>
         </ng-container>
 
-        <!-- Unsequenced Scenes -->
-        <ng-container *ngIf="breakdown.unsequencedScenes && breakdown.unsequencedScenes.length > 0">
+        <!-- Unsequenced Scenes section header -->
+        <ng-container *ngIf="filteredBreakdown.unsequencedScenes && filteredBreakdown.unsequencedScenes.length > 0">
           <tr class="unsequenced-header">
             <td colspan="6" class="bg-light text-dark fw-bold">
               Unsequenced Scenes
             </td>
           </tr>
-
-          <ng-container *ngFor="let scene of breakdown.unsequencedScenes">
-            <tr class="scene-row unsequenced">
-              <td>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" [checked]="isSceneSelected(scene.id)" (change)="onSceneCheckboxChange($event, scene.id)">
-                </div>
-              </td>
-              <td>
-                <button class="btn btn-sm btn-link text-dark" (click)="toggleScene(scene.id)">
-                  <i class="bi" [ngClass]="expandedScenes[scene.id] ? 'bi-dash-square' : 'bi-plus-square'"></i>
-                </button>
-              </td>
-              <td>
-                <span class="scene-number badge" [ngClass]="getSceneTypeBadgeClass(scene.type)">{{scene.sceneNumber}}</span>
-                <span class="ms-2">{{scene.title || scene.name || 'Untitled Scene'}}</span>
-              </td>
-              <td>
-                <span class="badge bg-info">
-                  {{scene.int_ext ? (scene.int_ext === 'interior' ? 'INT.' : 'EXT.') : ''}}
-                  {{scene.day_night ? scene.day_night.toUpperCase() : ''}}
-                </span>
-              </td>
-              <td>
-                {{scene.actionBeats.length || 0}} action beats
-              </td>
-              <td>
-                <div class="btn-group btn-group-sm">
-                  <button class="btn btn-outline-primary" (click)="addActionBeat(scene.id)" title="Add Action Beat">
-                    <i class="bi bi-plus-circle"></i>
-                  </button>
-                  <button class="btn btn-outline-secondary" (click)="editScene(scene)" title="Edit Scene">
-                    <i class="bi bi-pencil"></i>
-                  </button>
-                  <button class="btn btn-outline-danger" (click)="deleteScene(scene.id)" title="Delete Scene">
-                    <i class="bi bi-trash"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-
+          
+          <!-- Unsequenced Scenes -->
+          <ng-container *ngFor="let scene of filteredBreakdown.unsequencedScenes">
+            <!-- Scene row -->
+            <app-breakdown-item
+              [item]="scene"
+              [isExpanded]="expandedScenes[scene.id]"
+              [isSelected]="selectionService.isSceneSelected(scene.id)"
+              (toggleExpand)="toggleScene($event)"
+              (toggleSelect)="handleItemSelection($event, 'scene')"
+              (editItem)="editItem($event)"
+              (deleteItem)="deleteItem($event, 'scene')"
+              (addChild)="addChild($event, 'scene')"
+            ></app-breakdown-item>
+            
             <!-- Action Beats for unsequenced scenes -->
             <ng-container *ngIf="expandedScenes[scene.id]">
               <ng-container *ngFor="let actionBeat of scene.actionBeats">
-                <tr class="action-beat-row">
-                  <td>
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" [checked]="isActionBeatSelected(actionBeat.id)" (change)="onActionBeatCheckboxChange($event, actionBeat.id)">
-                    </div>
-                  </td>
-                  <td>
-                    <button class="btn btn-sm btn-link text-dark" (click)="toggleActionBeat(actionBeat.id)">
-                      <i class="bi" [ngClass]="expandedActionBeats[actionBeat.id] ? 'bi-dash-square' : 'bi-plus-square'"></i>
-                    </button>
-                  </td>
-                  <td class="ps-4">
-                    <i class="bi" [ngClass]="getActionBeatTypeIcon(actionBeat.type) === 'stars' ? 'bi-stars' : 'bi-chat-left-text'"></i>
-                    <span class="ms-2">{{actionBeat.title || actionBeat.description.substring(0, 50) + (actionBeat.description.length > 50 ? '...' : '')}}</span>
-                  </td>
-                  <td>
-                    <span class="badge" [ngClass]="actionBeat.type === 'action' ? 'bg-success' : 'bg-warning text-dark'">
-                      {{actionBeat.type === 'action' ? 'Action' : 'Dialogue'}}
-                    </span>
-                  </td>
-                  <td>
-                    {{actionBeat.shots.length || 0}} shots
-                  </td>
-                  <td>
-                    <div class="btn-group btn-group-sm">
-                      <button class="btn btn-outline-primary" (click)="addShot(actionBeat.id)" title="Add Shot">
-                        <i class="bi bi-plus-circle"></i>
-                      </button>
-                      <button class="btn btn-outline-secondary" (click)="editActionBeat(actionBeat)" title="Edit Action Beat">
-                        <i class="bi bi-pencil"></i>
-                      </button>
-                      <button class="btn btn-outline-danger" (click)="deleteActionBeat(actionBeat.id)" title="Delete Action Beat">
-                        <i class="bi bi-trash"></i>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-
+                <!-- Action Beat row -->
+                <app-breakdown-item
+                  [item]="actionBeat"
+                  [level]="1"
+                  [isExpanded]="expandedActionBeats[actionBeat.id]"
+                  [isSelected]="selectionService.isActionBeatSelected(actionBeat.id)"
+                  (toggleExpand)="toggleActionBeat($event)"
+                  (toggleSelect)="handleItemSelection($event, 'actionBeat')"
+                  (editItem)="editItem($event)"
+                  (deleteItem)="deleteItem($event, 'actionBeat')"
+                  (addChild)="addChild($event, 'actionBeat')"
+                ></app-breakdown-item>
+                
                 <!-- Shots for unsequenced scene action beats -->
                 <ng-container *ngIf="expandedActionBeats[actionBeat.id]">
                   <ng-container *ngFor="let shot of actionBeat.shots">
-                    <tr class="shot-row">
-                      <td>
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" [checked]="isShotSelected(shot.id)" (change)="onShotCheckboxChange($event, shot.id)">
-                        </div>
-                      </td>
-                      <td>
-                        <button class="btn btn-sm btn-link text-dark" (click)="toggleShot(shot.id)">
-                          <i class="bi" [ngClass]="expandedShots[shot.id] ? 'bi-dash-square' : 'bi-plus-square'"></i>
-                        </button>
-                      </td>
-                      <td class="ps-5">
-                        <span class="shot-number badge bg-dark">{{shot.shotNumber}}</span>
-                        <span class="ms-2">{{getShotDisplayText(shot)}}</span>
-                      </td>
-                      <td>
-                        <span class="badge" [ngClass]="getShotStatusBadgeClass(shot.status)">
-                          {{shot.status || 'Not Started'}}
-                        </span>
-                      </td>
-                      <td>
-                        {{shot.type || 'Unknown'}} - {{shot.framing || 'N/A'}}
-                      </td>
-                      <td>
-                        <div class="btn-group btn-group-sm">
-                          <button class="btn btn-outline-secondary" (click)="editShot(shot)" title="Edit Shot">
-                            <i class="bi bi-pencil"></i>
-                          </button>
-                          <button class="btn btn-outline-danger" (click)="deleteShot(shot.id)" title="Delete Shot">
-                            <i class="bi bi-trash"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                    <!-- Shot row -->
+                    <app-breakdown-item
+                      [item]="shot"
+                      [level]="2"
+                      [isExpanded]="expandedShots[shot.id]"
+                      [isSelected]="selectionService.isShotSelected(shot.id)"
+                      (toggleExpand)="toggleShot($event)"
+                      (toggleSelect)="handleItemSelection($event, 'shot')"
+                      (editItem)="editItem($event)"
+                      (deleteItem)="deleteItem($event, 'shot')"
+                    ></app-breakdown-item>
                   </ng-container>
-
+                  
                   <!-- No shots message -->
                   <tr *ngIf="!actionBeat.shots || actionBeat.shots.length === 0">
                     <td colspan="6" class="text-center py-2 shot-placeholder">
                       <span class="text-muted small">No shots for this action beat</span>
-                      <button class="btn btn-sm btn-link" (click)="addShot(actionBeat.id)">Add Shot</button>
+                      <button class="btn btn-sm btn-link" (click)="addChild(actionBeat.id, 'actionBeat')">Add Shot</button>
                     </td>
                   </tr>
                 </ng-container>
               </ng-container>
-
+              
               <!-- No action beats message -->
               <tr *ngIf="!scene.actionBeats || scene.actionBeats.length === 0">
                 <td colspan="6" class="text-center py-2 action-beat-placeholder">
                   <span class="text-muted small">No action beats for this scene</span>
-                  <button class="btn btn-sm btn-link" (click)="addActionBeat(scene.id)">Add Action Beat</button>
+                  <button class="btn btn-sm btn-link" (click)="addChild(scene.id, 'scene')">Add Action Beat</button>
                 </td>
               </tr>
             </ng-container>
@@ -478,7 +333,7 @@
             <label for="insertAfter" class="form-label">Position</label>
             <select class="form-select" id="insertAfter" formControlName="insertAfter">
               <option [value]="0">At the beginning</option>
-              <option *ngFor="let sequence of breakdown?.sequences" [value]="sequence.order_number || 0">
+              <option *ngFor="let sequence of filteredBreakdown?.sequences" [value]="sequence.order_number || 0">
                 After {{sequence.name}}
               </option>
             </select>
