@@ -1,0 +1,54 @@
+<tr [ngClass]="{
+  'sequence-row': isSequence,
+  'scene-row': isScene,
+  'action-beat-row': isActionBeat,
+  'shot-row': isShot
+}">
+  <!-- Checkbox column -->
+  <td>
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" [checked]="isSelected" (change)="onToggleSelect($event)">
+    </div>
+  </td>
+  
+  <!-- Expand/collapse column -->
+  <td>
+    <button class="btn btn-sm btn-link text-dark" (click)="onToggleExpand()">
+      <i class="bi" [ngClass]="isExpanded ? 'bi-dash-square' : 'bi-plus-square'"></i>
+    </button>
+  </td>
+  
+  <!-- Name/title column -->
+  <td [ngStyle]="{'padding-left': (level + 1) + 'rem'}">
+    <i class="bi {{getIconClass()}} me-2"></i>
+    <span *ngIf="getItemIdentifier()" class="badge {{getTypeClass()}} me-2">{{getItemIdentifier()}}</span>
+    {{getItemLabel()}}
+  </td>
+  
+  <!-- Type column -->
+  <td>
+    <span class="badge {{getTypeClass()}}">
+      {{getItemType()}}
+    </span>
+  </td>
+  
+  <!-- Details column -->
+  <td>
+    {{getItemCount()}}
+  </td>
+  
+  <!-- Actions column -->
+  <td>
+    <div class="btn-group btn-group-sm">
+      <button *ngIf="!isShot" class="btn btn-outline-primary" (click)="onAddChild()" title="Add Child">
+        <i class="bi bi-plus-circle"></i>
+      </button>
+      <button class="btn btn-outline-secondary" (click)="onEditItem()" title="Edit">
+        <i class="bi bi-pencil"></i>
+      </button>
+      <button class="btn btn-outline-danger" (click)="onDeleteItem()" title="Delete">
+        <i class="bi bi-trash"></i>
+      </button>
+    </div>
+  </td>
+</tr>
