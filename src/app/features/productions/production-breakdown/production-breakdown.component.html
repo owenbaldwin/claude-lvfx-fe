@@ -1,8 +1,10 @@
 <button class="btn btn-primary" (click)="openModal()">New Sequence</button>
 <app-modal [title]="'Create New Sequence'" [isOpen]="isModalOpen" (close)="closeModal()">
-  <p>Form or content goes here...</p>
+  <app-element-form [element]="newSequence" [type]="'sequence'" [isEditing]="false" (save)="handleSave($event)"
+    (cancel)="closeModal()"></app-element-form>
 </app-modal>
 
 
 
 <app-sequence-list [productionId]="productionId"></app-sequence-list>
+<!-- <app-sequence-list [sequences]="sequences"></app-sequence-list> -->
