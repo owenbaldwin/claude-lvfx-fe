@@ -9,7 +9,6 @@ import { ProductionUserService } from '@app/core/services/production-user.servic
 import { Production, Script, ProductionUser } from '@app/shared/models';
 import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog/confirm-dialog.component';
 import { CommonModule } from '@angular/common';
-import { SequenceListComponent } from '@app/features/sequences/sequence-list/sequence-list.component';
 
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,6 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ProductionBreakdownComponent } from "../production-breakdown/production-breakdown.component";
 
 @Component({
   selector: 'app-production-details',
@@ -24,13 +24,14 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrls: ['./production-details.component.scss'],
   standalone: true, // ✅ Mark this component as standalone (optional, if converting)
   imports: [CommonModule,
-    SequenceListComponent,
     MatTabsModule,
     MatIconModule,
     MatButtonModule,
     MatCardModule,
     MatTooltipModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    ProductionBreakdownComponent,
+    ProductionBreakdownComponent
   ]
 })
 export class ProductionDetailsComponent implements OnInit {

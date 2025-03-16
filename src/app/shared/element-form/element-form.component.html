@@ -1,0 +1,22 @@
+<form (ngSubmit)="onSubmit()" #elementForm="ngForm">
+  <div *ngFor="let field of fields" class="mb-3">
+    <label class="form-label">{{ field.label }}</label>
+
+    <input *ngIf="field.type !== 'textarea' && field.type !== 'select'" [type]="field.type" [(ngModel)]="element[field.key]"
+      [name]="field.key" class="form-control" [attr.required]="field.required ? true : null">
+
+    <textarea *ngIf="field.type === 'textarea'" [(ngModel)]="element[field.key]" [name]="field.key" class="form-control"
+      [attr.required]="field.required ? true : null"></textarea>
+
+    <select *ngIf="field.type === 'select'" [(ngModel)]="element[field.key]" [name]="field.key" class="form-select"
+      [attr.required]="field.required ? true : null">
+      <option *ngFor="let option of field.options ?? []" [value]="option">{{ option }}</option>
+    </select>
+  </div>
+
+  <!-- Action Buttons -->
+  <button type="submit" mat-raised-button color="primary" [disabled]="!elementForm.form.valid">
+    {{ isEditing ? 'Update' : 'Create' }} {{ type | titlecase }}
+  </button>
+  <button type="button" mat-button (click)="onCancel()">Cancel</button>
+</form>

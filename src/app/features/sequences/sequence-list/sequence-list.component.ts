@@ -7,6 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ModalComponent } from '@app/shared/modal/modal.component';
+import { ElementFormComponent } from '@app/shared/element-form/element-form.component';
 
 @Component({
   selector: 'app-sequence-list',
@@ -15,6 +17,8 @@ import { FormsModule } from '@angular/forms';
     MatIconModule,
     MatProgressSpinnerModule,
     FormsModule,
+    // ModalComponent,
+    // ElementFormComponent
     ],
   templateUrl: './sequence-list.component.html',
   styleUrl: './sequence-list.component.scss'
@@ -25,6 +29,9 @@ export class SequenceListComponent implements OnInit {
   sequences: Sequence[] = [];
   loading = true;
   error = '';
+  showModal = false;
+  isEditing = false;
+  selectedElement: any = null;
 
   constructor(
     private sequenceService: SequenceService,
@@ -33,6 +40,12 @@ export class SequenceListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadSequences();
+  }
+
+  openEditModal(sequence: any) {
+    this.selectedElement = { ...sequence }; // Load selected sequence
+    this.isEditing = true;
+    this.showModal = true;
   }
 
   loadSequences(): void {
