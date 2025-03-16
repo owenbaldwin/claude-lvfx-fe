@@ -1,1 +1,16 @@
-<p>modal works!</p>
+<div class="modal-overlay" *ngIf="show">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>{{ title }}</h3>
+      <button class="close-btn" (click)="closeModal()">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <ng-content></ng-content>
+    </div>
+
+    <div class="modal-footer">
+      <button mat-raised-button color="warn" (click)="closeModal()">Close</button>
+    </div>
+  </div>
+</div>

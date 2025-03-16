@@ -21,6 +21,7 @@
       <td>{{ sequence.name }}</td>
       <td>{{ sequence.description || 'No description' }}</td>
       <td>
+        <button mat-button color="accent" (click)="openEditModal(sequence)">Edit</button>
         <button mat-icon-button color="warn" (click)="deleteSequence(sequence.id!)">
           <mat-icon>delete</mat-icon>
         </button>
@@ -30,8 +31,8 @@
 </table>
 
 <p *ngIf="sequences.length === 0 && !loading" class="text-center">No sequences available.</p>
-<form #sequenceForm="ngForm" (ngSubmit)="createSequence()">
+<!-- <form #sequenceForm="ngForm" (ngSubmit)="createSequence()">
   <input type="text" [(ngModel)]="newSequence.name" name="name" required placeholder="Sequence Name">
   <input type="number" [(ngModel)]="newSequence.number" name="number" required placeholder="Number">
   <button type="submit" mat-raised-button color="primary">Add Sequence</button>
-</form>
+</form> -->
