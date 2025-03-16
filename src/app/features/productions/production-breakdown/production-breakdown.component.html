@@ -1,9 +1,8 @@
-<button mat-raised-button color="primary" (click)="openCreateModal()">
-  Add Sequence
-</button>
-<app-modal [title]="isEditing ? 'Edit Sequence' : 'Create Sequence'" [show]="showModal" (close)="closeModal()">
-  <app-element-form [element]="selectedElement" type="sequence" [isEditing]="isEditing" (save)="saveElement($event)"
-    (cancel)="closeModal()"></app-element-form>
+<button class="btn btn-primary" (click)="openModal()">New Sequence</button>
+<app-modal [title]="'Create New Sequence'" [isOpen]="isModalOpen" (close)="closeModal()">
+  <p>Form or content goes here...</p>
 </app-modal>
+
+
 
 <app-sequence-list [productionId]="productionId"></app-sequence-list>

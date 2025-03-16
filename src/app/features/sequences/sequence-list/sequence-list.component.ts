@@ -17,8 +17,8 @@ import { ElementFormComponent } from '@app/shared/element-form/element-form.comp
     MatIconModule,
     MatProgressSpinnerModule,
     FormsModule,
-    ModalComponent,
-    ElementFormComponent
+    // ModalComponent,
+    // ElementFormComponent
     ],
   templateUrl: './sequence-list.component.html',
   styleUrl: './sequence-list.component.scss'

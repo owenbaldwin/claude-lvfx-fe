@@ -9,11 +9,15 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./modal.component.scss']
 })
 export class ModalComponent {
-  @Input() title: string = ''; // Modal title
-  @Input() show: boolean = false; // Controls visibility
-  @Output() close = new EventEmitter<void>(); // Emit when closing
+  @Input() title: string = 'Modal Title';
+  @Input() isOpen: boolean = false;
+  @Output() close = new EventEmitter<void>();
 
-  closeModal() {
+  closeModal(): void {
     this.close.emit();
+  }
+
+  onOverlayClick(event: MouseEvent): void {
+    this.closeModal();
   }
 }
