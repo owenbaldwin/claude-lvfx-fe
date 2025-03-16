@@ -31,7 +31,6 @@ import { ProductionBreakdownComponent } from "../production-breakdown/production
     MatTooltipModule,
     MatProgressSpinnerModule,
     ProductionBreakdownComponent,
-    ProductionBreakdownComponent
   ]
 })
 export class ProductionDetailsComponent implements OnInit {

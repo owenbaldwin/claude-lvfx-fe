@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -12,7 +12,6 @@ interface FormField {
   options?: string[];
 }
 
-
 @Component({
   selector: 'app-element-form',
   standalone: true,
@@ -20,7 +19,7 @@ interface FormField {
   templateUrl: './element-form.component.html',
   styleUrls: ['./element-form.component.scss']
 })
-export class ElementFormComponent {
+export class ElementFormComponent implements OnInit {
   @Input() element: any = {};
   @Input() type: ElementType = 'sequence';
   @Input() isEditing: boolean = false;
@@ -28,7 +27,23 @@ export class ElementFormComponent {
   @Output() save = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<void>();
 
-  get fields(): FormField[] {
+  fields: FormField[] = [];
+
+  ngOnInit(): void {
+    this.fields = this.getFields();
+
+    if (!this.element) {
+      this.element = {};
+    }
+
+    this.fields.forEach(field => {
+      if (!this.element[field.key]) {
+        this.element[field.key] = field.type === 'number' ? 0 : '';
+      }
+    });
+  }
+
+  getFields(): FormField[] {
     switch (this.type) {
       case 'sequence':
         return [
@@ -63,12 +78,11 @@ export class ElementFormComponent {
     }
   }
 
-
-  onSubmit() {
+  onSubmit(): void {
     this.save.emit(this.element);
   }
 
-  onCancel() {
+  onCancel(): void {
     this.cancel.emit();
   }
 }
