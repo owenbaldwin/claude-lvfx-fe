@@ -42,6 +42,7 @@ export interface Script {
 
 export interface Sequence {
   id?: number;
+  prefix?: string;
   name: string;
   number: number;
   description?: string;
@@ -49,6 +50,7 @@ export interface Sequence {
   productionId: number;
   script?: Script;
   scenes?: Scene[];
+  position?: number;
   createdAt?: string;
   updatedAt?: string;
 }

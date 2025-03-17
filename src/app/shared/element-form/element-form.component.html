@@ -2,8 +2,9 @@
   <div *ngFor="let field of fields" class="mb-3">
     <label class="form-label">{{ field.label }}</label>
 
-    <input *ngIf="field.type !== 'textarea' && field.type !== 'select'" [type]="field.type" [(ngModel)]="element[field.key]"
-      [name]="field.key" class="form-control" [attr.required]="field.required ? true : null">
+    <input *ngIf="field.type !== 'textarea' && field.type !== 'select'" [type]="field.type"
+      [(ngModel)]="element[field.key]" [name]="field.key" class="form-control"
+      [attr.required]="field.required ? true : null">
 
     <textarea *ngIf="field.type === 'textarea'" [(ngModel)]="element[field.key]" [name]="field.key" class="form-control"
       [attr.required]="field.required ? true : null"></textarea>

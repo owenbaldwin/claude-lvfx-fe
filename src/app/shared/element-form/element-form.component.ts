@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Sequence } from '@app/shared/models';
 
 type ElementType = 'sequence' | 'scene' | 'actionBeat' | 'shot';
 
@@ -23,6 +24,7 @@ export class ElementFormComponent implements OnInit {
   @Input() element: any = {};
   @Input() type: ElementType = 'sequence';
   @Input() isEditing: boolean = false;
+  @Input() sequences: Sequence[] = [];
 
   @Output() save = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<void>();
@@ -31,7 +33,16 @@ export class ElementFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.fields = this.getFields();
+    this.initializeElement();
+  }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['sequences']) {
+      this.fields = this.getFields();
+    }
+  }
+
+  private initializeElement(): void {
     if (!this.element) {
       this.element = {};
     }
@@ -48,7 +59,8 @@ export class ElementFormComponent implements OnInit {
       case 'sequence':
         return [
           { key: 'name', label: 'Name', type: 'text', required: true },
-          { key: 'number', label: 'Number', type: 'number', required: true },
+          { key: 'prefix', label: 'Prefix', type: 'text', required: true },
+          { key: 'number', label: 'Insert New Sequence...', type: 'select', required: true, options: this.generateSequenceOptions() },
           { key: 'description', label: 'Description', type: 'textarea' }
         ];
       case 'scene':
@@ -76,6 +88,20 @@ export class ElementFormComponent implements OnInit {
       default:
         return [];
     }
+  }
+
+
+  private generateSequenceOptions(): string[] {
+    const options: string[] = ['... at the beginning'];
+
+    if (this.sequences && this.sequences.length > 0) {
+      this.sequences.forEach(seq => {
+        options.push(`... after sequence ${seq.number} (${seq.prefix} - ${seq.name})`);
+      });
+    }
+
+    console.log('Dropdown Options:', options);
+    return options;
   }
 
   onSubmit(): void {

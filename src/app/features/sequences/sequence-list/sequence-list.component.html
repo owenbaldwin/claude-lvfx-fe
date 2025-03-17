@@ -9,6 +9,7 @@
     <tr>
       <th>ID</th>
       <th>Number</th>
+      <th>Prefix</th>
       <th>Name</th>
       <th>Description</th>
       <th>Actions</th>
@@ -18,6 +19,7 @@
     <tr *ngFor="let sequence of sequences">
       <td>{{ sequence.id }}</td>
       <td>{{ sequence.number }}</td>
+      <td>{{ sequence.prefix }}</td>
       <td>{{ sequence.name }}</td>
       <td>{{ sequence.description || 'No description' }}</td>
       <td>
