@@ -5,10 +5,7 @@ import { Sequence } from '@app/shared/models';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ModalComponent } from '@app/shared/modal/modal.component';
-import { ElementFormComponent } from '@app/shared/element-form/element-form.component';
 
 @Component({
   selector: 'app-sequence-list',
@@ -17,8 +14,6 @@ import { ElementFormComponent } from '@app/shared/element-form/element-form.comp
     MatIconModule,
     MatProgressSpinnerModule,
     FormsModule,
-    // ModalComponent,
-    // ElementFormComponent
     ],
   templateUrl: './sequence-list.component.html',
   styleUrl: './sequence-list.component.scss'
