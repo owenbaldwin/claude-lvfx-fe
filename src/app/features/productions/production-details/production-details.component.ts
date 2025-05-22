@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { RouterModule } from '@angular/router';
 
 import { ProductionService } from '@app/core/services/production.service';
 import { ScriptService } from '@app/core/services/script.service';
@@ -31,6 +32,7 @@ import { ProductionBreakdownComponent } from "../production-breakdown/production
     MatTooltipModule,
     MatProgressSpinnerModule,
     ProductionBreakdownComponent,
+    RouterModule,
   ]
 })
 export class ProductionDetailsComponent implements OnInit {
