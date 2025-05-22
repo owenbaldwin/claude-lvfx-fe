@@ -1,20 +1,21 @@
-import { Component, OnInit, Input, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { SequenceListComponent } from '@app/features/sequences/sequence-list/sequence-list.component';
 import { ElementFormComponent } from '@app/shared/element-form/element-form.component';
 import { ModalComponent } from '@app/shared/modal/modal.component';
 import { SequenceService } from '@app/core/services/sequence.service';
 import { Sequence } from '@app/shared/models';
-
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-production-breakdown',
   standalone: true,
-  imports: [SequenceListComponent, ModalComponent, ElementFormComponent],
+  imports: [SequenceListComponent, ModalComponent, ElementFormComponent, CommonModule],
   templateUrl: './production-breakdown.component.html',
   styleUrl: './production-breakdown.component.scss'
 })
-export class ProductionBreakdownComponent {
-  @Input() productionId!: number;
+export class ProductionBreakdownComponent implements OnInit {
+  productionId!: number;
   @ViewChild(SequenceListComponent) sequenceList!: SequenceListComponent;
 
   isModalOpen = false;
@@ -23,9 +24,24 @@ export class ProductionBreakdownComponent {
   loading: boolean = false;
   error: string = '';
 
-  constructor(private sequenceService: SequenceService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private sequenceService: SequenceService,
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute
+  ) {}
 
-
+  ngOnInit(): void {
+    // Get the production ID from the parent route parameter
+    this.route.parent?.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.productionId = +id;
+        this.loadSequences();
+      } else {
+        this.error = 'No production ID provided';
+      }
+    });
+  }
 
   openModal(): void {
     this.newSequence = { name: '', number: '', description: '' };
@@ -41,11 +57,9 @@ export class ProductionBreakdownComponent {
     });
   }
 
-
   closeModal(): void {
     this.isModalOpen = false;
   }
-
 
   handleSave(sequenceData: any): void {
     console.log('Saving new sequence:', sequenceData);
@@ -73,7 +87,6 @@ export class ProductionBreakdownComponent {
     });
   }
 
-
   loadSequences(): void {
     this.sequenceService.getSequences(this.productionId).subscribe({
       next: (data) => {
@@ -88,6 +101,4 @@ export class ProductionBreakdownComponent {
       }
     });
   }
-
-
 }
