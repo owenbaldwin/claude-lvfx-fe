@@ -1,0 +1,35 @@
+<!-- New Scene Form -->
+<form #sceneForm="ngForm" (ngSubmit)="createScene()">
+  <div class="mb-3">
+    <label for="sceneNumber" class="form-label">Number</label>
+    <input type="number" class="form-control" id="sceneNumber" name="number" [(ngModel)]="newScene.number" required>
+  </div>
+  <div class="mb-3">
+    <label for="sceneIntExt" class="form-label">INT/EXT</label>
+    <select class="form-select" id="sceneIntExt" [(ngModel)]="newScene.int_ext" name="intExt" required>
+      <option value="" disabled selected>Select INT/EXT</option>
+      <option value="interior">Interior</option>
+      <option value="exterior">Exterior</option>
+    </select>
+  </div>
+  <div class="mb-3">
+    <label for="sceneLocation" class="form-label">Location</label>
+    <input type="text" class="form-control" id="sceneLocation" name="location" [(ngModel)]="newScene.location"
+      required placeholder="Scene location">
+  </div>
+  <div class="mb-3">
+    <label for="sceneLength" class="form-label">Scene Length</label>
+    <input type="text" class="form-control" id="sceneLength" name="length" [(ngModel)]="newScene.length"
+      placeholder="1/8">
+  </div>
+  <div class="mb-3">
+    <label for="sceneTimeOfDay" class="form-label">Time of Day</label>
+    <input type="text" class="form-control" id="sceneTimeOfDay" name="timeOfDay" [(ngModel)]="newScene.day_night"
+      placeholder="Time of Day">
+  </div>
+  <div class="mt-3">
+    <button type="submit" mat-raised-button color="primary" [disabled]="!sceneForm.valid">
+      Add Scene
+    </button>
+  </div>
+</form>

@@ -7,6 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import { SceneListComponent } from '@app/features/productions/scenes/scene-list/scene-list.component';
+import { ModalComponent } from '@app/shared/modal/modal.component';
+import { SceneNewComponent } from '@app/features/productions/scenes/scene-new/scene-new.component';
 
 @Component({
   selector: 'app-sequence-list',
@@ -15,7 +17,9 @@ import { SceneListComponent } from '@app/features/productions/scenes/scene-list/
     MatIconModule,
     MatProgressSpinnerModule,
     FormsModule,
-    SceneListComponent
+    SceneListComponent,
+    ModalComponent,
+    SceneNewComponent
     ],
   templateUrl: './sequence-list.component.html',
   styleUrl: './sequence-list.component.scss'
@@ -27,8 +31,10 @@ export class SequenceListComponent implements OnInit {
   loading = true;
   error = '';
   showModal = false;
+  showNewSceneModal = false;
   isEditing = false;
   selectedElement: any = null;
+  sequenceId: number = 0;
 
   constructor(
     private sequenceService: SequenceService,
@@ -43,6 +49,20 @@ export class SequenceListComponent implements OnInit {
     this.selectedElement = { ...sequence }; // Load selected sequence
     this.isEditing = true;
     this.showModal = true;
+  }
+
+  openNewSceneModal(sequenceId: number) {
+    this.sequenceId = sequenceId;
+    this.showNewSceneModal = true;
+  }
+
+  closeNewSceneModal() {
+    this.showNewSceneModal = false;
+  }
+
+  onSceneCreated() {
+    this.closeNewSceneModal();
+    // Optionally refresh data if needed
   }
 
   loadSequences(): void {

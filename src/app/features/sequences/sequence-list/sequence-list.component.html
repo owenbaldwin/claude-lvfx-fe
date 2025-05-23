@@ -44,23 +44,14 @@
           </button>
           <ul class="dropdown-menu" [attr.aria-labelledby]="'seq-' + sequence.id + '-options'">
             <li>
-              <button type="button" class="btn dropdown-item" data-bs-toggle="modal"
-                [attr.data-bs-target]="'#scene-' + sequence.id + '-shot-modal'">
-                Add Scene to sequence
+              <button class="dropdown-item" (click)="openNewSceneModal(sequence.id!)">
+                Add New Scene
               </button>
             </li>
             <li>
-              <!-- <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                [attr.data-bs-target]="'#edit-sequence-' + sequence.id + '-modal'">
-                Edit sequence
-              </a> -->
               <button mat-button color="accent" (click)="openEditModal(sequence)">Edit</button>
             </li>
             <li>
-              <!-- <a class="dropdown-item text-danger" href="#" data-bs-toggle="modal"
-                [attr.data-bs-target]="'#delete-sequence-' + sequence.id + '-modal'">
-                Delete sequence
-              </a> -->
               <button mat-icon-button color="warn" (click)="deleteSequence(sequence.id!)">
                 <mat-icon>delete</mat-icon>
               </button>
@@ -79,6 +70,16 @@
 
   </div>
 </div>
+
+<!-- New Scene Modal -->
+<app-modal [title]="'Add New Scene'" [isOpen]="showNewSceneModal" (close)="closeNewSceneModal()">
+  <app-scene-new
+    [sequenceId]="sequenceId"
+    [productionId]="productionId"
+    (sceneCreated)="onSceneCreated()">
+  </app-scene-new>
+</app-modal>
+
 <p *ngIf="sequences.length === 0 && !loading" class="text-center">No sequences available.</p>
 <!-- <form #sequenceForm="ngForm" (ngSubmit)="createSequence()">
   <input type="text" [(ngModel)]="newSequence.name" name="name" required placeholder="Sequence Name">

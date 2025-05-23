@@ -7,6 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { ModalComponent } from '@app/shared/modal/modal.component';
+import { SceneNewComponent } from '../scene-new/scene-new.component';
 
 @Component({
   selector: 'app-scene-list',
@@ -16,7 +18,9 @@ import { MatButtonModule } from '@angular/material/button';
     MatIconModule,
     MatProgressSpinnerModule,
     FormsModule,
-    MatButtonModule
+    MatButtonModule,
+    ModalComponent,
+    SceneNewComponent
   ],
   templateUrl: './scene-list.component.html',
   styleUrl: './scene-list.component.scss'
@@ -28,9 +32,17 @@ export class SceneListComponent implements OnInit {
   scenes: Scene[] = [];
   loading = true;
   error = '';
-  showModal = false;
+  showEditModal = false;
+  showNewSceneModal = false;
   isEditing = false;
-  selectedElement: any = null;
+  selectedElement: Partial<Scene> = {
+    number: 0,
+    location: '',
+    int_ext: '',
+    day_night: '',
+    description: '',
+    length: ''
+  };
 
   constructor(
     private sceneService: SceneService,
@@ -49,7 +61,20 @@ export class SceneListComponent implements OnInit {
   openEditModal(scene: Scene) {
     this.selectedElement = { ...scene }; // Load selected scene
     this.isEditing = true;
-    this.showModal = true;
+    this.showEditModal = true;
+  }
+
+  openNewSceneModal() {
+    this.showNewSceneModal = true;
+  }
+
+  closeNewSceneModal() {
+    this.showNewSceneModal = false;
+  }
+
+  onSceneCreated() {
+    this.loadScenes();
+    this.closeNewSceneModal();
   }
 
   loadScenes(): void {
@@ -65,41 +90,6 @@ export class SceneListComponent implements OnInit {
     });
   }
 
-  newScene: Partial<Scene> = {
-    number: 1,
-    location: '',
-    int_ext: '',
-    day_night: '',
-    description: ''
-  };
-
-  createScene(): void {
-    if (!this.newScene.location || !this.newScene.number) return;
-
-    const sceneToCreate: Partial<Scene> = {
-      ...this.newScene,
-      sequenceId: this.sequenceId,
-      productionId: this.productionId
-    };
-
-    this.sceneService.createScene(this.productionId, this.sequenceId, sceneToCreate).subscribe({
-      next: (data) => {
-        this.snackBar.open('Scene added', 'Close', { duration: 3000 });
-        this.loadScenes();
-        this.newScene = {
-          number: 1,
-          location: '',
-          int_ext: '',
-          day_night: '',
-          description: ''
-        };
-      },
-      error: () => {
-        this.snackBar.open('Failed to add scene', 'Close', { duration: 3000 });
-      }
-    });
-  }
-
   updateScene(): void {
     if (!this.selectedElement || !this.selectedElement.id) return;
 
@@ -107,7 +97,7 @@ export class SceneListComponent implements OnInit {
       next: () => {
         this.snackBar.open('Scene updated', 'Close', { duration: 3000 });
         this.loadScenes();
-        this.showModal = false;
+        this.showEditModal = false;
       },
       error: () => {
         this.snackBar.open('Failed to update scene', 'Close', { duration: 3000 });
