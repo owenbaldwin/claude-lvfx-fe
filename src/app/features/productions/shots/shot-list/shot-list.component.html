@@ -1,0 +1,130 @@
+<div>
+
+  <div *ngFor="let shot of shots">
+    <ul class="shot-breakdown-cells shot-row">
+      <!-- Checkbox -->
+      <li style="width: 2%;">
+        <input type="checkbox" class="shot-checkbox individual-shot-checkbox"
+          [class]="'check-shot-sequence-' + sequenceId + ' check-shot-scene-' + sceneId + ' check-shot-actionB-' + actionBeatId"
+          [id]="'check-shot-' + shot.id" [name]="'check-shot-' + shot.id" [value]="shot.id"
+          [attr.data-actionbeat-id]="actionBeatId" [attr.data-scene-id]="sceneId" [attr.data-sequence-id]="sequenceId" />
+      </li>
+
+      <!-- Collapse Trigger -->
+      <a style="width: 8%;" class="table-collapse-btn" data-bs-toggle="collapse" [href]="'#collapse-shot-' + shot.id"
+        role="button" aria-expanded="false" [attr.aria-controls]="'collapse-shot-' + shot.id">
+        {{ sequencePrefix }}:{{ sceneNumber }}:{{ actionBeatNumber }}:{{ shot.number }}
+      </a>
+
+      <!-- Storyboard Dropdown -->
+      <li style="width: 2%;" class="inline-cell">
+        <div class="btn-group">
+          <button class="btn storyboard-dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-plus-square-fill"></i>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" [href]="'/index.php/lvfx/form/150?shot_id=' + shot.id">Upload Media</a></li>
+            <li><a class="dropdown-item" href="#" (click)="generateImagesForShot(shot.id!)">ChatGPT</a></li>
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+                [attr.data-bs-target]="'#promptModalShot' + shot.id">Stability AI (Text Prompt)</a></li>
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+                [attr.data-bs-target]="'#canvasModalShot' + shot.id">Stability AI (Sketch)</a></li>
+          </ul>
+        </div>
+      </li>
+
+      <!-- Storyboard Preview -->
+      <li style="width: 8%;" class="inline-cell" style="padding: 4px;">
+        <ng-container *ngIf="getShotStoryboards(shot.id!).length > 0; else noStoryboard">
+          <button class="btn p-0 m-0" type="button" data-bs-toggle="modal"
+            [attr.data-bs-target]="'#shot-' + shot.id + '-storyboard-modal'">
+            <img [src]="'https://ilibrium.com/' + getShotStoryboards(shot.id!)[0].path" alt=""
+              style="width: 50px; height: auto;" />
+          </button>
+          <!-- Modal component could go here -->
+        </ng-container>
+        <ng-template #noStoryboard>
+          <i class="bi bi-camera2 no-storyboard"></i>
+        </ng-template>
+      </li>
+
+      <!-- Shot Title -->
+      <li style="width: 20%;" class="inline-cell">
+        {{ shot.description }}
+      </li>
+
+      <li style="width: 5%;"></li>
+
+      <!-- Person Icon -->
+      <li style="width: 5%;"><i class="bi bi-person-fill"></i></li>
+
+      <!-- Assets -->
+      <li style="width: 15%;" class="shot-element-container">
+        <!-- <app-element-dropdown [icon]="'plus-circle-fill'" [shotId]="shot.id" elementType="asset"
+          [elements]="getElementsForShot(shotAssets, shot.id)">
+        </app-element-dropdown> -->
+      </li>
+
+      <!-- Assumptions -->
+      <li style="width: 15%;">
+        <!-- <app-element-dropdown [icon]="'plus-circle-fill'" [shotId]="shot.id" elementType="assumption"
+          [elements]="getElementsForShot(shotAssumptions, shot.id)">
+        </app-element-dropdown> -->
+      </li>
+
+      <!-- FX -->
+      <li style="width: 15%;" class="shot-element-container">
+        <!-- <app-element-dropdown [icon]="'plus-circle-fill'" [shotId]="shot.id" elementType="fx"
+          [elements]="getElementsForShot(shotFx, shot.id)">
+        </app-element-dropdown> -->
+      </li>
+
+      <!-- Options Dropdown -->
+      <li style="width: 5%;">
+        <div class="dropdown">
+          <button class="btn btn-small" type="button" [id]="'shot-' + shot.id + '-options'" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-three-dots" style="font-size: 24px;"></i>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" (click)="openNewShotModal()">Add New Shot</a></li>
+            <li><a class="dropdown-item" href="#" (click)="openEditModal(shot)">Edit Shot</a></li>
+            <li><a class="dropdown-item" href="#" (click)="deleteShot(shot.id!)">Delete Shot</a></li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+
+  </div>
+
+  <p *ngIf="shots.length === 0" class="text-center">No shots available for this action beat.</p>
+
+  <!-- Add buttons for new shots -->
+  <div class="text-center mt-3 mb-5" *ngIf="actionBeatId">
+    <button class="btn btn-primary" (click)="openNewShotModal()">
+      <i class="bi bi-plus-circle me-2"></i>Add New Shot
+    </button>
+  </div>
+
+  <!-- New Shot Modal placeholder - would be implemented with appropriate components -->
+  <!-- <app-modal [title]="'Add New Shot'" [isOpen]="showNewShotModal" (close)="closeNewShotModal()">
+    <app-shot-new
+      [actionBeatId]="actionBeatId"
+      [sceneId]="sceneId"
+      [sequenceId]="sequenceId"
+      [productionId]="productionId"
+      (shotCreated)="onShotCreated()">
+    </app-shot-new>
+  </app-modal> -->
+
+  <!-- Edit Shot Modal placeholder - would be implemented with appropriate components -->
+  <!-- <app-modal [title]="'Edit Shot'" [isOpen]="showEditModal" (close)="showEditModal = false">
+    <app-shot-edit
+      [shot]="selectedShot"
+      [sequenceId]="sequenceId"
+      [productionId]="productionId"
+      [sceneId]="sceneId"
+      [actionBeatId]="actionBeatId"
+      (shotUpdated)="onShotUpdated()">
+    </app-shot-edit>
+  </app-modal> -->
+</div>
