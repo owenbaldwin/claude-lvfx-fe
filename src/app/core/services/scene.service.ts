@@ -33,8 +33,8 @@ export class SceneService {
   }
 
   // Update an existing scene
-  updateScene(id: number, scene: Partial<Scene>): Observable<Scene> {
-    return this.http.put<Scene>(`${this.apiUrl}/${id}`, scene);
+  updateScene(productionId: number, sequenceId: number, id: number, scene: Partial<Scene>): Observable<Scene> {
+    return this.http.put<Scene>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${id}`, scene);
   }
 
   // Delete a scene
