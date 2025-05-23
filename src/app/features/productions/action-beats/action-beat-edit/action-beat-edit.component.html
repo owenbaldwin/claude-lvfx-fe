@@ -1,0 +1,23 @@
+<form (ngSubmit)="updateActionBeat()">
+  <div class="mb-3">
+    <label for="editNumber" class="form-label">Number</label>
+    <input type="number" class="form-control" id="editNumber" [(ngModel)]="selectedElement.number" name="number"
+      required>
+  </div>
+  <div class="mb-3">
+    <label for="editBeatType" class="form-label">Type</label>
+    <select class="form-select" id="editBeatType" [(ngModel)]="selectedElement.beat_type" name="beat_type" required>
+      <option value="action">Action</option>
+      <option value="dialogue">Dialogue</option>
+    </select>
+  </div>
+  <div class="mb-3">
+    <label for="editDescription" class="form-label">Description</label>
+    <textarea class="form-control" id="editDescription" name="description" [(ngModel)]="selectedElement.description"
+      required rows="3"></textarea>
+  </div>
+  <div class="modal-actions">
+    <button type="button" mat-button (click)="actionBeatUpdated.emit()">Cancel</button>
+    <button type="submit" mat-raised-button color="primary">Save</button>
+  </div>
+</form>

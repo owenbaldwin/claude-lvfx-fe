@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.component';
 import { ModalComponent } from '@app/shared/modal/modal.component';
 import { ActionBeatNewComponent } from '../action-beat-new/action-beat-new.component';
+import { ActionBeatEditComponent } from '../action-beat-edit/action-beat-edit.component';
 
 @Component({
   selector: 'app-action-beat-list',
@@ -13,7 +14,8 @@ import { ActionBeatNewComponent } from '../action-beat-new/action-beat-new.compo
     CommonModule,
     CrudDropdownComponent,
     ModalComponent,
-    ActionBeatNewComponent
+    ActionBeatNewComponent,
+    ActionBeatEditComponent
   ],
   templateUrl: './action-beat-list.component.html',
   styleUrl: './action-beat-list.component.scss'
@@ -27,6 +29,8 @@ export class ActionBeatListComponent {
 
   actionBeats: ActionBeat[] = [];
   showNewActionBeatModal = false;
+  showEditModal = false;
+  selectedElement: Partial<ActionBeat> = {};
 
   constructor(
     private actionBeatService: ActionBeatService,
@@ -71,5 +75,29 @@ export class ActionBeatListComponent {
   onActionBeatCreated(): void {
     this.loadActionBeats();
     this.closeNewActionBeatModal();
+  }
+
+  openEditModal(actionBeat: ActionBeat): void {
+    this.selectedElement = actionBeat;
+    this.showEditModal = true;
+    this.changeDetectorRef.detectChanges();
+  }
+
+  onActionBeatUpdated(): void {
+    this.loadActionBeats();
+    this.showEditModal = false;
+  }
+
+  deleteActionBeat(id: number): void {
+    if (confirm('Are you sure you want to delete this action beat?')) {
+      this.actionBeatService.deleteActionBeat(this.productionId, this.sequenceId, this.sceneId, id).subscribe({
+        next: () => {
+          this.loadActionBeats();
+        },
+        error: (err) => {
+          console.error('Error deleting action beat:', err);
+        }
+      });
+    }
   }
 }
