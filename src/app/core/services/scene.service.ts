@@ -8,7 +8,7 @@ import { Scene } from '@app/shared/models';
   providedIn: 'root'
 })
 export class SceneService {
-  private apiUrl = `${environment.apiUrl}/scenes`;
+  private apiUrl = `${environment.apiUrl}/v1/productions`;
 
   constructor(private http: HttpClient) { }
 
@@ -18,8 +18,8 @@ export class SceneService {
   }
 
   // Get scenes for a specific sequence
-  getScenesBySequence(sequenceId: number): Observable<Scene[]> {
-    return this.http.get<Scene[]>(`${environment.apiUrl}/sequences/${sequenceId}/scenes`);
+  getScenesBySequence(productionId: number, sequenceId: number): Observable<Scene[]> {
+    return this.http.get<Scene[]>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes`);
   }
 
   // Get a specific scene by ID
@@ -28,8 +28,8 @@ export class SceneService {
   }
 
   // Create a new scene
-  createScene(scene: Partial<Scene>): Observable<Scene> {
-    return this.http.post<Scene>(this.apiUrl, scene);
+  createScene(productionId: number, sequenceId: number, scene: Partial<Scene>): Observable<Scene> {
+    return this.http.post<Scene>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes`, scene);
   }
 
   // Update an existing scene

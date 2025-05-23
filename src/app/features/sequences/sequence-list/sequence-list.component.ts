@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
+import { SceneListComponent } from '@app/features/productions/scenes/scene-list/scene-list.component';
 
 @Component({
   selector: 'app-sequence-list',
@@ -14,6 +15,7 @@ import { FormsModule } from '@angular/forms';
     MatIconModule,
     MatProgressSpinnerModule,
     FormsModule,
+    SceneListComponent
     ],
   templateUrl: './sequence-list.component.html',
   styleUrl: './sequence-list.component.scss'
