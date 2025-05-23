@@ -70,7 +70,11 @@
       </li>
     </ul>
     <div [id]="'collapse-seq-' + sequence.id" class="collapse row-collapse">
-      <h6>hi</h6>
+      <app-scene-list
+        [sequenceId]="sequence.id!"
+        [sequencePrefix]="sequence.prefix"
+        [productionId]="productionId">
+      </app-scene-list>
     </div>
 
   </div>

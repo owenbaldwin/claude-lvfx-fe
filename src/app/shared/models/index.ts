@@ -58,15 +58,17 @@ export interface Sequence {
 export interface Scene {
   id?: number;
   number: number;
-  name?: string;
   description?: string;
   location?: string;
-  timeOfDay?: string;
+  int_ext?: string;
+  day_night?: string;
+  length?: string;
   sequenceId: number;
   productionId: number;
   createdAt?: string;
   updatedAt?: string;
 }
+
 
 export interface ActionBeat {
   id?: number;
