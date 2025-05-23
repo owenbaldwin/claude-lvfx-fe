@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { SceneListComponent } from '@app/features/productions/scenes/scene-list/scene-list.component';
 import { ModalComponent } from '@app/shared/modal/modal.component';
 import { SceneNewComponent } from '@app/features/productions/scenes/scene-new/scene-new.component';
+import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.component';
 
 @Component({
   selector: 'app-sequence-list',
@@ -19,7 +20,8 @@ import { SceneNewComponent } from '@app/features/productions/scenes/scene-new/sc
     FormsModule,
     SceneListComponent,
     ModalComponent,
-    SceneNewComponent
+    SceneNewComponent,
+    CrudDropdownComponent
     ],
   templateUrl: './sequence-list.component.html',
   styleUrl: './sequence-list.component.scss'
