@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { ModalComponent } from '@app/shared/modal/modal.component';
 import { SceneNewComponent } from '../scene-new/scene-new.component';
+import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.component';
 
 @Component({
   selector: 'app-scene-list',
@@ -20,7 +21,8 @@ import { SceneNewComponent } from '../scene-new/scene-new.component';
     FormsModule,
     MatButtonModule,
     ModalComponent,
-    SceneNewComponent
+    SceneNewComponent,
+    CrudDropdownComponent
   ],
   templateUrl: './scene-list.component.html',
   styleUrl: './scene-list.component.scss'

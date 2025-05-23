@@ -63,27 +63,15 @@
     </li>
     <li style="width: 30%;"></li>
     <li style="width: 5%;">
-      <div class="dropdown">
-        <button class="btn btn-small" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <mat-icon>more_horiz</mat-icon>
-        </button>
-        <ul class="dropdown-menu">
-          <li>
-            <button class="dropdown-item" data-bs-toggle="modal"
-              [attr.data-bs-target]="'#scene-' + scene.id + '-actionB-modal'">
-              Add Action Beat
-            </button>
-          </li>
-          <li>
-            <button mat-button color="accent" (click)="openEditModal(scene)">Edit</button>
-          </li>
-          <li>
-            <button mat-icon-button color="warn" (click)="deleteScene(scene.id!)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </li>
-        </ul>
-      </div>
+      <app-crud-dropdown
+        [entityLabel]="'Scene'"
+        [elementId]="scene.id || 0"
+        [addLabel]="'Add New Action Beat'"
+        (edit)="openEditModal(scene)" (delete)="deleteScene(scene.id!)">
+      </app-crud-dropdown>
+      <!-- TODO: Add add action beat modal and move to dropdown above-->
+      <!-- (add)="openNewActionBeatModal(scene.id!)" -->
+
     </li>
   </ul>
 

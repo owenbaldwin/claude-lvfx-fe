@@ -37,27 +37,14 @@
       <li style="width: 15%;"></li>
       <li style="width: 15%;"></li>
       <li style="width: 5%;">
-        <div class="dropdown">
-          <button class="btn btn-small" type="button" [id]="'seq-' + sequence.id + '-options'" data-bs-toggle="dropdown"
-            aria-expanded="false" [attr.aria-labelledby]="'seq-' + sequence.id + '-options'">
-            <mat-icon>more_horiz</mat-icon>
-          </button>
-          <ul class="dropdown-menu" [attr.aria-labelledby]="'seq-' + sequence.id + '-options'">
-            <li>
-              <button class="dropdown-item" (click)="openNewSceneModal(sequence.id!)">
-                <mat-icon>add</mat-icon> Add New Scene
-              </button>
-            </li>
-            <li>
-              <button mat-button color="accent" (click)="openEditModal(sequence)">Edit</button>
-            </li>
-            <li>
-              <button mat-icon-button color="warn" (click)="deleteSequence(sequence.id!)">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </li>
-          </ul>
-        </div>
+        <app-crud-dropdown
+          [entityLabel]="'Sequence'"
+          [elementId]="sequence.id || 0"
+          [addLabel]="'Add New Scene'"
+          (add)="openNewSceneModal(sequence.id!)"
+          (edit)="openEditModal(sequence)"
+          (delete)="deleteSequence(sequence.id!)">
+        </app-crud-dropdown>
       </li>
     </ul>
     <div [id]="'collapse-seq-' + sequence.id" class="collapse row-collapse">
