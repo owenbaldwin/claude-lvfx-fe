@@ -74,7 +74,8 @@ export interface ActionBeat {
   id?: number;
   number: number;
   description: string;
-  type: string;
+  text?: string;
+  beat_type: string;
   sceneId: number;
   sequenceId: number;
   productionId: number;

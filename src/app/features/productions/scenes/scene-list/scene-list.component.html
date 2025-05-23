@@ -14,71 +14,74 @@
       <mat-icon>add</mat-icon> Add New Scene
     </button>
   </div> -->
+  <div *ngFor="let scene of scenes">
 
-  <ul class="breakdown-rows scene-row" *ngFor="let scene of scenes">
-    <li style="width: 2%;">
-      <input
-        type="checkbox"
-        class="shot-checkbox individual-scene-checkbox"
-        [id]="'check-scene-' + scene.id"
-        [name]="'check-scene-' + scene.id"
-        [value]="scene.id"
+
+    <ul class="breakdown-rows scene-row" >
+      <li style="width: 2%;">
+        <input
+          type="checkbox"
+          class="shot-checkbox individual-scene-checkbox"
+          [id]="'check-scene-' + scene.id"
+          [name]="'check-scene-' + scene.id"
+          [value]="scene.id"
+          [attr.data-scene-id]="scene.id"
+          [attr.data-sequence-id]="scene.sequenceId">
+      </li>
+      <a
+        style="width: 8%;"
+        class="table-collapse-btn"
+        data-bs-toggle="collapse"
+        [href]="'#collapse-scene-' + scene.id"
+        role="button"
+        aria-expanded="false"
+        [attr.aria-controls]="'collapse-scene-' + scene.id">
+        <li>{{ sequencePrefix }}:{{ scene.number }}</li>
+      </a>
+      <li style="width: 5%;">
+        <button
+          type="button"
+          class="btn-transparent"
+          title="Scene"
+          data-bs-toggle="tooltip">
+          <i class="bi bi-film"></i>
+        </button>
+      </li>
+      <li style="width: 5%;">
+        {{ scene.int_ext === 'interior' ? 'Int - ' : 'Ext - ' }}
+      </li>
+      <li
+        style="width: 20%;"
+        class="inline-cell scene-location"
         [attr.data-scene-id]="scene.id"
-        [attr.data-sequence-id]="scene.sequenceId">
-    </li>
-    <a
-      style="width: 8%;"
-      class="table-collapse-btn"
-      data-bs-toggle="collapse"
-      [href]="'#collapse-scene-' + scene.id"
-      role="button"
-      aria-expanded="false"
-      [attr.aria-controls]="'collapse-scene-' + scene.id">
-      <li>{{ sequencePrefix }}:{{ scene.number }}</li>
-    </a>
-    <li style="width: 5%;">
-      <button
-        type="button"
-        class="btn-transparent"
-        title="Scene"
-        data-bs-toggle="tooltip">
-        <i class="bi bi-film"></i>
-      </button>
-    </li>
-    <li style="width: 5%;">
-      {{ scene.int_ext === 'interior' ? 'Int - ' : 'Ext - ' }}
-    </li>
-    <li
-      style="width: 20%;"
-      class="inline-cell scene-location"
-      [attr.data-scene-id]="scene.id"
-      [id]="'scene-location-' + scene.id">
-        {{ scene.location }}
-    </li>
-    <li style="width: 15%;">
-      <i class="bi bi-brightness-alt-high-fill"></i> {{ scene.day_night }}
-    </li>
-    <li style="width: 5%;">
-      <div class="scene-length">
-        {{ scene.length }}
-      </div>
-      <div class="scene-length-corner"></div>
-      <div class="scene-length-fold"></div>
-    </li>
-    <li style="width: 5%;">
-    </li>
-    <li style="width: 30%;"></li>
-    <li style="width: 5%;">
-      <app-crud-dropdown
-        [entityLabel]="'Scene'"
-        [elementId]="scene.id || 0"
-        [addLabel]="'Add New Action Beat'"
-        (edit)="openEditModal(scene)" (delete)="deleteScene(scene.id!)">
-      </app-crud-dropdown>
-      <!-- TODO: Add add action beat modal and move to dropdown above-->
-      <!-- (add)="openNewActionBeatModal(scene.id!)" -->
-
-    </li>
+        [id]="'scene-location-' + scene.id">
+          {{ scene.location }}
+      </li>
+      <li style="width: 15%;">
+        <i class="bi bi-brightness-alt-high-fill"></i> {{ scene.day_night }}
+      </li>
+      <li style="width: 5%;">
+        <div class="scene-length">
+          {{ scene.length }}
+        </div>
+        <div class="scene-length-corner"></div>
+        <div class="scene-length-fold"></div>
+      </li>
+      <li style="width: 5%;">
+      </li>
+      <li style="width: 30%;"></li>
+      <li style="width: 5%;">
+        <app-crud-dropdown
+          [entityLabel]="'Scene'"
+          [elementId]="scene.id || 0"
+          [addLabel]="'Add New Action Beat'"
+          (add)="openNewActionBeatModal(scene.id!)"
+          (edit)="openEditModal(scene)"
+          (delete)="deleteScene(scene.id!)">
+        </app-crud-dropdown>
+        <!-- TODO: Add add action beat modal and move to dropdown above-->
+      </li>
+    </ul>
     <div
       class="collapse row-collapse"
       [id]="'collapse-scene-' + scene.id" >
@@ -90,7 +93,7 @@
         [productionId]="productionId">
       </app-action-beat-list>
     </div>
-  </ul>
+  </div>
 
 
 
