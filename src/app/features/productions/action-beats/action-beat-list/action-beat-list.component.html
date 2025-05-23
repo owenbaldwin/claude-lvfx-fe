@@ -1,0 +1,112 @@
+<div>
+  <!-- Loading spinner -->
+  <!-- <div *ngIf="loading" class="text-center my-3">
+    <mat-spinner diameter="40" class="mx-auto"></mat-spinner>
+    <p class="mt-2">Loading scenes...</p>
+  </div> -->
+
+  <!-- Error message -->
+  <!-- <div *ngIf="error" class="alert alert-danger">{{ error }}</div> -->
+
+
+  <ul
+    *ngFor="let actionBeat of actionBeats"
+    class="actionB-breakdown-cells actionB-row"
+    [attr.data-scene-id]="sceneId"
+    [attr.data-sequence-id]="sequenceId">
+
+    <!-- Checkbox -->
+    <li style="width: 2%;">
+      <input
+        type="checkbox"
+        class="individual-actionB-checkbox shot-checkbox"
+        [class]="'check-actionB-sequence-' + sequenceId + ' check-actionB-scene-' + sceneId"
+        [id]="'check-actionB-' + actionBeat.id"
+        [name]="'check-actionB-' + actionBeat.id"
+        [value]="actionBeat.id"
+        [attr.data-actionbeat-id]="actionBeat.id"
+        [attr.data-scene-id]="sceneId"
+        [attr.data-sequence-id]="sequenceId" />
+    </li>
+
+    <!-- Collapse Trigger -->
+    <a
+      style="width: 8%;"
+      class="table-collapse-btn"
+      data-bs-toggle="collapse"
+      [href]="'#collapse-actionB-' + actionBeat.id"
+      role="button"
+      aria-expanded="false"
+      [attr.aria-controls]="'collapse-actionB-' + actionBeat.id">
+      <li>{{ sequencePrefix }}:{{ sceneNumber }}:{{ actionBeat.number }}</li>
+    </a>
+
+    <!-- Type Icon -->
+    <li style="width: 5%;">
+      <button type="button" class="btn-transparent" data-bs-toggle="tooltip" [attr.title]="actionBeat.type | titlecase">
+        <i class="bi" [ngClass]="actionBeat.type === 'action' ? 'bi-stars' : 'bi-chat-dots-fill'"></i>
+      </button>
+    </li>
+
+    <li style="width: 5%;"></li>
+
+    <!-- Description Display -->
+    <li style="width: 20%;" class="inline-cell">
+      <h5 *ngIf="actionBeat.type === 'action'">
+        {{ actionBeat.description }}
+      </h5>
+      <h5 *ngIf="actionBeat.type !== 'dialogue'">
+        <!-- {{
+        (actionCharacters.find(c => c.action_beat_id === actionBeat.id)?.name || 'Unknown')
+        }}: -->
+        <em>{{ actionBeat.description }}</em>
+      </h5>
+    </li>
+
+    <li style="width: 5%;"></li>
+
+    <!-- Characters Dropdown -->
+    <li style="width: 5%;">
+      <!-- TODO: ADD CHARACTERS!!!! -->
+      <!-- <div class="dropdown">
+        <button class="btn-transparent" data-bs-toggle="dropdown">
+          <i class="bi bi-person-fill"></i>
+          {{
+          actionCharacters.filter(c => c.action_beat_id === actionBeat.id).length
+          }}
+        </button>
+        <ul class="dropdown-menu">
+          <li *ngFor="let c of actionCharacters.filter(c => c.action_beat_id === actionBeat.id)">
+            <a class="dropdown-item">{{ c.name }}</a>
+          </li>
+        </ul>
+      </div> -->
+    </li>
+
+    <li style="width: 15%;"></li>
+    <li style="width: 15%;"></li>
+    <li style="width: 15%;"></li>
+
+    <!-- Options Dropdown -->
+    <li style="width: 5%;">
+      <div class="dropdown">
+        <button
+          class="btn btn-small"
+          type="button"
+          [id]="'seq-' + sequenceId + '-options'"
+          data-bs-toggle="dropdown"
+          aria-expanded="false">
+          <i class="bi bi-three-dots" style="font-size: 24px;"></i>
+        </button>
+        <app-crud-dropdown
+          [entityLabel]="'Action Beat'"
+          [elementId]="actionBeat.id || 0"
+          [addLabel]="'Add New Action Beat'"
+          >
+          <!-- TODO: Add edit and delete -->
+          <!-- (edit)="openEditModal(actionBeat)" (delete)="deleteActionBeat(actionBeat.id)" -->
+        </app-crud-dropdown>
+      </div>
+    </li>
+  </ul>
+</div>

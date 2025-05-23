@@ -8,13 +8,13 @@ import { ActionBeat } from '@app/shared/models';
   providedIn: 'root'
 })
 export class ActionBeatService {
-  private apiUrl = `${environment.apiUrl}/action-beats`;
+  private apiUrl = `${environment.apiUrl}/v1/productions`;
 
   constructor(private http: HttpClient) { }
 
   // Get all action beats
-  getActionBeats(): Observable<ActionBeat[]> {
-    return this.http.get<ActionBeat[]>(this.apiUrl);
+  getActionBeats(sceneId: number, sequenceId: number, productionId: number): Observable<ActionBeat[]> {
+    return this.http.get<ActionBeat[]>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${sceneId}/action-beats`);
   }
 
   // Get action beats for a specific scene

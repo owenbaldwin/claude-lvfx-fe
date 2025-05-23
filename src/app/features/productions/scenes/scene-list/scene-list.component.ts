@@ -11,6 +11,7 @@ import { ModalComponent } from '@app/shared/modal/modal.component';
 import { SceneNewComponent } from '../scene-new/scene-new.component';
 import { SceneEditComponent } from '../scene-edit/scene-edit.component';
 import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.component';
+import { ActionBeatListComponent } from '@app/features/productions/action-beats/action-beat-list/action-beat-list.component';
 
 @Component({
   selector: 'app-scene-list',
@@ -24,7 +25,8 @@ import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.c
     ModalComponent,
     SceneNewComponent,
     CrudDropdownComponent,
-    SceneEditComponent
+    SceneEditComponent,
+    ActionBeatListComponent
   ],
   templateUrl: './scene-list.component.html',
   styleUrl: './scene-list.component.scss'
@@ -99,20 +101,6 @@ export class SceneListComponent implements OnInit {
     });
   }
 
-  // updateScene(): void {
-  //   if (!this.selectedElement || !this.selectedElement.id) return;
-
-  //   this.sceneService.updateScene(this.selectedElement.id, this.selectedElement).subscribe({
-  //     next: () => {
-  //       this.snackBar.open('Scene updated', 'Close', { duration: 3000 });
-  //       this.loadScenes();
-  //       this.showEditModal = false;
-  //     },
-  //     error: () => {
-  //       this.snackBar.open('Failed to update scene', 'Close', { duration: 3000 });
-  //     }
-  //   });
-  // }
 
   deleteScene(sceneId: number): void {
     if (confirm('Are you sure you want to delete this scene?')) {
