@@ -37,12 +37,17 @@ export class ActionBeatService {
   }
 
   // Update an existing action beat
-  updateActionBeat(id: number, actionBeat: Partial<ActionBeat>): Observable<ActionBeat> {
-    return this.http.put<ActionBeat>(`${this.apiUrl}/${id}`, actionBeat);
+  updateActionBeat(productionId: number, sequenceId: number, sceneId: number, id: number, actionBeat: Partial<ActionBeat>): Observable<ActionBeat> {
+    return this.http.put<ActionBeat>(
+      `${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${sceneId}/action_beats/${id}`,
+      actionBeat
+    );
   }
 
   // Delete an action beat
-  deleteActionBeat(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  deleteActionBeat(productionId: number, sequenceId: number, sceneId: number, id: number): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${sceneId}/action_beats/${id}`
+    );
   }
 }

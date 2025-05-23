@@ -101,10 +101,10 @@
           <app-crud-dropdown
             [entityLabel]="'Action Beat'"
             [elementId]="actionBeat.id || 0"
-            [addLabel]="'Add New Action Beat'"
-            (add)="openNewActionBeatModal()">
-            <!-- TODO: Add edit and delete -->
-            <!-- (edit)="openEditModal(actionBeat)" (delete)="deleteActionBeat(actionBeat.id)" -->
+            [addLabel]="'Add New Shot'"
+            (add)="openNewActionBeatModal()"
+            (edit)="openEditModal(actionBeat)"
+            (delete)="deleteActionBeat(actionBeat.id!)">
           </app-crud-dropdown>
         </div>
       </li>
@@ -121,6 +121,17 @@
       [productionId]="productionId"
       (actionBeatCreated)="onActionBeatCreated()">
     </app-action-beat-new>
+  </app-modal>
+
+  <!-- Edit Action Beat Modal -->
+  <app-modal [title]="'Edit Action Beat'" [isOpen]="showEditModal" (close)="showEditModal = false">
+    <app-action-beat-edit
+      [actionBeat]="selectedElement"
+      [sequenceId]="sequenceId"
+      [productionId]="productionId"
+      [sceneId]="sceneId"
+      (actionBeatUpdated)="onActionBeatUpdated()">
+    </app-action-beat-edit>
   </app-modal>
 
   <!-- Debug Info (remove this in production) -->
