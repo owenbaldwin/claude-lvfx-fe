@@ -56,7 +56,7 @@ export class SequenceListComponent implements OnInit {
     });
   }
 
-  newSequence: Sequence = { productionId: this.productionId, number: 1, name: '' };
+  newSequence: Sequence = { productionId: this.productionId, number: 1, name: '', prefix: '' };
 
   createSequence(): void {
     if (!this.newSequence.name || !this.newSequence.number) return;
@@ -65,7 +65,7 @@ export class SequenceListComponent implements OnInit {
       next: (data) => {
         this.snackBar.open('Sequence added', 'Close', { duration: 3000 });
         this.loadSequences();
-        this.newSequence = { productionId: this.productionId, number: 1, name: '' };
+        this.newSequence = { productionId: this.productionId, number: 1, name: '', prefix: '' };
       },
       error: () => {
         this.snackBar.open('Failed to add sequence', 'Close', { duration: 3000 });

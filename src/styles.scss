@@ -40,3 +40,17 @@ $claude-lvfx-fe-theme: mat.define-light-theme((
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.app-container {
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+.breakdown-rows {
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+  margin: 0px !important;
+  min-height: 48px;
+  width: 100%;
+}

@@ -42,7 +42,7 @@ export interface Script {
 
 export interface Sequence {
   id?: number;
-  prefix?: string;
+  prefix: string;
   name: string;
   number: number;
   description?: string;
