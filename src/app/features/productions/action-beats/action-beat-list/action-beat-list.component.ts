@@ -26,4 +26,5 @@ export class ActionBeatListComponent {
       this.actionBeats = actionBeats;
     });
   }
+
 }
