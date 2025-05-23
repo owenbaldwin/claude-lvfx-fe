@@ -1,0 +1,24 @@
+<!-- New Action Beat Form -->
+<form #actionBeatForm="ngForm" (ngSubmit)="createActionBeat()">
+  <div class="mb-3">
+    <label for="actionBeatNumber" class="form-label">Number</label>
+    <input type="number" class="form-control" id="actionBeatNumber" name="number" [(ngModel)]="newActionBeat.number" required>
+  </div>
+  <div class="mb-3">
+    <label for="actionBeatType" class="form-label">Type</label>
+    <select class="form-select" id="actionBeatType" [(ngModel)]="newActionBeat.beat_type" name="beat_type" required>
+      <option value="action">Action</option>
+      <option value="dialogue">Dialogue</option>
+    </select>
+  </div>
+  <div class="mb-3">
+    <label for="actionBeatDescription" class="form-label">Description</label>
+    <textarea class="form-control" id="actionBeatDescription" name="description" [(ngModel)]="newActionBeat.description"
+      required placeholder="Action beat description" rows="3"></textarea>
+  </div>
+  <div class="mt-3">
+    <button type="submit" mat-raised-button color="primary" [disabled]="!actionBeatForm.valid">
+      Add Action Beat
+    </button>
+  </div>
+</form>

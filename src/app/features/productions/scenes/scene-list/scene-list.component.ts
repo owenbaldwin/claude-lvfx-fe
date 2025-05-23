@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChildren, QueryList } from '@angular/core';
 import { SceneService } from '@app/core/services/scene.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Scene } from '@app/shared/models';
@@ -12,7 +12,7 @@ import { SceneNewComponent } from '../scene-new/scene-new.component';
 import { SceneEditComponent } from '../scene-edit/scene-edit.component';
 import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.component';
 import { ActionBeatListComponent } from '@app/features/productions/action-beats/action-beat-list/action-beat-list.component';
-
+import { ActionBeatNewComponent } from '@app/features/productions/action-beats/action-beat-new/action-beat-new.component';
 @Component({
   selector: 'app-scene-list',
   standalone: true,
@@ -26,7 +26,8 @@ import { ActionBeatListComponent } from '@app/features/productions/action-beats/
     SceneNewComponent,
     CrudDropdownComponent,
     SceneEditComponent,
-    ActionBeatListComponent
+    ActionBeatListComponent,
+    ActionBeatNewComponent
   ],
   templateUrl: './scene-list.component.html',
   styleUrl: './scene-list.component.scss'
@@ -49,6 +50,9 @@ export class SceneListComponent implements OnInit {
     description: '',
     length: ''
   };
+
+  // Add ViewChildren to access ActionBeatList components
+  @ViewChildren(ActionBeatListComponent) actionBeatListComponents!: QueryList<ActionBeatListComponent>;
 
   constructor(
     private sceneService: SceneService,
@@ -86,6 +90,41 @@ export class SceneListComponent implements OnInit {
   onSceneUpdated() {
     this.loadScenes();
     this.showEditModal = false;
+  }
+
+  openNewActionBeatModal(sceneId: number) {
+    // Simply expand the collapse section
+    const collapseElement = document.getElementById(`collapse-scene-${sceneId}`);
+    if (collapseElement) {
+      collapseElement.classList.add('show');
+    }
+
+    // Try a direct approach with manual DOM event handling
+    // If ViewChildren doesn't work reliably, this is a fallback
+    const scene = this.scenes.find(s => s.id === sceneId);
+    if (scene) {
+      // Store the selected scene ID for later use
+      localStorage.setItem('selectedSceneId', sceneId.toString());
+
+      // Create and dispatch a custom event
+      const event = new CustomEvent('openActionBeatModal', {
+        detail: { sceneId: sceneId }
+      });
+      document.dispatchEvent(event);
+
+      // Alternative approach using Angular's change detection
+      setTimeout(() => {
+        // Try to directly query the component using document.querySelector
+        const actionBeatListElem = document.querySelector(`app-action-beat-list[ng-reflect-scene-id="${sceneId}"]`);
+        if (actionBeatListElem) {
+          // Try to simulate clicking the action beat list's add button directly
+          const addButton = actionBeatListElem.querySelector('.btn-primary');
+          if (addButton) {
+            (addButton as HTMLElement).click();
+          }
+        }
+      }, 150);
+    }
   }
 
   loadScenes(): void {

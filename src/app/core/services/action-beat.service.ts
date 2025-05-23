@@ -14,12 +14,12 @@ export class ActionBeatService {
 
   // Get all action beats
   getActionBeats(sceneId: number, sequenceId: number, productionId: number): Observable<ActionBeat[]> {
-    return this.http.get<ActionBeat[]>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${sceneId}/action-beats`);
+    return this.http.get<ActionBeat[]>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${sceneId}/action_beats`);
   }
 
   // Get action beats for a specific scene
   getActionBeatsByScene(sceneId: number): Observable<ActionBeat[]> {
-    return this.http.get<ActionBeat[]>(`${environment.apiUrl}/scenes/${sceneId}/action-beats`);
+    return this.http.get<ActionBeat[]>(`${environment.apiUrl}/scenes/${sceneId}/action_beats`);
   }
 
   // Get a specific action beat by ID
@@ -29,7 +29,11 @@ export class ActionBeatService {
 
   // Create a new action beat
   createActionBeat(actionBeat: Partial<ActionBeat>): Observable<ActionBeat> {
-    return this.http.post<ActionBeat>(this.apiUrl, actionBeat);
+    const { productionId, sequenceId, sceneId } = actionBeat;
+    return this.http.post<ActionBeat>(
+      `${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${sceneId}/action_beats`,
+      actionBeat
+    );
   }
 
   // Update an existing action beat
