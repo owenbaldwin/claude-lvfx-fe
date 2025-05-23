@@ -8,6 +8,12 @@
   <!-- Error message -->
   <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
+  <!-- Add Scene Button -->
+  <!-- <div class="mb-3">
+    <button mat-raised-button color="primary" (click)="openNewSceneModal()">
+      <mat-icon>add</mat-icon> Add New Scene
+    </button>
+  </div> -->
 
   <ul class="breakdown-rows scene-row" *ngFor="let scene of scenes">
     <li style="width: 2%;">
@@ -81,140 +87,80 @@
     </li>
   </ul>
 
-
-
-
-
-
-
-
   <p *ngIf="scenes.length === 0 && !loading" class="text-center">No scenes available for this sequence.</p>
 
-  <!-- New Scene Form -->
-  <div class="mt-4">
-    <h3>Add New Scene</h3>
-    <form #sceneForm="ngForm" (ngSubmit)="createScene()">
-      <div class="row mb-3">
-        <div class="col-md-2">
-          <label for="sceneNumber" class="form-label">Number</label>
-          <input
-            type="number"
-            class="form-control"
-            id="sceneNumber"
-            name="number"
-            [(ngModel)]="newScene.number"
-            required
-          >
-        </div>
-        <div class="mb-3">
-          <label for="sceneIntExt" class="form-label">INT/EXT</label>
-          <select
-            class="form-select"
-            id="sceneIntExt"
-            [(ngModel)]="newScene.int_ext"
-            name="intExt"
-            required>
-            <option value="" disabled selected>Select INT/EXT</option>
-            <option value="interior">Interior</option>
-            <option value="exterior">Exterior</option>
-          </select>
-        </div>
-        <div class="col-md-5">
-          <label for="sceneLocation" class="form-label">Location</label>
-          <input
-            type="text"
-            class="form-control"
-            id="sceneLocation"
-            name="location"
-            [(ngModel)]="newScene.location"
-            required
-            placeholder="Scene location"
-          >
-        </div>
-        <div class="col-md-5">
-          <label for="sceneLength" class="form-label">Scene Length</label>
-          <input
-            type="text"
-            class="form-control"
-            id="sceneLength"
-            name="length"
-            [(ngModel)]="newScene.length"
-            placeholder="1/8"
-          >
-        </div>
-        <div class="col-md-5">
-          <label for="sceneTimeOfDay" class="form-label">Time of Day</label>
-          <input type="text" class="form-control" id="sceneTimeOfDay" name="timeOfDay" [(ngModel)]="newScene.day_night"
-            placeholder="Time of Day">
-        </div>
+  <!-- Edit Scene Modal -->
+  <app-modal [title]="'Edit Scene'" [isOpen]="showEditModal" (close)="showEditModal = false">
+    <form (ngSubmit)="updateScene()">
+      <div class="mb-3">
+        <label for="editNumber" class="form-label">Number</label>
+        <input
+          type="number"
+          class="form-control"
+          id="editNumber"
+          [(ngModel)]="selectedElement.number"
+          name="number"
+          required
+        >
       </div>
-      <button type="submit" mat-raised-button color="primary" [disabled]="!sceneForm.valid">
-        Add Scene
-      </button>
+      <div class="mb-3">
+        <label for="editIntExt" class="form-label">INT/EXT</label>
+        <select
+          class="form-select"
+          id="editIntExt"
+          [(ngModel)]="selectedElement.int_ext"
+          name="intExt"
+          required>
+          <option value="" disabled selected>Select INT/EXT</option>
+          <option value="interior">INT</option>
+          <option value="exterior">EXT</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="editLocation" class="form-label">Location</label>
+        <input
+          type="text"
+          class="form-control"
+          id="editLocation"
+          [(ngModel)]="selectedElement.location"
+          name="location"
+          required
+        >
+      </div>
+      <div class="mb-3">
+        <label for="editTimeOfDay" class="form-label">Time of Day</label>
+        <input
+          type="text"
+          class="form-control"
+          id="editTimeOfDay"
+          [(ngModel)]="selectedElement.day_night"
+          name="timeOfDay"
+        >
+      </div>
+      <div class="mb-3">
+        <label for="editLength" class="form-label">Scene Length</label>
+        <input
+          type="text"
+          class="form-control"
+          id="editLength"
+          name="length"
+          [(ngModel)]="selectedElement.length"
+          placeholder="1/8"
+        >
+      </div>
+      <div class="modal-actions">
+        <button type="button" mat-button (click)="showEditModal = false">Cancel</button>
+        <button type="submit" mat-raised-button color="primary">Save</button>
+      </div>
     </form>
-  </div>
+  </app-modal>
 
-  <!-- Edit Scene Modal (Placeholder for modal implementation) -->
-  <!-- In a real implementation, you would use a proper modal component -->
-  <div *ngIf="showModal" class="modal-overlay">
-    <div class="modal-content">
-      <h3>{{ isEditing ? 'Edit Scene' : 'Add Scene' }}</h3>
-      <form (ngSubmit)="updateScene()">
-        <div class="mb-3">
-          <label for="editNumber" class="form-label">Number</label>
-          <input
-            type="number"
-            class="form-control"
-            id="editNumber"
-            [(ngModel)]="selectedElement.number"
-            name="number"
-            required
-          >
-        </div>
-        <div class="mb-3">
-          <label for="editIntExt" class="form-label">INT/EXT</label>
-          <select
-            class="form-select"
-            id="editIntExt"
-            [(ngModel)]="selectedElement.int_ext"
-            name="intExt"
-            required>
-            <option value="" disabled selected>Select INT/EXT</option>
-            <option value="interior">INT</option>
-            <option value="exterior">EXT</option>
-          </select>
-        </div>
-        <div class="mb-3">
-          <label for="editLocation" class="form-label">Location</label>
-          <input
-            type="text"
-            class="form-control"
-            id="editLocation"
-            [(ngModel)]="selectedElement.location"
-            name="location"
-            required
-          >
-        </div>
-        <div class="mb-3">
-          <label for="editTimeOfDay" class="form-label">timeOfDay</label>
-          <textarea
-            class="form-control"
-            id="editTimeOfDay"
-            [(ngModel)]="selectedElement.day_night"
-            name="timeOfDay"
-            rows="3"
-          ></textarea>
-        </div>
-        <div class="col-md-5">
-          <label for="sceneLength" class="form-label">Scene Length</label>
-          <input type="text" class="form-control" id="sceneLength" name="length" [(ngModel)]="newScene.length"
-            placeholder="1/8">
-        </div>
-        <div class="modal-actions">
-          <button type="button" mat-button (click)="showModal = false">Cancel</button>
-          <button type="submit" mat-raised-button color="primary">Save</button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <!-- New Scene Modal -->
+  <app-modal [title]="'Add New Scene'" [isOpen]="showNewSceneModal" (close)="closeNewSceneModal()">
+    <app-scene-new
+      [sequenceId]="sequenceId"
+      [productionId]="productionId"
+      (sceneCreated)="onSceneCreated()">
+    </app-scene-new>
+  </app-modal>
 </div>

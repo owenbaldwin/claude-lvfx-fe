@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { SequenceService } from '@app/core/services/sequence.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Sequence } from '@app/shared/models';
@@ -7,6 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import { SceneListComponent } from '@app/features/productions/scenes/scene-list/scene-list.component';
+import { ModalComponent } from '@app/shared/modal/modal.component';
+import { SceneNewComponent } from '@app/features/productions/scenes/scene-new/scene-new.component';
 
 @Component({
   selector: 'app-sequence-list',
@@ -15,20 +17,26 @@ import { SceneListComponent } from '@app/features/productions/scenes/scene-list/
     MatIconModule,
     MatProgressSpinnerModule,
     FormsModule,
-    SceneListComponent
+    SceneListComponent,
+    ModalComponent,
+    SceneNewComponent
     ],
   templateUrl: './sequence-list.component.html',
   styleUrl: './sequence-list.component.scss'
 })
 
-export class SequenceListComponent implements OnInit {
+export class SequenceListComponent implements OnInit, AfterViewInit {
   @Input() productionId!: number;
+  @ViewChildren(SceneListComponent) sceneListComponents!: QueryList<SceneListComponent>;
+
   sequences: Sequence[] = [];
   loading = true;
   error = '';
   showModal = false;
+  showNewSceneModal = false;
   isEditing = false;
   selectedElement: any = null;
+  sequenceId: number = 0;
 
   constructor(
     private sequenceService: SequenceService,
@@ -39,10 +47,54 @@ export class SequenceListComponent implements OnInit {
     this.loadSequences();
   }
 
+  ngAfterViewInit(): void {
+    // Listen for changes to the scene list components
+    this.sceneListComponents.changes.subscribe(() => {
+      console.log('Scene list components updated');
+    });
+  }
+
   openEditModal(sequence: any) {
     this.selectedElement = { ...sequence }; // Load selected sequence
     this.isEditing = true;
     this.showModal = true;
+  }
+
+  openNewSceneModal(sequenceId: number) {
+    this.sequenceId = sequenceId;
+    this.showNewSceneModal = true;
+  }
+
+  closeNewSceneModal() {
+    this.showNewSceneModal = false;
+  }
+
+  onSceneCreated() {
+    this.closeNewSceneModal();
+
+    // Find the scene list component for the current sequence and refresh it
+    setTimeout(() => {
+      // Ensure the sequence collapse is expanded
+      this.expandSequenceCollapse(this.sequenceId);
+
+      const sceneListComponent = this.sceneListComponents.find(component => {
+        // Check if this component is for the current sequence
+        return component['sequenceId'] === this.sequenceId;
+      });
+
+      if (sceneListComponent) {
+        sceneListComponent.refreshScenes();
+      }
+    });
+  }
+
+  // Helper method to expand a sequence collapse
+  private expandSequenceCollapse(sequenceId: number): void {
+    const collapseElement = document.querySelector(`#collapse-seq-${sequenceId}`);
+    if (collapseElement && !collapseElement.classList.contains('show')) {
+      // If using Bootstrap's collapse, add the 'show' class
+      collapseElement.classList.add('show');
+    }
   }
 
   loadSequences(): void {
