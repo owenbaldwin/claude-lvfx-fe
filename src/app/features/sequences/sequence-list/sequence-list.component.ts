@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { SequenceService } from '@app/core/services/sequence.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Sequence } from '@app/shared/models';
@@ -25,8 +25,10 @@ import { SceneNewComponent } from '@app/features/productions/scenes/scene-new/sc
   styleUrl: './sequence-list.component.scss'
 })
 
-export class SequenceListComponent implements OnInit {
+export class SequenceListComponent implements OnInit, AfterViewInit {
   @Input() productionId!: number;
+  @ViewChildren(SceneListComponent) sceneListComponents!: QueryList<SceneListComponent>;
+
   sequences: Sequence[] = [];
   loading = true;
   error = '';
@@ -43,6 +45,13 @@ export class SequenceListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadSequences();
+  }
+
+  ngAfterViewInit(): void {
+    // Listen for changes to the scene list components
+    this.sceneListComponents.changes.subscribe(() => {
+      console.log('Scene list components updated');
+    });
   }
 
   openEditModal(sequence: any) {
@@ -62,7 +71,30 @@ export class SequenceListComponent implements OnInit {
 
   onSceneCreated() {
     this.closeNewSceneModal();
-    // Optionally refresh data if needed
+
+    // Find the scene list component for the current sequence and refresh it
+    setTimeout(() => {
+      // Ensure the sequence collapse is expanded
+      this.expandSequenceCollapse(this.sequenceId);
+
+      const sceneListComponent = this.sceneListComponents.find(component => {
+        // Check if this component is for the current sequence
+        return component['sequenceId'] === this.sequenceId;
+      });
+
+      if (sceneListComponent) {
+        sceneListComponent.refreshScenes();
+      }
+    });
+  }
+
+  // Helper method to expand a sequence collapse
+  private expandSequenceCollapse(sequenceId: number): void {
+    const collapseElement = document.querySelector(`#collapse-seq-${sequenceId}`);
+    if (collapseElement && !collapseElement.classList.contains('show')) {
+      // If using Bootstrap's collapse, add the 'show' class
+      collapseElement.classList.add('show');
+    }
   }
 
   loadSequences(): void {

@@ -118,4 +118,9 @@ export class SceneListComponent implements OnInit {
       });
     }
   }
+
+  // Public method to refresh scenes from outside the component
+  public refreshScenes(): void {
+    this.loadScenes();
+  }
 }
