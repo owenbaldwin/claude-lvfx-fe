@@ -1,0 +1,16 @@
+.sticky-headers {
+  position: sticky;
+  top: 0px;
+  overflow: hidden;
+  background-color: #333;
+  background-color: #000;
+
+  height: 56px;
+  z-index: 10;
+}
+
+.rotate90 {
+  transform: rotate(-90deg);
+  position: relative;
+  top: 12px;
+}

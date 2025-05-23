@@ -72,7 +72,8 @@ export class ProductionBreakdownComponent implements OnInit {
       description: sequenceData.description,
       position: insertPosition,
       number: insertPosition,
-      productionId: this.productionId
+      productionId: this.productionId,
+      prefix: sequenceData.prefix
     }).subscribe({
       next: (createdSequence) => {
         console.log('Sequence created:', createdSequence);

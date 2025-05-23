@@ -4,34 +4,77 @@
 
 <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
-<table *ngIf="sequences.length > 0" class="table table-hover">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Number</th>
-      <th>Prefix</th>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let sequence of sequences">
-      <td>{{ sequence.id }}</td>
-      <td>{{ sequence.number }}</td>
-      <td>{{ sequence.prefix }}</td>
-      <td>{{ sequence.name }}</td>
-      <td>{{ sequence.description || 'No description' }}</td>
-      <td>
-        <button mat-button color="accent" (click)="openEditModal(sequence)">Edit</button>
-        <button mat-icon-button color="warn" (click)="deleteSequence(sequence.id!)">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<div *ngIf="sequences.length > 0" >
+  <div
+    *ngFor="let sequence of sequences"
+      class="sequence sequence-container filteringList"
+      [id]="'sequence-' + sequence.id">
+    <ul class="breakdown-rows sequence-row">
+      <li style="width: 2%;">
+        <input type="checkbox"
+              class="shot-checkbox individual-seq-checkbox"
+              [id]="'check-sequence-' + sequence.id"
+              [name]="'check-sequence-' + sequence.id"
+              [value]="sequence.id">
+      </li>
+      <a style="width: 8%;"
+        class="table-collapse-btn"
+        data-bs-toggle="collapse"
+        [href]="'#collapse-seq-' + sequence.id"
+        role="button"
+        aria-expanded="false"
+        [attr.aria-controls]="'collapse-seq-' + sequence.id">
+        <li style="width: 100%;">
+          {{ sequence.prefix }}
+        </li>
+      </a>
+      <li style="width: 2%;"></li>
+      <li style="width: 8%;"></li>
+      <li style="width: 20%;">{{ sequence.name }}</li>
+      <li style="width: 5%;"></li>
+      <li style="width: 5%;"></li>
+      <li style="width: 15%;"></li>
+      <li style="width: 15%;"></li>
+      <li style="width: 15%;"></li>
+      <li style="width: 5%;">
+        <div class="dropdown">
+          <button class="btn btn-small" type="button" [id]="'seq-' + sequence.id + '-options'" data-bs-toggle="dropdown"
+            aria-expanded="false" [attr.aria-labelledby]="'seq-' + sequence.id + '-options'">
+            <mat-icon>more_horiz</mat-icon>
+          </button>
+          <ul class="dropdown-menu" [attr.aria-labelledby]="'seq-' + sequence.id + '-options'">
+            <li>
+              <button type="button" class="btn dropdown-item" data-bs-toggle="modal"
+                [attr.data-bs-target]="'#scene-' + sequence.id + '-shot-modal'">
+                Add Scene to sequence
+              </button>
+            </li>
+            <li>
+              <!-- <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                [attr.data-bs-target]="'#edit-sequence-' + sequence.id + '-modal'">
+                Edit sequence
+              </a> -->
+              <button mat-button color="accent" (click)="openEditModal(sequence)">Edit</button>
+            </li>
+            <li>
+              <!-- <a class="dropdown-item text-danger" href="#" data-bs-toggle="modal"
+                [attr.data-bs-target]="'#delete-sequence-' + sequence.id + '-modal'">
+                Delete sequence
+              </a> -->
+              <button mat-icon-button color="warn" (click)="deleteSequence(sequence.id!)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+    <div [id]="'collapse-seq-' + sequence.id" class="collapse row-collapse">
+      <h6>hi</h6>
+    </div>
 
+  </div>
+</div>
 <p *ngIf="sequences.length === 0 && !loading" class="text-center">No sequences available.</p>
 <!-- <form #sequenceForm="ngForm" (ngSubmit)="createSequence()">
   <input type="text" [(ngModel)]="newSequence.name" name="name" required placeholder="Sequence Name">
