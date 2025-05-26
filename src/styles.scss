@@ -1,4 +1,3 @@
-
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
@@ -9,18 +8,42 @@
 // Be sure that you only ever include this mixin once!
 @include mat.core();
 
-// Define the palettes for your theme using the Material Design palettes available in palette.scss
-// (imported above). For each palette, you can optionally specify a default, lighter, and darker
-// hue. Available color palettes: https://material.io/design/color/
-$claude-lvfx-fe-primary: mat.define-palette(mat.$indigo-palette);
-$claude-lvfx-fe-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+@import 'styles/variables';
 
-// The warn palette is optional (defaults to red).
+// Define custom palettes based on LVFX colors
+$lvfx-gold-palette: (
+  50: lighten($lvfx-gold, 40%),
+  100: lighten($lvfx-gold, 30%),
+  200: lighten($lvfx-gold, 20%),
+  300: lighten($lvfx-gold, 10%),
+  400: lighten($lvfx-gold, 5%),
+  500: $lvfx-gold,
+  600: darken($lvfx-gold, 5%),
+  700: darken($lvfx-gold, 10%),
+  800: darken($lvfx-gold, 20%),
+  900: darken($lvfx-gold, 30%),
+  contrast: (
+    50: $black,
+    100: $black,
+    200: $black,
+    300: $black,
+    400: $black,
+    500: $black,
+    600: $black,
+    700: $black,
+    800: $white,
+    900: $white,
+  )
+);
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+$claude-lvfx-fe-primary: mat.define-palette($lvfx-gold-palette);
+$claude-lvfx-fe-accent: mat.define-palette(mat.$blue-grey-palette);
 $claude-lvfx-fe-warn: mat.define-palette(mat.$red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$claude-lvfx-fe-theme: mat.define-light-theme((
+$claude-lvfx-fe-theme: mat.define-dark-theme((
   color: (
     primary: $claude-lvfx-fe-primary,
     accent: $claude-lvfx-fe-accent,
@@ -36,28 +59,19 @@ $claude-lvfx-fe-theme: mat.define-light-theme((
 @include mat.all-component-themes($claude-lvfx-fe-theme);
 
 /* You can add global styles to this file, and also import other style files */
-@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+// @import '~@angular/material/prebuilt-themes/indigo-pink.css';
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-
-// COLOURS:
-$sequence-blue: #5e6a76;
-$scene-blue: #3E5060;
-$action-beat-blue: #2e3b45;
-$shot-grey: #1A1A1A;
-$lvfx-gold: #E1A32E;
-$light-grey: #818181;
-$dark-grey: #343a40;
-$white: #fff;
-$black: #000;
-
-
-
 .app-container {
-  background-color: #1e1e1e;
+  // background-color: #1e1e1e;
+  background-color: $dark-grey;
   color: #fff;
+}
+
+h6, li {
+  font-family: 'Comfortaa', cursive;
 }
 
 .breakdown-rows {
@@ -65,7 +79,7 @@ $black: #000;
   display: flex;
   align-items: center;
   margin: 0px !important;
-  min-height: 48px;
+  min-height: 56px;
   width: 100%;
 }
 
@@ -76,4 +90,32 @@ $black: #000;
   border: none;
   color: white;
   cursor: pointer;
+}
+
+.table-collapse-btn {
+  color: $lvfx-gold;
+  text-decoration: none;
+}
+
+.table-collapse-btn:hover {
+  color: $lvfx-gold-bright;
+}
+
+.add-btn {
+  background-color: $green-alert;
+}
+
+.edit-btn {
+  background-color: $blue-alert;
+}
+
+.delete-btn {
+  background-color: $red-alert;
+}
+
+.btn-primary {
+  background-color: $lvfx-gold !important;
+  color: $black !important;
+  border: none !important;
+  margin: 4px !important;
 }

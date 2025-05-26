@@ -1,16 +1,59 @@
+@import 'src/styles/variables';
 .sticky-headers {
   position: sticky;
-  top: 0px;
+  top: 68px;
   overflow: hidden;
-  background-color: #333;
-  background-color: #000;
+  background-color: $dark-grey;
 
   height: 56px;
-  z-index: 10;
+  z-index: 100;
+
 }
 
 .rotate90 {
   transform: rotate(-90deg);
   position: relative;
   top: 12px;
+}
+
+.seq-border {
+  height: 100%;
+  padding-top: 10px;
+  background-color: $sequence-blue;
+}
+
+.scene-border {
+  height: 100%;
+  padding-top: 10px;
+  background-color: $scene-blue;
+}
+
+.actionB-border {
+  height: 100%;
+  padding-top: 10px;
+  background-color: $action-beat-blue;
+}
+
+.shot-border {
+  height: 100%;
+  padding-top: 10px;
+  background-color: $shot-grey;
+}
+
+.sticky-buttons {
+  position: sticky;
+  top: 0px;
+  overflow: hidden;
+  background-color: $dark-grey;
+  z-index: 10;
+  display: flex;
+  padding: 12px 0px;
+  z-index: 100;
+}
+
+.search-bar {
+  width: 400px !important;
+  max-width: none !important;
+  background-color: transparent;
+  color: $white;
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -23,6 +23,7 @@ import { ProductionBreakdownComponent } from "../production-breakdown/production
   selector: 'app-production-details',
   templateUrl: './production-details.component.html',
   styleUrls: ['./production-details.component.scss'],
+  encapsulation: ViewEncapsulation.None,
   standalone: true, // ✅ Mark this component as standalone (optional, if converting)
   imports: [CommonModule,
     MatTabsModule,

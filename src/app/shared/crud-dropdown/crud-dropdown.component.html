@@ -1,24 +1,24 @@
 <div class="dropdown">
-  <button class="btn btn-small" type="button" [id]="'crud-' + elementId + '-options'" data-bs-toggle="dropdown"
+  <button class="crud-dropdown-btn" type="button" [id]="'crud-' + elementId + '-options'" data-bs-toggle="dropdown"
     aria-expanded="false" [attr.aria-labelledby]="'crud-' + elementId + '-options'">
     <mat-icon>more_horiz</mat-icon>
   </button>
 
-  <ul class="dropdown-menu" [attr.aria-labelledby]="'crud-' + elementId + '-options'">
+  <ul class="dropdown-menu crud-dropdown-menu" [attr.aria-labelledby]="'crud-' + elementId + '-options'">
     <li>
-      <button class="dropdown-item" (click)="add.emit()">
+      <button class="dropdown-item add-btn" (click)="add.emit()">
         <mat-icon>add</mat-icon>
         {{ addLabel }}
       </button>
     </li>
     <li>
-      <button class="dropdown-item" (click)="edit.emit()">
+      <button class="dropdown-item edit-btn" (click)="edit.emit()">
         <mat-icon>edit</mat-icon>
         Edit {{ entityLabel }}
       </button>
     </li>
     <li>
-      <button class="dropdown-item text-danger" (click)="delete.emit()">
+      <button class="dropdown-item delete-btn" (click)="delete.emit()">
         <mat-icon>delete</mat-icon>
         Delete {{ entityLabel }}
       </button>

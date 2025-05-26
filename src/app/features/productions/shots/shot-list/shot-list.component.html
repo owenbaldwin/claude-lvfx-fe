@@ -13,7 +13,7 @@
       <!-- Collapse Trigger -->
       <a style="width: 8%;" class="table-collapse-btn" data-bs-toggle="collapse" [href]="'#collapse-shot-' + shot.id"
         role="button" aria-expanded="false" [attr.aria-controls]="'collapse-shot-' + shot.id">
-        {{ sequencePrefix }}:{{ sceneNumber }}:{{ actionBeatNumber }}:{{ shot.number }}
+        <li><h6>{{ sequencePrefix }}:{{ sceneNumber }}:{{ actionBeatNumber }}:{{ shot.number }}</h6></li>
       </a>
 
       <!-- Storyboard Dropdown -->
@@ -34,7 +34,9 @@
       </li>
 
       <!-- Storyboard Preview -->
-      <li style="width: 8%;" class="inline-cell" style="padding: 4px;">
+      <li
+        style="width: 8%; padding: 4px;"
+        class="inline-cell">
         <ng-container *ngIf="getShotStoryboards(shot.id!).length > 0; else noStoryboard">
           <button class="btn p-0 m-0" type="button" data-bs-toggle="modal"
             [attr.data-bs-target]="'#shot-' + shot.id + '-storyboard-modal'">
@@ -81,18 +83,18 @@
 
       <!-- Options Dropdown -->
       <li style="width: 5%;">
-        <div class="dropdown">
+        <!-- <div class="dropdown">
           <button class="btn btn-small" type="button" [id]="'seq-' + sequenceId + '-options'" data-bs-toggle="dropdown"
             aria-expanded="false">
             <i class="bi bi-three-dots" style="font-size: 24px;"></i>
-          </button>
+          </button> -->
           <app-crud-dropdown
             [entityLabel]="'Shot'"
             [elementId]="shot.id || 0"
             (edit)="openEditModal(shot)"
             (delete)="deleteShot(shot.id!)">
           </app-crud-dropdown>
-        </div>
+        <!-- </div> -->
       </li>
     </ul>
 
