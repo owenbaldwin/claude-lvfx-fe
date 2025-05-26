@@ -23,6 +23,7 @@ export class ProductionBreakdownComponent implements OnInit {
   sequences: Sequence[] = [];
   loading: boolean = false;
   error: string = '';
+  isAllExpanded: boolean = false;
 
   constructor(
     private sequenceService: SequenceService,
@@ -101,5 +102,55 @@ export class ProductionBreakdownComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  toggleAll(): void {
+    this.isAllExpanded = !this.isAllExpanded;
+
+    // Toggle all sequence collapses
+    const sequenceCollapses = document.querySelectorAll('[id^="collapse-seq-"]');
+    sequenceCollapses.forEach(collapse => {
+      if (this.isAllExpanded) {
+        collapse.classList.add('show');
+      } else {
+        collapse.classList.remove('show');
+      }
+    });
+
+    // Toggle all scene collapses
+    const sceneCollapses = document.querySelectorAll('[id^="collapse-scene-"]');
+    sceneCollapses.forEach(collapse => {
+      if (this.isAllExpanded) {
+        collapse.classList.add('show');
+      } else {
+        collapse.classList.remove('show');
+      }
+    });
+
+    // Toggle all action beat collapses
+    const actionBeatCollapses = document.querySelectorAll('[id^="collapse-actionB-"]');
+    actionBeatCollapses.forEach(collapse => {
+      if (this.isAllExpanded) {
+        collapse.classList.add('show');
+      } else {
+        collapse.classList.remove('show');
+      }
+    });
+
+    // Toggle all shot collapses
+    const shotCollapses = document.querySelectorAll('[id^="collapse-shot-"]');
+    shotCollapses.forEach(collapse => {
+      if (this.isAllExpanded) {
+        collapse.classList.add('show');
+      } else {
+        collapse.classList.remove('show');
+      }
+    });
+
+    // Update the button text
+    const toggleButton = document.querySelector('.sticky-buttons button:first-child');
+    if (toggleButton) {
+      toggleButton.textContent = this.isAllExpanded ? 'Close All' : 'Open All';
+    }
   }
 }
