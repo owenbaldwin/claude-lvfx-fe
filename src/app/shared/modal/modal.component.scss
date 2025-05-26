@@ -1,3 +1,6 @@
+@import 'src/styles.scss';
+@import 'src/styles/_variables.scss';
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -12,10 +15,11 @@
 }
 
 .modal-content {
-  background: #fff;
+  background: $dark-grey;
   padding: 20px;
-  width: 400px;
+  width: 600px;
   border-radius: 8px;
+  border: 1px solid $light-grey;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
@@ -24,6 +28,8 @@
   justify-content: space-between;
   align-items: center;
   font-size: 1.2rem;
+  color: $lvfx-gold;
+  font-family: 'Comfortaa', cursive;
 }
 
 .btn-close {

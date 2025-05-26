@@ -1,0 +1,27 @@
+<!-- New Sequence Form -->
+<form class="new-breakdown-element-form" #sequenceForm="ngForm" (ngSubmit)="createSequence()">
+  <div class="mb-3">
+    <label for="sequenceNumber" class="form-label">Number</label>
+    <input type="number" class="form-control" id="sequenceNumber" name="number" [(ngModel)]="newSequence.number" required>
+  </div>
+  <div class="mb-3">
+    <label for="sequencePrefix" class="form-label">Prefix</label>
+    <input type="text" class="form-control" id="sequencePrefix" name="prefix" [(ngModel)]="newSequence.prefix"
+      placeholder="e.g., SEQ01" required>
+  </div>
+  <div class="mb-3">
+    <label for="sequenceName" class="form-label">Name</label>
+    <input type="text" class="form-control" id="sequenceName" name="name" [(ngModel)]="newSequence.name"
+      required placeholder="Sequence name">
+  </div>
+  <div class="mb-3">
+    <label for="sequenceDescription" class="form-label">Description</label>
+    <textarea class="form-control" id="sequenceDescription" name="description" [(ngModel)]="newSequence.description"
+      placeholder="Sequence description" rows="3"></textarea>
+  </div>
+  <div class="mt-3">
+    <button type="submit" mat-raised-button color="primary" [disabled]="!sequenceForm.valid">
+      Add Sequence
+    </button>
+  </div>
+</form>

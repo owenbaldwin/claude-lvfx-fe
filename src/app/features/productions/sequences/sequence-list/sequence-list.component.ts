@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { SceneListComponent } from '@app/features/productions/scenes/scene-list/scene-list.component';
 import { ModalComponent } from '@app/shared/modal/modal.component';
 import { SceneNewComponent } from '@app/features/productions/scenes/scene-new/scene-new.component';
+import { SequenceEditComponent } from '@app/features/productions/sequences/sequence-edit/sequence-edit.component';
 import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.component';
 
 @Component({
@@ -21,6 +22,7 @@ import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.c
     SceneListComponent,
     ModalComponent,
     SceneNewComponent,
+    SequenceEditComponent,
     CrudDropdownComponent
     ],
   templateUrl: './sequence-list.component.html',
@@ -35,9 +37,11 @@ export class SequenceListComponent implements OnInit, AfterViewInit {
   loading = true;
   error = '';
   showModal = false;
+  showEditModal = false;
   showNewSceneModal = false;
   isEditing = false;
   selectedElement: any = null;
+  selectedSequence: Partial<Sequence> = {};
   sequenceId: number = 0;
 
   constructor(
@@ -57,9 +61,17 @@ export class SequenceListComponent implements OnInit, AfterViewInit {
   }
 
   openEditModal(sequence: any) {
-    this.selectedElement = { ...sequence }; // Load selected sequence
-    this.isEditing = true;
-    this.showModal = true;
+    this.selectedSequence = { ...sequence };
+    this.showEditModal = true;
+  }
+
+  closeEditModal() {
+    this.showEditModal = false;
+  }
+
+  onSequenceUpdated() {
+    this.closeEditModal();
+    this.loadSequences();
   }
 
   openNewSceneModal(sequenceId: number) {

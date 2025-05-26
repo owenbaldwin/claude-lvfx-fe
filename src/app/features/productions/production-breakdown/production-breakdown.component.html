@@ -1,4 +1,3 @@
-
 <div class="sticky-buttons">
   <button class="btn btn-primary" (click)="toggleAll()">Open All</button>
   <!-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSequenceModal">Add Sequence</button> -->
@@ -12,15 +11,12 @@
   <input class="form-control search-bar" id="shot-filtering-breakdown" placeholder="Search…">
 </div>
 
-<app-modal [title]="'Create New Sequence'" [isOpen]="isModalOpen" (close)="closeModal()">
-  <!-- <app-element-form [element]="newSequence" [type]="'sequence'" [isEditing]="false" (save)="handleSave($event)"
-    (cancel)="closeModal()"></app-element-form> -->
-    <app-element-form [element]="newSequence" [type]="'sequence'" [isEditing]="false" [sequences]="sequences"
-      (save)="handleSave($event)" (cancel)="closeModal()">
-    </app-element-form>
+<app-modal [title]="'Add New Sequence'" [isOpen]="isModalOpen" (close)="closeModal()">
+  <app-sequence-new
+    [productionId]="productionId"
+    (sequenceCreated)="onSequenceCreated()">
+  </app-sequence-new>
 </app-modal>
-
-
 
 <ul class="breakdown-rows sticky-headers">
   <li style="width: 2%;">
