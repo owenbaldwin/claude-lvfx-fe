@@ -67,6 +67,15 @@
   </app-scene-new>
 </app-modal>
 
+<!-- Edit Sequence Modal -->
+<app-modal [title]="'Edit Sequence'" [isOpen]="showEditModal" (close)="closeEditModal()">
+  <app-sequence-edit
+    [sequence]="selectedSequence"
+    [productionId]="productionId"
+    (sequenceUpdated)="onSequenceUpdated()">
+  </app-sequence-edit>
+</app-modal>
+
 <p *ngIf="sequences.length === 0 && !loading" class="text-center">No sequences available.</p>
 <!-- <form #sequenceForm="ngForm" (ngSubmit)="createSequence()">
   <input type="text" [(ngModel)]="newSequence.name" name="name" required placeholder="Sequence Name">

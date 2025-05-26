@@ -120,3 +120,10 @@ h6, li {
   border: none !important;
   margin: 4px !important;
 }
+
+.new-breakdown-element-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: $dark-grey;
+}
