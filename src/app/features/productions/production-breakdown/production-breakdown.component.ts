@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SequenceListComponent } from '@app/features/sequences/sequence-list/sequence-list.component';
+import { SequenceListComponent } from '@app/features/productions/sequences/sequence-list/sequence-list.component';
 import { ElementFormComponent } from '@app/shared/element-form/element-form.component';
 import { ModalComponent } from '@app/shared/modal/modal.component';
 import { SequenceService } from '@app/core/services/sequence.service';

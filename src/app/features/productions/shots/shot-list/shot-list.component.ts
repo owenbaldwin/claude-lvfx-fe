@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.component';
 import { ModalComponent } from '@app/shared/modal/modal.component';
 import { ShotEditComponent } from '../shot-edit/shot-edit.component';
-// import { ShotEditComponent } from '../shot-edit/shot-edit.component';
+
 @Component({
   selector: 'app-shot-list',
   standalone: true,

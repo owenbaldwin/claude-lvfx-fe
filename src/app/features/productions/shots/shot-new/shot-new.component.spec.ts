@@ -21,7 +21,8 @@ describe('ShotNewComponent', () => {
       description: 'Test shot',
       sequenceId: 1,
       sceneId: 1,
-      productionId: 1
+      productionId: 1,
+      actionBeatId: 1
     };
 
     shotServiceSpy = jasmine.createSpyObj('ShotService', ['createShot']);

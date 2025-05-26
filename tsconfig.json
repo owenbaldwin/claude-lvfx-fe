@@ -23,6 +23,10 @@
       "ES2022",
       "dom"
     ],
+    "types": [
+      "jasmine",
+      "node"
+    ],
     "paths": {
       "@app/*": ["src/app/*"],
       "@core/*": ["src/app/core/*"],
