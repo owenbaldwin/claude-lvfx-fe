@@ -1,3 +1,16 @@
-// .sequence-row {
-//   background-color: $sequence-blue;
-// }
+@import 'src/styles/variables';
+
+
+.sequence-row {
+  background-color: $sequence-blue;
+}
+
+.sequence-container {
+  // border-radius: 24px 24px 0px 0px;
+  // overflow: hidden;
+  margin: 8px 0px;
+}
+
+.sequence-row {
+  border-radius: 8px 8px 0px 0px;
+}

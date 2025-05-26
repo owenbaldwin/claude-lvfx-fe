@@ -1,0 +1,23 @@
+@import 'src/styles/variables';
+
+.production-tabs {
+  background-color: $dark-grey;
+
+  .mat-mdc-tab-links {
+    background-color: $dark-grey;
+  }
+}
+
+.production-tab {
+  color: $light-grey;
+  cursor: pointer;
+
+  &.mat-mdc-tab-link-active {
+    color: $lvfx-gold;
+    border-bottom: 2px solid $lvfx-gold;
+  }
+
+  &:hover {
+    color: $white;
+  }
+}

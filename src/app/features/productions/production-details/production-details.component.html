@@ -41,20 +41,23 @@
     </div>
 
     <!-- Tabs -->
-    <nav mat-tab-nav-bar>
-      <a mat-tab-link
+    <nav mat-tab-nav-bar class="production-tabs">
+      <a class="production-tab"
+          mat-tab-link
          [routerLink]="['/productions', productionId, 'overview']"
          routerLinkActive #rlaOverview="routerLinkActive"
          [active]="rlaOverview.isActive">
         Overview
       </a>
-      <a mat-tab-link
+      <a class="production-tab"
+          mat-tab-link
          [routerLink]="['/productions', productionId, 'breakdown']"
          routerLinkActive #rlaBreakdown="routerLinkActive"
          [active]="rlaBreakdown.isActive">
         Breakdown
       </a>
-      <a mat-tab-link
+      <a class="production-tab"
+          mat-tab-link
          [routerLink]="['/productions', productionId, 'budget']"
          routerLinkActive #rlaBudget="routerLinkActive"
          [active]="rlaBudget.isActive">

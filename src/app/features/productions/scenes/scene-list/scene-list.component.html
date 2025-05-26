@@ -36,7 +36,7 @@
         role="button"
         aria-expanded="false"
         [attr.aria-controls]="'collapse-scene-' + scene.id">
-        <li>{{ sequencePrefix }}:{{ scene.number }}</li>
+        <li><h6>{{ sequencePrefix }}:{{ scene.number }}</h6></li>
       </a>
       <li style="width: 5%;">
         <button
@@ -79,7 +79,6 @@
           (edit)="openEditModal(scene)"
           (delete)="deleteScene(scene.id!)">
         </app-crud-dropdown>
-        <!-- TODO: Add add action beat modal and move to dropdown above-->
       </li>
     </ul>
     <div

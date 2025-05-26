@@ -1,4 +1,17 @@
-<button class="btn btn-primary" (click)="openModal()">New Sequence</button>
+
+<div class="sticky-buttons">
+  <button class="btn btn-primary" id="toggleAll">Open All</button>
+  <!-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSequenceModal">Add Sequence</button> -->
+  <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-sequence-modal">
+    <i class="bi bi-plus-circle"></i> Create Sequence
+  </button> -->
+  <button class="btn btn-primary" (click)="openModal()">New Sequence</button>
+  <button class="btn btn-primary" id="generateShotsBtn">Generate Shots</button>
+  <button class="btn btn-primary" id="generateAssumptionsBtn">Generate VFX Assumptions</button>
+  <button class="btn btn-primary" id="generateCostEstimatesBtn">Generate Cost Estimates</button>
+  <input class="form-control search-bar" id="shot-filtering-breakdown" placeholder="Search…">
+</div>
+
 <app-modal [title]="'Create New Sequence'" [isOpen]="isModalOpen" (close)="closeModal()">
   <!-- <app-element-form [element]="newSequence" [type]="'sequence'" [isEditing]="false" (save)="handleSave($event)"
     (cancel)="closeModal()"></app-element-form> -->

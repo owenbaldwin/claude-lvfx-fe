@@ -1,3 +1,9 @@
+@import 'src/styles/variables';
+
+.scene-row {
+  background-color: $scene-blue;
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;

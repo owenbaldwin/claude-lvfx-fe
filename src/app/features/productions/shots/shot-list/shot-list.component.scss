@@ -1,0 +1,20 @@
+@import 'src/styles/variables';
+
+.shot-row {
+  background-color: $shot-grey;
+  border-bottom: 1px solid $light-grey;
+}
+
+.storyboard-dropdown {
+  color: $light-grey;
+  padding: 0px;
+}
+
+.storyboard-dropdown:hover {
+  color: $white;
+}
+
+.no-storyboard {
+  font-size: 32px;
+  margin-left: 34px;
+}
