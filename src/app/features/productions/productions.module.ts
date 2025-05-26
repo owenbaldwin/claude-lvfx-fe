@@ -7,7 +7,7 @@ import { ProductionsListComponent } from './productions-list/productions-list.co
 import { ProductionDetailsComponent } from './production-details/production-details.component';
 import { ProductionFormComponent } from './production-form/production-form.component';
 import { SharedModule } from '@app/shared/shared.module';
-import { SequenceListComponent } from '@app/features/sequences/sequence-list/sequence-list.component';
+import { SequenceListComponent } from '@app/features/productions/sequences/sequence-list/sequence-list.component';
 import routes from './productions-routing.module';
 
 @NgModule({
