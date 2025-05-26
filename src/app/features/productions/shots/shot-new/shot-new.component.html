@@ -1,0 +1,54 @@
+<!-- New Shot Form -->
+<form #shotForm="ngForm" (ngSubmit)="createShot()">
+  <div class="mb-3">
+    <label for="shotNumber" class="form-label">Number</label>
+    <input type="text" class="form-control" id="shotNumber" name="number" [(ngModel)]="newShot.number" required>
+  </div>
+  <div class="mb-3">
+    <label for="shotDescription" class="form-label">Description</label>
+    <textarea class="form-control" id="shotDescription" name="description" [(ngModel)]="newShot.description"
+      required placeholder="Shot description" rows="3"></textarea>
+  </div>
+  <!-- <div class="mb-3">
+    <label for="shotType" class="form-label">Type</label>
+    <select class="form-select" id="shotType" [(ngModel)]="newShot.type" name="type">
+      <option value="">Select type</option>
+      <option value="master">Master</option>
+      <option value="close-up">Close Up</option>
+      <option value="medium">Medium</option>
+      <option value="wide">Wide</option>
+      <option value="establishing">Establishing</option>
+      <option value="insert">Insert</option>
+    </select>
+  </div> -->
+  <div class="mb-3">
+    <label for="shotCamera" class="form-label">Camera</label>
+    <input type="text" class="form-control" id="shotCamera" name="camera" [(ngModel)]="newShot.camera" placeholder="Camera details" required>
+  </div>
+  <div class="mb-3">
+    <label for="shotFraming" class="form-label">Framing</label>
+    <input type="text" class="form-control" id="shotFraming" name="framing" [(ngModel)]="newShot.framing" placeholder="Framing details">
+  </div>
+  <div class="mb-3">
+    <label for="shotMovement" class="form-label">Movement</label>
+    <input type="text" class="form-control" id="shotMovement" name="movement" [(ngModel)]="newShot.movement" placeholder="Camera movement" required>
+  </div>
+  <div class="mb-3">
+    <label for="shotVfx" class="form-label">VFX Shot</label>
+    <select class="form-select" id="shotVfx" [(ngModel)]="newShot.vfx" name="type">
+      <option value="">Select type</option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+  </div>
+  <div class="mb-3">
+    <label for="shotNotes" class="form-label">Notes</label>
+    <textarea class="form-control" id="shotNotes" name="notes" [(ngModel)]="newShot.notes"
+      placeholder="Additional notes" rows="2"></textarea>
+  </div>
+  <div class="mt-3">
+    <button type="submit" mat-raised-button color="primary" [disabled]="!shotForm.valid">
+      Add Shot
+    </button>
+  </div>
+</form>
