@@ -1,0 +1,20 @@
+form {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.form-label {
+  font-weight: 500;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}

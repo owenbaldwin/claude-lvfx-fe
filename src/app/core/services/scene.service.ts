@@ -38,7 +38,7 @@ export class SceneService {
   }
 
   // Delete a scene
-  deleteScene(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  deleteScene(productionId: number, sequenceId: number, id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${id}`);
   }
 }

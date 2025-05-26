@@ -38,12 +38,12 @@ export class ShotService {
   }
 
   // Update an existing shot
-  updateShot(id: number, shot: Partial<Shot>): Observable<Shot> {
-    return this.http.put<Shot>(`${this.apiUrl}/${id}`, shot);
+  updateShot(productionId: number, sequenceId: number, sceneId: number, actionBeatId: number, id: number, shot: Partial<Shot>): Observable<Shot> {
+    return this.http.put<Shot>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${sceneId}/action_beats/${actionBeatId}/shots/${id}`, shot);
   }
 
   // Delete a shot
-  deleteShot(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  deleteShot(productionId: number, sequenceId: number, sceneId: number, actionBeatId: number, id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${sceneId}/action_beats/${actionBeatId}/shots/${id}`);
   }
 }

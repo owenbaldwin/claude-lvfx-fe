@@ -3,6 +3,8 @@ import { ShotService } from '@app/core/services/shot.service';
 import { Shot } from '@app/shared/models';
 import { CommonModule } from '@angular/common';
 import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.component';
+import { ModalComponent } from '@app/shared/modal/modal.component';
+import { ShotEditComponent } from '../shot-edit/shot-edit.component';
 // import { ShotEditComponent } from '../shot-edit/shot-edit.component';
 @Component({
   selector: 'app-shot-list',
@@ -10,7 +12,8 @@ import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.c
   imports: [
     CommonModule,
     CrudDropdownComponent,
-
+    ModalComponent,
+    ShotEditComponent
   ],
   templateUrl: './shot-list.component.html',
   styleUrl: './shot-list.component.scss'
@@ -48,11 +51,20 @@ export class ShotListComponent implements OnInit, OnDestroy {
         this.openNewShotModal();
       }
     }) as EventListener);
+
+    // Listen for refresh events
+    document.addEventListener('refreshShotList', ((e: CustomEvent) => {
+      if (e.detail.actionBeatId === this.actionBeatId) {
+        console.log('Refreshing shots list for action beat', this.actionBeatId);
+        this.loadShots();
+      }
+    }) as EventListener);
   }
 
   ngOnDestroy(): void {
     // Clean up event listeners to prevent memory leaks
-    document.removeEventListener('openShotModal', ((e: CustomEvent) => {}) as EventListener);
+    document.removeEventListener('openShotModal', (() => {}) as EventListener);
+    document.removeEventListener('refreshShotList', (() => {}) as EventListener);
   }
 
   loadShots(): void {
@@ -91,7 +103,7 @@ export class ShotListComponent implements OnInit, OnDestroy {
 
   deleteShot(id: number): void {
     if (confirm('Are you sure you want to delete this shot?')) {
-      this.shotService.deleteShot(id).subscribe({
+      this.shotService.deleteShot(this.productionId, this.sequenceId, this.sceneId, this.actionBeatId, id).subscribe({
         next: () => {
           this.loadShots();
         },
