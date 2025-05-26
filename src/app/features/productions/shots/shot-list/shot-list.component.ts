@@ -2,12 +2,15 @@ import { Component, Input, ChangeDetectorRef, OnInit, OnDestroy } from '@angular
 import { ShotService } from '@app/core/services/shot.service';
 import { Shot } from '@app/shared/models';
 import { CommonModule } from '@angular/common';
-
+import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.component';
+// import { ShotEditComponent } from '../shot-edit/shot-edit.component';
 @Component({
   selector: 'app-shot-list',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule,
+    CrudDropdownComponent,
+
   ],
   templateUrl: './shot-list.component.html',
   styleUrl: './shot-list.component.scss'
@@ -53,15 +56,9 @@ export class ShotListComponent implements OnInit, OnDestroy {
   }
 
   loadShots(): void {
-    if (this.actionBeatId) {
-      this.shotService.getShotsByActionBeat(this.actionBeatId).subscribe((shots) => {
-        this.shots = shots;
-      });
-    } else if (this.sceneId) {
-      this.shotService.getShotsByScene(this.sceneId).subscribe((shots) => {
-        this.shots = shots;
-      });
-    }
+    this.shotService.getShots(this.productionId, this.sequenceId, this.sceneId, this.actionBeatId).subscribe((shots) => {
+      this.shots = shots;
+    });
   }
 
   openNewShotModal(): void {

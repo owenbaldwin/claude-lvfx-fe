@@ -102,13 +102,25 @@
             [entityLabel]="'Action Beat'"
             [elementId]="actionBeat.id || 0"
             [addLabel]="'Add New Shot'"
-            (add)="openNewActionBeatModal()"
+            (add)="openNewShotModal(actionBeat.id)"
             (edit)="openEditModal(actionBeat)"
             (delete)="deleteActionBeat(actionBeat.id!)">
           </app-crud-dropdown>
         </div>
       </li>
     </ul>
+    <div
+      class="collapse row-collapse"
+      [id]="'collapse-actionB-' + actionBeat.id">
+      <app-shot-list
+        [actionBeatId]="actionBeat.id!"
+        [sceneId]="sceneId!"
+        [sceneNumber]="sceneNumber"
+        [sequenceId]="sequenceId"
+        [sequencePrefix]="sequencePrefix"
+        [productionId]="productionId">
+      </app-shot-list>
+    </div>
   </div>
 
   <p *ngIf="actionBeats.length === 0" class="text-center">No action beats available for this scene.</p>
@@ -132,6 +144,17 @@
       [sceneId]="sceneId"
       (actionBeatUpdated)="onActionBeatUpdated()">
     </app-action-beat-edit>
+  </app-modal>
+
+  <!-- New Shot Modal -->
+  <app-modal [title]="'Add New Shot'" [isOpen]="showNewShotModal" (close)="closeNewShotModal()">
+    <app-shot-new
+      [actionBeatId]="selectedActionBeatId"
+      [sceneId]="sceneId"
+      [sequenceId]="sequenceId"
+      [productionId]="productionId"
+      (shotCreated)="onShotCreated()">
+    </app-shot-new>
   </app-modal>
 
   <!-- Debug Info (remove this in production) -->

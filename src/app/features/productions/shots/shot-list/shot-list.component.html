@@ -1,7 +1,7 @@
 <div>
 
   <div *ngFor="let shot of shots">
-    <ul class="shot-breakdown-cells shot-row">
+    <ul class="breakdown-rows shot-row">
       <!-- Checkbox -->
       <li style="width: 2%;">
         <input type="checkbox" class="shot-checkbox individual-shot-checkbox"
@@ -82,14 +82,16 @@
       <!-- Options Dropdown -->
       <li style="width: 5%;">
         <div class="dropdown">
-          <button class="btn btn-small" type="button" [id]="'shot-' + shot.id + '-options'" data-bs-toggle="dropdown" aria-expanded="false">
+          <button class="btn btn-small" type="button" [id]="'seq-' + sequenceId + '-options'" data-bs-toggle="dropdown"
+            aria-expanded="false">
             <i class="bi bi-three-dots" style="font-size: 24px;"></i>
           </button>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#" (click)="openNewShotModal()">Add New Shot</a></li>
-            <li><a class="dropdown-item" href="#" (click)="openEditModal(shot)">Edit Shot</a></li>
-            <li><a class="dropdown-item" href="#" (click)="deleteShot(shot.id!)">Delete Shot</a></li>
-          </ul>
+          <app-crud-dropdown
+            [entityLabel]="'Shot'"
+            [elementId]="shot.id || 0"
+            (edit)="openEditModal(shot)"
+            (delete)="deleteShot(shot.id!)">
+          </app-crud-dropdown>
         </div>
       </li>
     </ul>
@@ -99,11 +101,11 @@
   <p *ngIf="shots.length === 0" class="text-center">No shots available for this action beat.</p>
 
   <!-- Add buttons for new shots -->
-  <div class="text-center mt-3 mb-5" *ngIf="actionBeatId">
+  <!-- <div class="text-center mt-3 mb-5" *ngIf="actionBeatId">
     <button class="btn btn-primary" (click)="openNewShotModal()">
       <i class="bi bi-plus-circle me-2"></i>Add New Shot
     </button>
-  </div>
+  </div> -->
 
   <!-- New Shot Modal placeholder - would be implemented with appropriate components -->
   <!-- <app-modal [title]="'Add New Shot'" [isOpen]="showNewShotModal" (close)="closeNewShotModal()">

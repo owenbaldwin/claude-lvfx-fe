@@ -8,13 +8,13 @@ import { Shot } from '@app/shared/models';
   providedIn: 'root'
 })
 export class ShotService {
-  private apiUrl = `${environment.apiUrl}/shots`;
+  private apiUrl = `${environment.apiUrl}/v1/productions`;
 
   constructor(private http: HttpClient) { }
 
   // Get all shots
-  getShots(): Observable<Shot[]> {
-    return this.http.get<Shot[]>(this.apiUrl);
+  getShots(productionId: number, sequenceId: number, sceneId: number, actionBeatId: number): Observable<Shot[]> {
+    return this.http.get<Shot[]>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${sceneId}/action_beats/${actionBeatId}/shots`);
   }
 
   // Get shots for a specific scene
@@ -33,8 +33,8 @@ export class ShotService {
   }
 
   // Create a new shot
-  createShot(shot: Partial<Shot>): Observable<Shot> {
-    return this.http.post<Shot>(this.apiUrl, shot);
+  createShot(productionId: number, sequenceId: number, sceneId: number, actionBeatId: number, shot: Partial<Shot>): Observable<Shot> {
+    return this.http.post<Shot>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${sceneId}/action_beats/${actionBeatId}/shots`, shot);
   }
 
   // Update an existing shot

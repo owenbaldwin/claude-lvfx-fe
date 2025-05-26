@@ -6,6 +6,8 @@ import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.c
 import { ModalComponent } from '@app/shared/modal/modal.component';
 import { ActionBeatNewComponent } from '../action-beat-new/action-beat-new.component';
 import { ActionBeatEditComponent } from '../action-beat-edit/action-beat-edit.component';
+import { ShotNewComponent } from '../../shots/shot-new/shot-new.component';
+import { ShotListComponent } from '../../shots/shot-list/shot-list.component';
 
 @Component({
   selector: 'app-action-beat-list',
@@ -15,7 +17,9 @@ import { ActionBeatEditComponent } from '../action-beat-edit/action-beat-edit.co
     CrudDropdownComponent,
     ModalComponent,
     ActionBeatNewComponent,
-    ActionBeatEditComponent
+    ActionBeatEditComponent,
+    ShotNewComponent,
+    ShotListComponent
   ],
   templateUrl: './action-beat-list.component.html',
   styleUrl: './action-beat-list.component.scss'
@@ -30,7 +34,9 @@ export class ActionBeatListComponent {
   actionBeats: ActionBeat[] = [];
   showNewActionBeatModal = false;
   showEditModal = false;
+  showNewShotModal = false;
   selectedElement: Partial<ActionBeat> = {};
+  selectedActionBeatId?: number;
 
   constructor(
     private actionBeatService: ActionBeatService,
@@ -99,5 +105,22 @@ export class ActionBeatListComponent {
         }
       });
     }
+  }
+
+  openNewShotModal(actionBeatId?: number): void {
+    this.selectedActionBeatId = actionBeatId;
+    this.showNewShotModal = true;
+    this.changeDetectorRef.detectChanges();
+  }
+
+  closeNewShotModal(): void {
+    this.showNewShotModal = false;
+    this.changeDetectorRef.detectChanges();
+  }
+
+  onShotCreated(): void {
+    // This would trigger a refresh of the shots list
+    // You might need to emit an event up to a shots list component or similar
+    this.closeNewShotModal();
   }
 }

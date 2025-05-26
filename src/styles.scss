@@ -41,6 +41,20 @@ $claude-lvfx-fe-theme: mat.define-light-theme((
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+
+// COLOURS:
+$sequence-blue: #5e6a76;
+$scene-blue: #3E5060;
+$action-beat-blue: #2e3b45;
+$shot-grey: #1A1A1A;
+$lvfx-gold: #E1A32E;
+$light-grey: #818181;
+$dark-grey: #343a40;
+$white: #fff;
+$black: #000;
+
+
+
 .app-container {
   background-color: #1e1e1e;
   color: #fff;
