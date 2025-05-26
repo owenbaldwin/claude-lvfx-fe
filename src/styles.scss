@@ -68,6 +68,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   // background-color: #1e1e1e;
   background-color: $dark-grey;
   color: #fff;
+  min-height: 100vh;
 }
 
 h6, li {

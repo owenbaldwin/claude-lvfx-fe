@@ -83,18 +83,12 @@
 
       <!-- Options Dropdown -->
       <li style="width: 5%;">
-        <!-- <div class="dropdown">
-          <button class="btn btn-small" type="button" [id]="'seq-' + sequenceId + '-options'" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            <i class="bi bi-three-dots" style="font-size: 24px;"></i>
-          </button> -->
-          <app-crud-dropdown
-            [entityLabel]="'Shot'"
-            [elementId]="shot.id || 0"
-            (edit)="openEditModal(shot)"
-            (delete)="deleteShot(shot.id!)">
-          </app-crud-dropdown>
-        <!-- </div> -->
+        <app-crud-dropdown
+          [entityLabel]="'Shot'"
+          [elementId]="shot.id || 0"
+          (edit)="openEditModal(shot)"
+          (delete)="deleteShot(shot.id!)">
+        </app-crud-dropdown>
       </li>
     </ul>
 
@@ -120,8 +114,8 @@
     </app-shot-new>
   </app-modal> -->
 
-  <!-- Edit Shot Modal placeholder - would be implemented with appropriate components -->
-  <!-- <app-modal [title]="'Edit Shot'" [isOpen]="showEditModal" (close)="showEditModal = false">
+  <!-- Edit Shot Modal -->
+  <app-modal [title]="'Edit Shot'" [isOpen]="showEditModal" (close)="showEditModal = false">
     <app-shot-edit
       [shot]="selectedShot"
       [sequenceId]="sequenceId"
@@ -130,5 +124,5 @@
       [actionBeatId]="actionBeatId"
       (shotUpdated)="onShotUpdated()">
     </app-shot-edit>
-  </app-modal> -->
+  </app-modal>
 </div>

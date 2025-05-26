@@ -119,8 +119,11 @@ export class ActionBeatListComponent {
   }
 
   onShotCreated(): void {
-    // This would trigger a refresh of the shots list
-    // You might need to emit an event up to a shots list component or similar
+    // Dispatch a custom event to notify the shot list component to refresh
+    const event = new CustomEvent('refreshShotList', {
+      detail: { actionBeatId: this.selectedActionBeatId }
+    });
+    document.dispatchEvent(event);
     this.closeNewShotModal();
   }
 }

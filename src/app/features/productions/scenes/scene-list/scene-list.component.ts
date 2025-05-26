@@ -143,7 +143,7 @@ export class SceneListComponent implements OnInit {
 
   deleteScene(sceneId: number): void {
     if (confirm('Are you sure you want to delete this scene?')) {
-      this.sceneService.deleteScene(sceneId).subscribe({
+      this.sceneService.deleteScene(this.productionId, this.sequenceId, sceneId).subscribe({
         next: () => {
           this.snackBar.open('Scene deleted successfully', 'Close', { duration: 3000 });
           this.loadScenes();
