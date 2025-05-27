@@ -41,4 +41,9 @@ export class SceneService {
   deleteScene(productionId: number, sequenceId: number, id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${id}`);
   }
+
+  // Get unsequenced scenes for a production
+  getUnsequencedScenes(productionId: number): Observable<Scene[]> {
+    return this.http.get<Scene[]>(`${this.apiUrl}/${productionId}/scenes/unsequenced`);
+  }
 }

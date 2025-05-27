@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SequenceListComponent } from '@app/features/productions/sequences/sequence-list/sequence-list.component';
 import { SequenceNewComponent } from '@app/features/productions/sequences/sequence-new/sequence-new.component';
+import { UnsequencedSceneListComponent } from '@app/features/productions/scenes/unsequenced-scene-list/unsequenced-scene-list.component';
 import { ModalComponent } from '@app/shared/modal/modal.component';
 import { SequenceService } from '@app/core/services/sequence.service';
 import { Sequence } from '@app/shared/models';
@@ -10,7 +11,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-production-breakdown',
   standalone: true,
-  imports: [SequenceListComponent, ModalComponent, SequenceNewComponent, CommonModule],
+  imports: [SequenceListComponent, ModalComponent, SequenceNewComponent, UnsequencedSceneListComponent, CommonModule],
   templateUrl: './production-breakdown.component.html',
   styleUrl: './production-breakdown.component.scss'
 })

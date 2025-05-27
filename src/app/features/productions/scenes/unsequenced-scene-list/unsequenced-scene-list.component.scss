@@ -1,0 +1,73 @@
+@import 'src/styles/variables';
+
+.unsequenced-scenes-section {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 2px solid #ffc107;
+}
+
+.unsequenced-header {
+  background-color: rgba(255, 193, 7, 0.1);
+  padding: 1rem;
+  border-radius: 0.375rem;
+  border-left: 4px solid #ffc107;
+  margin-bottom: 1rem;
+}
+
+.unsequenced-scene-row {
+  background-color: rgba(255, 193, 7, 0.15);
+  border-left: 3px solid #ffc107;
+}
+
+.unsequenced-scene-item {
+  margin-bottom: 0.5rem;
+}
+
+.scene-length {
+  margin-top: 8px;
+  border: 1px solid #ffc107;
+  width: 26px;
+  height: 40px;
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+  clip-path: polygon(0 0%,
+      10% 0,
+      100% 0,
+      100% 80%,
+      70% 100%,
+      0% 100%);
+  background-color: rgba(255, 193, 7, 0.1);
+}
+
+.scene-length-corner {
+  width: 8px;
+  height: 8px;
+  border-top: 1px solid #ffc107;
+  border-left: 1px solid #ffc107;
+  position: relative;
+  left: 18px;
+  bottom: 8px;
+}
+
+.scene-length-fold {
+  position: relative;
+  left: 16px;
+  bottom: 12px;
+  width: 11px;
+  height: 1px;
+  background-color: #ffc107;
+  transform: rotate(-45deg);
+}
+
+.mat-spinner {
+  margin: 0 auto;
+}
+
+.scene-location {
+  font-weight: 500;
+}
+
+.text-muted {
+  color: #6c757d !important;
+}
