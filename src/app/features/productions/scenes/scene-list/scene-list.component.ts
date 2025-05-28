@@ -151,10 +151,13 @@ export class SceneListComponent implements OnInit {
     this.sceneService.getScenesBySequence(this.productionId, this.sequenceId)
       .subscribe({
         next: (data) => {
-          this.scenes = data.sort((a, b) => a.number - b.number);
+          // keep only the active versions, then sort by scene.number
+          this.scenes = data
+            .filter(s => s.is_active)
+            .sort((a, b) => a.number - b.number);
           this.loading = false;
 
-          // For each scene number, fetch all versions
+          // but still load _all_ versions into the dropdown map:
           this.scenes.forEach(scene => {
             this.sceneService
               .getSceneVersions(this.productionId, this.sequenceId, scene.number)
@@ -169,6 +172,7 @@ export class SceneListComponent implements OnInit {
         }
       });
   }
+
 
 
   deleteScene(sceneId: number): void {
@@ -207,27 +211,62 @@ export class SceneListComponent implements OnInit {
     });
   }
 
+  // switchVersion(scene: Scene, newVersionId: string) {
+  //     console.log('in switchVersion – productionId:', this.productionId, 'sequenceId:', this.sequenceId);
+
+  //   const versionIdNum = parseInt(newVersionId, 10);
+  //   // now use versionIdNum instead of newVersionId
+  //   this.sceneService.updateScene(
+  //     this.productionId,
+  //     this.sequenceId,
+  //     versionIdNum,
+  //     { is_active: true }
+  //   ).subscribe(() => {
+  //     const old = this.scenes.find(s =>
+  //       s.number === scene.number && s.is_active && s.id !== versionIdNum
+  //     );
+  //     if (old) {
+  //       this.sceneService.updateScene(
+  //         old.productionId!, old.sequenceId!, old.id!, { is_active: false }
+  //       ).subscribe(() => this.loadScenes());
+  //     } else {
+  //       this.loadScenes();
+  //     }
+  //   });
+  // }
+
   switchVersion(scene: Scene, newVersionId: string) {
     const versionIdNum = parseInt(newVersionId, 10);
-    // now use versionIdNum instead of newVersionId
+
+    // 1) Activate the new version
     this.sceneService.updateScene(
       this.productionId,
       this.sequenceId,
       versionIdNum,
       { is_active: true }
     ).subscribe(() => {
+      // 2) Find the old active version
       const old = this.scenes.find(s =>
         s.number === scene.number && s.is_active && s.id !== versionIdNum
       );
+
       if (old) {
+        // 3) Deactivate it using the same production & sequence IDs
         this.sceneService.updateScene(
-          old.productionId!, old.sequenceId!, old.id!, { is_active: false }
-        ).subscribe(() => this.loadScenes());
+          this.productionId,   // ← use component inputs, not old.*
+          this.sequenceId,     // ← same here
+          old.id!,
+          { is_active: false }
+        ).subscribe(() => {
+          this.loadScenes();
+        });
       } else {
+        // No prior version? Just reload
         this.loadScenes();
       }
     });
   }
+
 
 
 
