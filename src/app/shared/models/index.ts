@@ -63,6 +63,9 @@ export interface Scene {
   int_ext?: string;
   day_night?: string;
   length?: string;
+  version_number?: number;
+  color?: string;
+  is_active?: boolean;
   sequenceId: number;
   productionId: number;
   createdAt?: string;

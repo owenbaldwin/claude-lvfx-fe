@@ -27,6 +27,14 @@ export class SceneService {
     return this.http.get<Scene>(`${this.apiUrl}/${id}`);
   }
 
+  // Get scene versions
+  getSceneVersions(productionId: number, sequenceId: number, sceneNumber: number) {
+    return this.http.get<Scene[]>(
+      `${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes?all_versions=true&scene_number=${sceneNumber}`
+    );
+  }
+
+
   // Create a new scene
   createScene(productionId: number, sequenceId: number, scene: Partial<Scene>): Observable<Scene> {
     return this.http.post<Scene>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes`, scene);

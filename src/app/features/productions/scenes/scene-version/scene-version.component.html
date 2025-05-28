@@ -1,0 +1,67 @@
+<form (ngSubmit)="submit()">
+  <!-- Scene Number -->
+  <div class="mb-3">
+    <label for="versionNumber" class="form-label">Scene Number</label>
+    <input type="number" class="form-control" id="versionNumber" name="number" [(ngModel)]="form.number" required />
+  </div>
+
+  <!-- INT/EXT -->
+  <div class="mb-3">
+    <label for="versionIntExt" class="form-label">INT/EXT</label>
+    <select class="form-select" id="versionIntExt" name="int_ext" [(ngModel)]="form.int_ext" required>
+      <option value="" disabled>Select INT/EXT</option>
+      <option value="interior">INT</option>
+      <option value="exterior">EXT</option>
+    </select>
+  </div>
+
+  <!-- Location -->
+  <div class="mb-3">
+    <label for="versionLocation" class="form-label">Location</label>
+    <input type="text" class="form-control" id="versionLocation" name="location" [(ngModel)]="form.location" required />
+  </div>
+
+  <!-- Time of Day -->
+  <div class="mb-3">
+    <label for="versionTimeOfDay" class="form-label">Time of Day</label>
+    <input type="text" class="form-control" id="versionTimeOfDay" name="day_night" [(ngModel)]="form.day_night" />
+  </div>
+
+  <!-- Scene Length -->
+  <div class="mb-3">
+    <label for="versionLength" class="form-label">Scene Length</label>
+    <input type="text" class="form-control" id="versionLength" name="length" [(ngModel)]="form.length"
+      placeholder="e.g. 1/8" />
+  </div>
+
+  <!-- Description -->
+  <!-- <div class="mb-3">
+    <label for="versionDescription" class="form-label">Description</label>
+    <textarea class="form-control" id="versionDescription" name="description" [(ngModel)]="form.description"
+      rows="3"></textarea>
+  </div> -->
+
+  <!-- Version Number -->
+  <div class="mb-3">
+    <label for="newVersionNumber" class="form-label">Version Number</label>
+    <input type="number" class="form-control" id="newVersionNumber" name="version_number"
+      [(ngModel)]="form.version_number" required />
+  </div>
+
+  <!-- Colour Picker -->
+  <div class="mb-3">
+    <label for="versionColor" class="form-label">Colour</label>
+    <input type="color" class="form-control form-control-color" id="versionColor" name="color"
+      [(ngModel)]="form.color" />
+  </div>
+
+  <!-- Actions -->
+  <div class="modal-actions">
+    <button type="button" mat-button (click)="versionCreated.emit()">
+      Cancel
+    </button>
+    <button type="submit" mat-raised-button color="primary">
+      Create Version
+    </button>
+  </div>
+</form>

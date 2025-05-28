@@ -18,6 +18,11 @@
       </button>
     </li>
     <li>
+      <button class="dropdown-item version-btn" (click)="version.emit()">
+        <mat-icon>file_copy</mat-icon> New {{ entityLabel }} Version
+      </button>
+    </li>
+    <li>
       <button class="dropdown-item delete-btn" (click)="delete.emit()">
         <mat-icon>delete</mat-icon>
         Delete {{ entityLabel }}
