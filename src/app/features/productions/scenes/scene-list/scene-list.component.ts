@@ -13,6 +13,8 @@ import { SceneEditComponent } from '../scene-edit/scene-edit.component';
 import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.component';
 import { ActionBeatListComponent } from '@app/features/productions/action-beats/action-beat-list/action-beat-list.component';
 import { ActionBeatNewComponent } from '@app/features/productions/action-beats/action-beat-new/action-beat-new.component';
+import { SceneVersionComponent } from '../scene-version/scene-version.component';
+
 @Component({
   selector: 'app-scene-list',
   standalone: true,
@@ -27,7 +29,8 @@ import { ActionBeatNewComponent } from '@app/features/productions/action-beats/a
     CrudDropdownComponent,
     SceneEditComponent,
     ActionBeatListComponent,
-    ActionBeatNewComponent
+    ActionBeatNewComponent,
+    SceneVersionComponent
   ],
   templateUrl: './scene-list.component.html',
   styleUrl: './scene-list.component.scss'
@@ -50,6 +53,10 @@ export class SceneListComponent implements OnInit {
     description: '',
     length: ''
   };
+  showNewVersionModal = false;
+  selectedScene?: Scene;
+  sceneVersions: Scene[] = [];  // for later dropdown
+  versionsMap: { [sceneNumber: number]: Scene[] } = {};
 
   // Add ViewChildren to access ActionBeatList components
   @ViewChildren(ActionBeatListComponent) actionBeatListComponents!: QueryList<ActionBeatListComponent>;
@@ -127,17 +134,40 @@ export class SceneListComponent implements OnInit {
     }
   }
 
+  // loadScenes(): void {
+  //   this.sceneService.getScenesBySequence(this.productionId, this.sequenceId).subscribe({
+  //     next: (data) => {
+  //       this.scenes = data.sort((a, b) => a.number - b.number);
+  //       this.loading = false;
+  //     },
+  //     error: (err) => {
+  //       this.error = 'Failed to load scenes';
+  //       this.loading = false;
+  //     }
+  //   });
+  // }
+
   loadScenes(): void {
-    this.sceneService.getScenesBySequence(this.productionId, this.sequenceId).subscribe({
-      next: (data) => {
-        this.scenes = data.sort((a, b) => a.number - b.number);
-        this.loading = false;
-      },
-      error: (err) => {
-        this.error = 'Failed to load scenes';
-        this.loading = false;
-      }
-    });
+    this.sceneService.getScenesBySequence(this.productionId, this.sequenceId)
+      .subscribe({
+        next: (data) => {
+          this.scenes = data.sort((a, b) => a.number - b.number);
+          this.loading = false;
+
+          // For each scene number, fetch all versions
+          this.scenes.forEach(scene => {
+            this.sceneService
+              .getSceneVersions(this.productionId, this.sequenceId, scene.number)
+              .subscribe(vers => {
+                this.versionsMap[scene.number] = vers;
+              });
+          });
+        },
+        error: (err) => {
+          this.error = 'Failed to load scenes';
+          this.loading = false;
+        }
+      });
   }
 
 
@@ -154,6 +184,55 @@ export class SceneListComponent implements OnInit {
       });
     }
   }
+
+  openNewVersionModal(scene: Scene) {
+    this.selectedScene = scene;
+    this.showNewVersionModal = true;
+  }
+
+  onVersionCreated() {
+    // after creating the new version, close & reload
+    this.showNewVersionModal = false;
+    this.loadScenes();
+  }
+
+  versionsFor(scene: Scene) {
+    this.sceneService.getSceneVersions(
+      this.productionId,
+      this.sequenceId,
+      scene.number
+    ).subscribe(vers => {
+      // show a small dropdown or modal to pick vers
+      // store in a map: this.versionsMap[scene.number] = vers;
+    });
+  }
+
+  switchVersion(scene: Scene, newVersionId: string) {
+    const versionIdNum = parseInt(newVersionId, 10);
+    // now use versionIdNum instead of newVersionId
+    this.sceneService.updateScene(
+      this.productionId,
+      this.sequenceId,
+      versionIdNum,
+      { is_active: true }
+    ).subscribe(() => {
+      const old = this.scenes.find(s =>
+        s.number === scene.number && s.is_active && s.id !== versionIdNum
+      );
+      if (old) {
+        this.sceneService.updateScene(
+          old.productionId!, old.sequenceId!, old.id!, { is_active: false }
+        ).subscribe(() => this.loadScenes());
+      } else {
+        this.loadScenes();
+      }
+    });
+  }
+
+
+
+
+
 
   // Public method to refresh scenes from outside the component
   public refreshScenes(): void {

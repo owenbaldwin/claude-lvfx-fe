@@ -69,7 +69,16 @@
       </li>
       <li style="width: 5%;">
       </li>
-      <li style="width: 30%;"></li>
+      <li style="width: 30%;">
+        <!-- version dropdown -->
+        <select *ngIf="versionsMap[scene.number]?.length" #versionSelect (change)="switchVersion(scene, versionSelect.value)">
+          <option *ngFor="let v of versionsMap[scene.number]" [value]="v.id" [selected]="v.is_active">
+            v{{ v.version_number }}
+          </option>
+        </select>
+
+
+      </li>
       <li style="width: 5%;">
         <app-crud-dropdown
           [entityLabel]="'Scene'"
@@ -77,6 +86,7 @@
           [addLabel]="'Add New Action Beat'"
           (add)="openNewActionBeatModal(scene.id!)"
           (edit)="openEditModal(scene)"
+          (version)="openNewVersionModal(scene)"
           (delete)="deleteScene(scene.id!)">
         </app-crud-dropdown>
       </li>
@@ -116,4 +126,16 @@
       (sceneCreated)="onSceneCreated()">
     </app-scene-new>
   </app-modal>
+
+  <!-- New Scene Version Modal -->
+  <app-modal [title]="'New Version of Scene ' + selectedScene?.number" [isOpen]="showNewVersionModal"
+    (close)="showNewVersionModal = false">
+    <app-scene-version
+      [scene]="selectedScene!"
+      [sequenceId]="sequenceId"
+      [productionId]="productionId"
+      (versionCreated)="onVersionCreated()">
+    </app-scene-version>
+  </app-modal>
+
 </div>

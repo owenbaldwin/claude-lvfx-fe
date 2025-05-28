@@ -17,4 +17,5 @@ export class CrudDropdownComponent {
   @Output() add = new EventEmitter<void>();
   @Output() edit = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();
+  @Output() version = new EventEmitter<void>();
 }
