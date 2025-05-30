@@ -1,0 +1,307 @@
+.script-list-container {
+  width: 100%;
+  min-height: 400px;
+
+  // Loading state
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    text-align: center;
+
+    mat-progress-spinner {
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: #666;
+      margin: 0;
+      font-size: 1rem;
+    }
+  }
+
+  // Error state
+  .error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    text-align: center;
+
+    .error-icon {
+      font-size: 3rem;
+      width: 3rem;
+      height: 3rem;
+      color: #dc3545;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: #666;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+    }
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+
+  // Empty state
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    text-align: center;
+
+    .empty-icon {
+      font-size: 4rem;
+      width: 4rem;
+      height: 4rem;
+      color: #ccc;
+      margin-bottom: 1.5rem;
+    }
+
+    h3 {
+      color: #333;
+      margin: 0 0 0.5rem 0;
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+
+    p {
+      color: #666;
+      margin: 0;
+      font-size: 1rem;
+    }
+  }
+
+  // Scripts grid
+  .scripts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem 0;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+  }
+
+  // Script card
+  .script-card {
+    position: relative;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+
+    &:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
+    }
+
+    // Color strip at the top
+    .color-strip {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      z-index: 1;
+    }
+
+    // Script header
+    .script-header {
+      padding: 1.5rem 1.5rem 1rem 1.5rem;
+      margin-top: 4px; // Account for color strip
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+
+      .script-title-section {
+        flex: 1;
+        min-width: 0; // Allow text truncation
+
+        .mat-mdc-card-title {
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: #333;
+          margin-bottom: 0.25rem;
+          word-wrap: break-word;
+        }
+
+        .mat-mdc-card-subtitle {
+          font-size: 0.875rem;
+          color: #666;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.25rem;
+
+          .author {
+            font-style: italic;
+          }
+
+          .created-date {
+            color: #999;
+          }
+        }
+      }
+
+      .script-actions {
+        display: flex;
+        gap: 0.25rem;
+        margin-left: 1rem;
+
+        button {
+          width: 36px;
+          height: 36px;
+          color: #666;
+
+          &:hover {
+            color: #333;
+            background-color: rgba(0, 0, 0, 0.04);
+          }
+        }
+      }
+    }
+
+    // Script content
+    .script-content {
+      padding: 0 1.5rem 1rem 1.5rem;
+
+      // Meta information (version and color)
+      .script-meta {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 1rem;
+
+        @media (max-width: 480px) {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.75rem;
+        }
+
+        .version-info,
+        .color-info {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+
+          .meta-icon {
+            font-size: 1.125rem;
+            width: 1.125rem;
+            height: 1.125rem;
+            color: #666;
+          }
+
+          .version-number {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9rem;
+            background-color: #f5f5f5;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+          }
+        }
+
+        .color-info {
+          .color-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+
+            &.white-border {
+              border-color: #ddd;
+            }
+          }
+
+          .color-label {
+            font-size: 0.875rem;
+            color: #666;
+            font-weight: 500;
+          }
+        }
+      }
+
+      // Description
+      .description {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+
+        .meta-icon {
+          font-size: 1.125rem;
+          width: 1.125rem;
+          height: 1.125rem;
+          color: #666;
+          margin-top: 0.125rem; // Align with text baseline
+          flex-shrink: 0;
+        }
+
+        p {
+          margin: 0;
+          color: #555;
+          line-height: 1.5;
+          font-size: 0.9rem;
+        }
+      }
+    }
+
+    // Card actions
+    .script-card-actions {
+      padding: 0 1.5rem 1.5rem 1.5rem;
+      margin: 0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+
+      button {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+
+        mat-icon {
+          font-size: 1rem;
+          width: 1rem;
+          height: 1rem;
+        }
+      }
+    }
+  }
+}
+
+// Material Design card overrides
+.mat-mdc-card {
+  --mdc-elevated-card-container-shape: 12px;
+}
+
+.mat-mdc-card-header {
+  padding: 0 !important;
+}
+
+.mat-mdc-card-content {
+  padding: 0 !important;
+}
+
+.mat-mdc-card-actions {
+  padding: 0 !important;
+}

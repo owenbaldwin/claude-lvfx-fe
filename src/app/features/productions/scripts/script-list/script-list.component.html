@@ -1,0 +1,93 @@
+<div class="script-list-container">
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <mat-progress-spinner diameter="40"></mat-progress-spinner>
+    <p>Loading scripts...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-state" *ngIf="error && !loading">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-button color="primary" (click)="loadScripts()">
+      <mat-icon>refresh</mat-icon>
+      Try Again
+    </button>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && !error && scripts.length === 0">
+    <mat-icon class="empty-icon">description</mat-icon>
+    <h3>No Scripts Found</h3>
+    <p>There are no scripts uploaded for this production yet.</p>
+  </div>
+
+  <!-- Scripts Grid -->
+  <div class="scripts-grid" *ngIf="!loading && !error && scripts.length > 0">
+    <mat-card class="script-card" *ngFor="let script of scripts; trackBy: trackByScriptId">
+      <!-- Color Strip -->
+      <div class="color-strip" [style.background-color]="getScriptColorHex(script.color || 'white')"></div>
+
+      <!-- Card Header -->
+      <mat-card-header class="script-header">
+        <div class="script-title-section">
+          <!-- <mat-card-title>{{ script.title || 'Untitled Script' }}</mat-card-title> -->
+          <mat-card-subtitle>
+            <span class="author" *ngIf="script.author">by {{ script.author }}</span>
+            <span class="created-date" *ngIf="script.createdAt">
+              • {{ formatDate(script.createdAt) }}
+            </span>
+          </mat-card-subtitle>
+        </div>
+        <!-- <div class="script-actions">
+          <button mat-icon-button
+                  matTooltip="View Script"
+                  (click)="viewScript(script)">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button mat-icon-button
+                  matTooltip="Download Script"
+                  (click)="downloadScript(script)">
+            <mat-icon>download</mat-icon>
+          </button>
+        </div> -->
+      </mat-card-header>
+
+      <!-- Card Content -->
+      <mat-card-content class="script-content">
+        <!-- Version and Color Info -->
+        <div class="script-meta">
+          <div class="version-info">
+            <mat-icon class="meta-icon">tag</mat-icon>
+            <span class="version-number">Version {{ script.version_number || 'No version' }}</span>
+          </div>
+          <div class="color-info">
+            <div class="color-indicator"
+                 [style.background-color]="getScriptColorHex(script.color || 'white')"
+                 [class.white-border]="script.color === 'white'">
+            </div>
+            <span class="color-label">{{ getScriptColorLabel(script.color || 'white') }}</span>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="description" *ngIf="script.description">
+          <mat-icon class="meta-icon">notes</mat-icon>
+          <p>{{ script.description }}</p>
+        </div>
+      </mat-card-content>
+
+      <!-- Card Actions -->
+      <mat-card-actions class="script-card-actions">
+        <button mat-button color="primary" (click)="viewScript(script)">
+          <mat-icon>visibility</mat-icon>
+          View
+        </button>
+        <button mat-button (click)="downloadScript(script)">
+          <mat-icon>download</mat-icon>
+          Download
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
