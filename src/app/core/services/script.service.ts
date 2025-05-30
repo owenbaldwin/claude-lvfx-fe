@@ -19,7 +19,7 @@ export class ScriptService {
 
   // Get scripts for a specific production
   getScriptsByProduction(productionId: number): Observable<Script[]> {
-    return this.http.get<Script[]>(`${environment.apiUrl}/${productionId}/scripts`);
+    return this.http.get<Script[]>(`${this.apiUrl}/${productionId}/scripts`);
   }
 
   // Get a specific script by ID
