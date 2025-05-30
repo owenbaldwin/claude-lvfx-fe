@@ -81,6 +81,7 @@ export interface ActionBeat {
   beat_type: string;
   version_number?: number;
   is_active?: boolean;
+  color?: string;
   sceneId: number;
   sequenceId: number;
   productionId: number;

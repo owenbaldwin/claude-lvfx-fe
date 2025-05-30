@@ -10,7 +10,39 @@ $dark-grey: #0b0c0e;
 $white: #fff;
 $black: #000;
 
+// Alert Colours (Dropdowns)
 $green-alert: #cccc66;
 $blue-alert: #8899ff;
 $red-alert: #cc4444;
 $purple-alert: #9966ff;
+
+// Script Version Colours
+$version-white: #f5f6fa;
+$version-blue: #88ccff;
+$version-pink: #f57e7e;
+$version-yellow: #faf16e;
+$version-green: #aacc66;
+$version-orange: #ffaa00;
+$version-brown: #BC956C;
+$version-salmon: #ff9966;
+$version-cherry: #cc2233;
+
+// collect them in a map
+$version-colors: (
+  white: $version-white,
+  blue: $version-blue,
+  pink: $version-pink,
+  yellow: $version-yellow,
+  green: $version-green,
+  orange: $version-orange,
+  brown: $version-brown,
+  salmon: $version-salmon,
+  cherry: $version-cherry
+);
+
+// output CSS variables on :root
+:root {
+  @each $name, $color in $version-colors {
+    --version-#{$name}: #{$color};
+  }
+}

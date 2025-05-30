@@ -3,6 +3,7 @@ import {
   EventEmitter,
   Input,
   Output,
+  OnInit,
   OnChanges,
   SimpleChanges,
 } from '@angular/core'
@@ -32,12 +33,27 @@ export class SceneVersionComponent implements OnChanges {
   @Input() productionId!: number
   @Output() versionCreated = new EventEmitter<void>()
 
+  colorKeys = [
+    'white','blue','pink','yellow',
+    'green','orange','brown','salmon','cherry'
+  ];
+
+  colorOptions: Array<{ key: string; value: string }> = [];
+
   form: Partial<Scene & { color?: string }> = {}
 
   constructor(
     private sceneService: SceneService,
     private snack: MatSnackBar
   ) {}
+
+  ngOnInit() {
+    const styles = getComputedStyle(document.documentElement);
+    this.colorOptions = this.colorKeys.map(key => ({
+      key,
+      value: styles.getPropertyValue(`--version-${key}`).trim()
+    }));
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['scene'] && this.scene) {

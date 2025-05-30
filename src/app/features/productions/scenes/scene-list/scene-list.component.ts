@@ -14,6 +14,7 @@ import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.c
 import { ActionBeatListComponent } from '@app/features/productions/action-beats/action-beat-list/action-beat-list.component';
 import { ActionBeatNewComponent } from '@app/features/productions/action-beats/action-beat-new/action-beat-new.component';
 import { SceneVersionComponent } from '../scene-version/scene-version.component';
+import { MatMenuModule }   from '@angular/material/menu';
 
 @Component({
   selector: 'app-scene-list',
@@ -30,7 +31,8 @@ import { SceneVersionComponent } from '../scene-version/scene-version.component'
     SceneEditComponent,
     ActionBeatListComponent,
     ActionBeatNewComponent,
-    SceneVersionComponent
+    SceneVersionComponent,
+    MatMenuModule,
   ],
   templateUrl: './scene-list.component.html',
   styleUrl: './scene-list.component.scss'
@@ -232,6 +234,25 @@ export class SceneListComponent implements OnInit {
       }
     });
   }
+
+  getContrastingTextColor(bg: string) {
+    // Simple luminance check
+    const c = bg.replace('#','');
+    const r = parseInt(c.substr(0,2), 16);
+    const g = parseInt(c.substr(2,2), 16);
+    const b = parseInt(c.substr(4,2), 16);
+    // https://stackoverflow.com/a/1855903
+    const yiq = (r*299 + g*587 + b*114) / 1000;
+    return yiq >= 128 ? 'black' : 'white';
+  }
+
+  getActiveVersion(scene: Scene): Scene | undefined {
+    return this.versionsMap[scene.number]?.find(v => v.is_active);
+  }
+
+
+
+
 
 
 

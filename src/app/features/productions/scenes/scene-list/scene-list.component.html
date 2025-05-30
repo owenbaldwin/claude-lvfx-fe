@@ -69,15 +69,25 @@
         </li>
         <li style="width: 5%;">
         </li>
-        <li style="width: 30%;">
+        <li style="width: 20%;">
+        </li>
+        <li style="width: 7%;">
           <!-- version dropdown -->
-          <select *ngIf="versionsMap[scene.number]?.length" #versionSelect (change)="switchVersion(scene, versionSelect.value)">
-            <option *ngFor="let v of versionsMap[scene.number]" [value]="v.id" [selected]="v.is_active">
+          <button mat-button [matMenuTriggerFor]="versionMenu">
+            <span class="swatch" [style.backgroundColor]="getActiveVersion(scene)?.color">
+            </span>
+            v{{ getActiveVersion(scene)?.version_number }}
+          </button>
+
+          <mat-menu #versionMenu="matMenu">
+            <button mat-menu-item *ngFor="let v of versionsMap[scene.number]" (click)="switchVersion(scene, v.id!.toString())">
+              <span class="swatch" [style.backgroundColor]="v.color"></span>
               v{{ v.version_number }}
-            </option>
-          </select>
-
-
+            </button>
+          </mat-menu>
+        </li>
+        <li style="width: 3%;">
+          <div class="scene-color" [style.background-color]="scene.color"></div>
         </li>
         <li style="width: 5%;">
           <app-crud-dropdown
