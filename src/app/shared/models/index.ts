@@ -32,8 +32,10 @@ export interface Script {
   id: number;
   title: string;
   author?: string;
-  version?: string;
+  version_number?: string;
   content?: string;
+  color?: string;
+  description?: string;
   productionId: number;
   production?: Production;
   createdAt?: string;

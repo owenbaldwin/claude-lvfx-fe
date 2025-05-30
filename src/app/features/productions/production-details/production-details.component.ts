@@ -9,6 +9,8 @@ import { ScriptService } from '@app/core/services/script.service';
 import { ProductionUserService } from '@app/core/services/production-user.service';
 import { Production, Script, ProductionUser } from '@app/shared/models';
 import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog/confirm-dialog.component';
+import { ModalComponent } from '@app/shared/modal/modal.component';
+import { ScriptUploadComponent } from '../scripts/script-upload/script-upload.component';
 import { CommonModule } from '@angular/common';
 
 import { MatTabsModule } from '@angular/material/tabs';
@@ -34,6 +36,8 @@ import { ProductionBreakdownComponent } from "../production-breakdown/production
     MatProgressSpinnerModule,
     ProductionBreakdownComponent,
     RouterModule,
+    ModalComponent,
+    ScriptUploadComponent,
   ]
 })
 export class ProductionDetailsComponent implements OnInit {
@@ -43,6 +47,9 @@ export class ProductionDetailsComponent implements OnInit {
   productionId: number = 0;
   loading = true;
   error = '';
+
+  // Modal state
+  isUploadModalOpen = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -160,5 +167,21 @@ export class ProductionDetailsComponent implements OnInit {
 
   backToList(): void {
     this.router.navigate(['/productions']);
+  }
+
+  openUploadScriptModal(): void {
+    this.isUploadModalOpen = true;
+  }
+
+  closeUploadModal(): void {
+    this.isUploadModalOpen = false;
+  }
+
+  onUploadComplete(): void {
+    this.closeUploadModal();
+    // Reload scripts to show the newly uploaded one
+    if (this.productionId) {
+      this.loadRelatedData(this.productionId);
+    }
   }
 }

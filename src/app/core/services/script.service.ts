@@ -8,7 +8,7 @@ import { Script } from '@app/shared/models';
   providedIn: 'root'
 })
 export class ScriptService {
-  private apiUrl = `${environment.apiUrl}/v1/scripts`;
+  private apiUrl = `${environment.apiUrl}/v1/productions`;
 
   constructor(private http: HttpClient) { }
 
@@ -19,7 +19,7 @@ export class ScriptService {
 
   // Get scripts for a specific production
   getScriptsByProduction(productionId: number): Observable<Script[]> {
-    return this.http.get<Script[]>(`${environment.apiUrl}/productions/${productionId}/scripts`);
+    return this.http.get<Script[]>(`${environment.apiUrl}/${productionId}/scripts`);
   }
 
   // Get a specific script by ID
@@ -40,5 +40,10 @@ export class ScriptService {
   // Delete a script
   deleteScript(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  // Upload a script file
+  uploadScript(productionId: number, formData: FormData): Observable<Script> {
+    return this.http.post<Script>(`${this.apiUrl}/${productionId}/scripts`, formData);
   }
 }
