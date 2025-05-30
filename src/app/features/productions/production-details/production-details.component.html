@@ -29,6 +29,11 @@
         </span>
       </div>
       <div>
+        <button mat-raised-button color="primary" (click)="openUploadScriptModal()">
+          <mat-icon>upload</mat-icon>
+          Upload Script
+        </button>
+
         <button mat-raised-button color="primary" (click)="editProduction()" class="me-2">
           <mat-icon>edit</mat-icon>
           Edit
@@ -67,3 +72,15 @@
     <router-outlet></router-outlet>
   </div>
 </div>
+
+<!-- Upload Script Modal -->
+<app-modal
+  title="Upload Script"
+  [isOpen]="isUploadModalOpen"
+  (close)="closeUploadModal()">
+  <app-script-upload
+    [productionId]="productionId"
+    (uploadComplete)="onUploadComplete()"
+    (uploadCancel)="closeUploadModal()">
+  </app-script-upload>
+</app-modal>

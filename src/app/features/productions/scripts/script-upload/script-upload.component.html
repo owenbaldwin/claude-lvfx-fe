@@ -1,0 +1,102 @@
+<form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" class="script-upload-form">
+  <!-- File Upload Section -->
+  <div class="form-group mb-4">
+    <label for="scriptFile" class="form-label required">Script File (PDF)</label>
+    <div class="file-upload-container">
+      <input
+        type="file"
+        id="scriptFile"
+        class="form-control file-input"
+        accept=".pdf"
+        (change)="onFileSelect($event)"
+        #fileInput>
+      <div class="file-upload-info" *ngIf="selectedFile">
+        <mat-icon class="file-icon">description</mat-icon>
+        <span class="file-name">{{ selectedFile.name }}</span>
+        <span class="file-size">({{ formatFileSize(selectedFile.size) }})</span>
+        <button type="button" class="btn-remove" (click)="removeFile()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="file-upload-placeholder" *ngIf="!selectedFile">
+        <mat-icon class="upload-icon">cloud_upload</mat-icon>
+        <p>Click to select a PDF file or drag and drop</p>
+        <small class="text-muted">Maximum file size: 50MB</small>
+      </div>
+    </div>
+    <div class="error-message" *ngIf="uploadForm.get('file')?.errors?.['required'] && uploadForm.get('file')?.touched">
+      Please select a PDF file
+    </div>
+  </div>
+
+  <!-- Version Number -->
+  <div class="form-group mb-4">
+    <label for="version_number" class="form-label required">Version Number</label>
+    <input
+      type="text"
+      id="version_number"
+      class="form-control"
+      formControlName="version_number"
+      placeholder="e.g., 1.0, 2.1, Draft"
+      maxlength="20">
+    <div class="error-message" *ngIf="uploadForm.get('version_number')?.errors?.['required'] && uploadForm.get('version_number')?.touched">
+      Version number is required
+    </div>
+    <div class="error-message" *ngIf="uploadForm.get('version_number')?.errors?.['maxlength']">
+      Version number must be 20 characters or less
+    </div>
+  </div>
+
+  <!-- Color Selection -->
+  <div class="form-group mb-4">
+    <label class="form-label required">Script Color</label>
+    <div class="color-options">
+      <div class="color-option"
+           *ngFor="let color of colorOptions"
+           [class.selected]="uploadForm.get('color')?.value === color.value"
+           (click)="selectColor(color.value)">
+        <div class="color-circle" [style.background-color]="color.hex"></div>
+        <span class="color-label">{{ color.label }}</span>
+      </div>
+    </div>
+    <div class="error-message" *ngIf="uploadForm.get('color')?.errors?.['required'] && uploadForm.get('color')?.touched">
+      Please select a script color
+    </div>
+  </div>
+
+  <!-- Optional Description -->
+  <div class="form-group mb-4">
+    <label for="description" class="form-label">Description (Optional)</label>
+    <textarea
+      id="description"
+      class="form-control"
+      formControlName="description"
+      rows="3"
+      placeholder="Add any notes about this script version..."
+      maxlength="500"></textarea>
+    <small class="text-muted">{{ uploadForm.get('description')?.value?.length || 0 }}/500 characters</small>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="form-actions">
+    <button type="button"
+            class="btn btn-secondary me-2"
+            (click)="onCancel()"
+            [disabled]="uploading">
+      Cancel
+    </button>
+    <button type="submit"
+            class="btn btn-primary"
+            [disabled]="uploadForm.invalid || uploading">
+      <mat-icon *ngIf="uploading" class="spinning">refresh</mat-icon>
+      <mat-icon *ngIf="!uploading">upload</mat-icon>
+      {{ uploading ? 'Uploading...' : 'Upload Script' }}
+    </button>
+  </div>
+
+  <!-- Upload Progress -->
+  <div class="upload-progress" *ngIf="uploading">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <small class="text-muted mt-2">Uploading script... Please wait</small>
+  </div>
+</form>
