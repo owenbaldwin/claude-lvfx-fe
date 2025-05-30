@@ -84,35 +84,46 @@
       </li>
 
       <li style="width: 15%;">
+      </li>
+
+      <li style="width: 20%;">
+      </li>
+
+      <li style="width: 10%;">
         <!-- version dropdown -->
-        <select *ngIf="versionsMap[actionBeat.number]?.length" #versionSelect (change)="switchVersion(actionBeat, versionSelect.value)">
+        <!-- <select *ngIf="versionsMap[actionBeat.number]?.length" #versionSelect
+          (change)="switchVersion(actionBeat, versionSelect.value)">
           <option *ngFor="let v of versionsMap[actionBeat.number]" [value]="v.id" [selected]="v.is_active">
             v{{ v.version_number || 1 }}
           </option>
-        </select>
+        </select> -->
+
+        <!-- version dropdown -->
+        <button mat-button [matMenuTriggerFor]="versionMenu">
+          <span class="swatch" [style.backgroundColor]="getActiveVersion(actionBeat)?.color">
+          </span>
+          v{{ getActiveVersion(actionBeat)?.version_number }}
+        </button>
+
+        <mat-menu #versionMenu="matMenu">
+          <button mat-menu-item *ngFor="let v of versionsMap[actionBeat.number]" (click)="switchVersion(actionBeat, v.id!.toString())">
+            <span class="swatch" [style.backgroundColor]="v.color"></span>
+            v{{ v.version_number }}
+          </button>
+        </mat-menu>
       </li>
 
       <!-- Options Dropdown -->
       <li style="width: 5%;">
-        <!-- <div class="dropdown">
-          <button
-            class="btn btn-small"
-            type="button"
-            [id]="'seq-' + sequenceId + '-options'"
-            data-bs-toggle="dropdown"
-            aria-expanded="false">
-            <i class="bi bi-three-dots" style="font-size: 24px;"></i>
-          </button> -->
-          <app-crud-dropdown
-            [entityLabel]="'Action Beat'"
-            [elementId]="actionBeat.id || 0"
-            [addLabel]="'Add New Shot'"
-            (add)="openNewShotModal(actionBeat.id)"
-            (edit)="openEditModal(actionBeat)"
-            (version)="openNewVersionModal(actionBeat)"
-            (delete)="deleteActionBeat(actionBeat.id!)">
-          </app-crud-dropdown>
-        <!-- </div> -->
+        <app-crud-dropdown
+          [entityLabel]="'Action Beat'"
+          [elementId]="actionBeat.id || 0"
+          [addLabel]="'Add New Shot'"
+          (add)="openNewShotModal(actionBeat.id)"
+          (edit)="openEditModal(actionBeat)"
+          (version)="openNewVersionModal(actionBeat)"
+          (delete)="deleteActionBeat(actionBeat.id!)">
+        </app-crud-dropdown>
       </li>
     </ul>
     <div

@@ -35,6 +35,23 @@
       [(ngModel)]="form.version_number" required />
   </div>
 
+  <div class="mb-3">
+    <label class="form-label">Colour</label>
+    <div class="d-flex flex-wrap">
+      <div *ngFor="let opt of colorOptions" class="form-check me-3">
+        <input class="form-check-input" type="radio" [id]="'color-'+opt.key" name="color" [(ngModel)]="form.color"
+          [value]="opt.value">
+        <label class="form-check-label" [for]="'color-'+opt.key"
+          style="display: flex; align-items: center; cursor: pointer;">
+          <span [style.backgroundColor]="opt.value"
+            style="width: 2rem; height: 2rem; border: 1px solid #ccc; display: inline-block; margin-right: .25rem;">
+          </span>
+          {{ opt.key }}
+        </label>
+      </div>
+    </div>
+  </div>
+
   <!-- Actions -->
   <div class="modal-actions">
     <button type="button" mat-button (click)="versionCreated.emit()">

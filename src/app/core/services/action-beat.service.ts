@@ -32,18 +32,6 @@ export class ActionBeatService {
   }
 
   // Get action beat versions
-  // getActionBeatVersions(productionId: number, sequenceId: number, sceneId: number, actionBeatNumber: number): Observable<ActionBeat[]> {
-  //   return this.getActionBeats(sceneId, sequenceId, productionId, true).pipe(
-  //     map(actionBeats => actionBeats.filter(ab => ab.number === actionBeatNumber))
-  //   );
-  // }
-  // getActionBeatVersions(productionId: number, sequenceId: number, sceneId: number, actionBeatNumber: number) {
-  //   return this.http.get<ActionBeat[]>(
-  //     `${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${sceneId}/action_beats?all_versions=true&action_beat_number=${actionBeatNumber}`
-  //   );
-  // }
-
-  // action-beat.service.ts
   getActionBeatVersions(productionId: number, sequenceId: number, sceneId: number, actionBeatNumber: number): Observable<ActionBeat[]> {
     return this.http.get<ActionBeat[]>(
       `${this.apiUrl}/${productionId}/sequences/${sequenceId}`

@@ -9,6 +9,8 @@ import { ActionBeatEditComponent } from '../action-beat-edit/action-beat-edit.co
 import { ActionBeatVersionComponent } from '../action-beat-version/action-beat-version.component';
 import { ShotNewComponent } from '../../shots/shot-new/shot-new.component';
 import { ShotListComponent } from '../../shots/shot-list/shot-list.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-action-beat-list',
@@ -21,7 +23,9 @@ import { ShotListComponent } from '../../shots/shot-list/shot-list.component';
     ActionBeatEditComponent,
     ActionBeatVersionComponent,
     ShotNewComponent,
-    ShotListComponent
+    ShotListComponent,
+    MatMenuModule,
+    MatButtonModule,
   ],
   templateUrl: './action-beat-list.component.html',
   styleUrl: './action-beat-list.component.scss'
@@ -65,42 +69,6 @@ export class ActionBeatListComponent {
     document.removeEventListener('openActionBeatModal', ((e: CustomEvent) => {}) as EventListener);
   }
 
-  // loadActionBeats(): void {
-  //   console.log('Loading action beats for scene:', this.sceneId);
-
-  //   // First check what the default call returns
-  //   this.actionBeatService.getActionBeats(this.sceneId, this.sequenceId, this.productionId, false).subscribe((defaultActionBeats) => {
-  //     console.log('Default API response (allVersions=false):', defaultActionBeats);
-
-  //     // Then check what allVersions=true returns
-  //     this.actionBeatService.getActionBeats(this.sceneId, this.sequenceId, this.productionId, true).subscribe((allActionBeats) => {
-  //       console.log('AllVersions API response (allVersions=true):', allActionBeats);
-
-  //       // Only show active ones in the main list
-  //       this.actionBeats = allActionBeats
-  //         .filter(ab => ab.is_active !== false)
-  //         .sort((a, b) => a.number - b.number);
-
-  //       console.log('Filtered active action beats:', this.actionBeats);
-
-  //       // Build versionsMap: { [number]: ActionBeat[] }
-  //       this.versionsMap = {};
-  //       allActionBeats.forEach(ab => {
-  //         if (!this.versionsMap[ab.number]) {
-  //           this.versionsMap[ab.number] = [];
-  //         }
-  //         this.versionsMap[ab.number].push(ab);
-  //       });
-
-  //       console.log('Built versionsMap:', this.versionsMap);
-
-  //       // Sort each version array by version_number
-  //       Object.values(this.versionsMap).forEach(list => list.sort((a, b) => (a.version_number || 1) - (b.version_number || 1)));
-
-  //       console.log('Final sorted versionsMap:', this.versionsMap);
-  //     });
-  //   });
-  // }
   loadActionBeats() {
     // first load only the active beats for the list:
     this.actionBeatService
@@ -231,5 +199,20 @@ export class ActionBeatListComponent {
     });
     document.dispatchEvent(event);
     this.closeNewShotModal();
+  }
+
+  getContrastingTextColor(bg: string) {
+    // Simple luminance check
+    const c = bg.replace('#','');
+    const r = parseInt(c.substr(0,2), 16);
+    const g = parseInt(c.substr(2,2), 16);
+    const b = parseInt(c.substr(4,2), 16);
+    // https://stackoverflow.com/a/1855903
+    const yiq = (r*299 + g*587 + b*114) / 1000;
+    return yiq >= 128 ? 'black' : 'white';
+  }
+
+  getActiveVersion(actionBeat: ActionBeat): ActionBeat | undefined {
+    return this.versionsMap[actionBeat.number]?.find(v => v.is_active);
   }
 }
