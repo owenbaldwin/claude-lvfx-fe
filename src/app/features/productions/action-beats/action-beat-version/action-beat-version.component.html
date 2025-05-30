@@ -1,0 +1,47 @@
+<form (ngSubmit)="submit()">
+  <!-- Action Beat Number -->
+  <div class="mb-3">
+    <label for="versionNumber" class="form-label">Action Beat Number</label>
+    <input type="number" class="form-control" id="versionNumber" name="number" [(ngModel)]="form.number" required />
+  </div>
+
+  <!-- Beat Type -->
+  <div class="mb-3">
+    <label for="versionBeatType" class="form-label">Type</label>
+    <select class="form-select" id="versionBeatType" name="beat_type" [(ngModel)]="form.beat_type" required>
+      <option value="" disabled>Select Type</option>
+      <option value="action">Action</option>
+      <option value="dialogue">Dialogue</option>
+    </select>
+  </div>
+
+  <!-- Description -->
+  <div class="mb-3">
+    <label for="versionDescription" class="form-label">Description</label>
+    <textarea class="form-control" id="versionDescription" name="description" [(ngModel)]="form.description"
+      rows="3" required></textarea>
+  </div>
+
+  <!-- Text -->
+  <div class="mb-3">
+    <label for="versionText" class="form-label">Text</label>
+    <textarea class="form-control" id="versionText" name="text" [(ngModel)]="form.text" rows="3"></textarea>
+  </div>
+
+  <!-- Version Number -->
+  <div class="mb-3">
+    <label for="newVersionNumber" class="form-label">Version Number</label>
+    <input type="number" class="form-control" id="newVersionNumber" name="version_number"
+      [(ngModel)]="form.version_number" required />
+  </div>
+
+  <!-- Actions -->
+  <div class="modal-actions">
+    <button type="button" mat-button (click)="versionCreated.emit()">
+      Cancel
+    </button>
+    <button type="submit" mat-raised-button color="primary">
+      Create Version
+    </button>
+  </div>
+</form>

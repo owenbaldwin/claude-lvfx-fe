@@ -83,9 +83,14 @@
         </div> -->
       </li>
 
-      <li style="width: 15%;"></li>
-      <li style="width: 15%;"></li>
-      <li style="width: 15%;"></li>
+      <li style="width: 15%;">
+        <!-- version dropdown -->
+        <select *ngIf="versionsMap[actionBeat.number]?.length" #versionSelect (change)="switchVersion(actionBeat, versionSelect.value)">
+          <option *ngFor="let v of versionsMap[actionBeat.number]" [value]="v.id" [selected]="v.is_active">
+            v{{ v.version_number || 1 }}
+          </option>
+        </select>
+      </li>
 
       <!-- Options Dropdown -->
       <li style="width: 5%;">
@@ -104,6 +109,7 @@
             [addLabel]="'Add New Shot'"
             (add)="openNewShotModal(actionBeat.id)"
             (edit)="openEditModal(actionBeat)"
+            (version)="openNewVersionModal(actionBeat)"
             (delete)="deleteActionBeat(actionBeat.id!)">
           </app-crud-dropdown>
         <!-- </div> -->
@@ -156,6 +162,18 @@
       [productionId]="productionId"
       (shotCreated)="onShotCreated()">
     </app-shot-new>
+  </app-modal>
+
+  <!-- New Action Beat Version Modal -->
+  <app-modal [title]="'New Version of Action Beat ' + selectedActionBeat?.number" [isOpen]="showNewVersionModal"
+    (close)="showNewVersionModal = false">
+    <app-action-beat-version
+      [actionBeat]="selectedActionBeat!"
+      [sceneId]="sceneId"
+      [sequenceId]="sequenceId"
+      [productionId]="productionId"
+      (versionCreated)="onVersionCreated()">
+    </app-action-beat-version>
   </app-modal>
 
   <!-- Debug Info (remove this in production) -->

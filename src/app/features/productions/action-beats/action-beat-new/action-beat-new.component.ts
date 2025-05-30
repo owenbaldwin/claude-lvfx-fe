@@ -27,7 +27,9 @@ export class ActionBeatNewComponent {
     number: 1,
     description: '',
     text: '',
-    beat_type: 'action'
+    beat_type: 'action',
+    is_active: true,
+    version_number: 1
   };
 
   constructor(
@@ -68,7 +70,9 @@ export class ActionBeatNewComponent {
       number: 1,
       description: '',
       text: '',
-      beat_type: 'action'
+      beat_type: 'action',
+      is_active: true,
+      version_number: 1
     };
   }
 }
