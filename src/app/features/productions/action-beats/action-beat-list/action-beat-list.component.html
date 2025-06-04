@@ -50,16 +50,16 @@
 
       <li style="width: 5%;"></li>
 
-      <!-- Description Display -->
+      <!-- Text Display -->
       <li style="width: 20%;" class="inline-cell">
         <p *ngIf="actionBeat.beat_type === 'action'">
-          {{ actionBeat.description }}
+          {{ actionBeat.text }}
         </p>
         <p *ngIf="actionBeat.beat_type === 'dialogue'">
           <!-- {{
           (actionCharacters.find(c => c.action_beat_id === actionBeat.id)?.name || 'Unknown')
           }}: -->
-          <em>{{ actionBeat.description }}</em>
+          <em>{{ actionBeat.text }}</em>
         </p>
       </li>
 
