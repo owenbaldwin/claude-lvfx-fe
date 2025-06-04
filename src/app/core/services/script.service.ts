@@ -42,8 +42,23 @@ export class ScriptService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  // Upload a script file
+  // // Upload a script file
+  // uploadScript(productionId: number, formData: FormData): Observable<Script> {
+  //   return this.http.post<Script>(`${this.apiUrl}/${productionId}/scripts`, formData);
+  // }
+  /** POST multipart/form-data to create a new Script with an attached PDF */
   uploadScript(productionId: number, formData: FormData): Observable<Script> {
-    return this.http.post<Script>(`${this.apiUrl}/${productionId}/scripts`, formData);
+    // NOTE: we do _not_ set any Content-Type header here – the browser will do it
+    return this.http.post<Script>(
+      `${this.apiUrl}/${productionId}/scripts`,
+      formData
+    );
   }
+
+  // Parse a script
+  parseScript(productionId: number, scriptId: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/${productionId}/scripts/${scriptId}/parse`, {});
+  }
+
+
 }

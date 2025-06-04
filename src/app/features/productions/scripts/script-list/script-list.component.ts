@@ -98,6 +98,20 @@ export class ScriptListComponent implements OnInit {
     console.log('Downloading script:', script);
   }
 
+  parseScript(script: Script): void {
+    console.log('Parsing script:', script);
+    this.scriptService.parseScript(this.productionId, script.id).subscribe({
+      next: (response) => {
+        console.log('Script parsed successfully:', response);
+        // TODO: Handle successful parse response (show notification, update UI, etc.)
+      },
+      error: (error) => {
+        console.error('Error parsing script:', error);
+        // TODO: Handle parse error (show error notification)
+      }
+    });
+  }
+
   trackByScriptId(index: number, script: Script): number {
     return script.id;
   }

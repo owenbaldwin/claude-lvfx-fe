@@ -114,22 +114,32 @@ export class ScriptUploadComponent {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
+
   // onSubmit(): void {
-  //   if (this.uploadForm.valid && this.selectedFile) {
-  //     this.uploading = true;
+  //   // guard against invalid form or no file
+  //   if (!this.uploadForm.valid || !this.selectedFile) {
+  //     // mark touched to show validation
+  //     Object.keys(this.uploadForm.controls).forEach(key =>
+  //       this.uploadForm.get(key)?.markAsTouched()
+  //     );
+  //     return;
+  //   }
 
-  //     const formData = new FormData();
-  //     formData.append('file', this.selectedFile);
-  //     formData.append('version_number', this.uploadForm.get('version_number')?.value);
-  //     formData.append('color', this.uploadForm.get('color')?.value);
-  //     formData.append('productionId', this.productionId.toString());
+  //   this.uploading = true;
 
-  //     const description = this.uploadForm.get('description')?.value;
-  //     if (description) {
-  //       formData.append('description', description);
-  //     }
+  //   const formData = new FormData();
+  //   formData.append('script[file]',             this.selectedFile);
+  //   formData.append('script[version_number]',    this.uploadForm.get('version_number')!.value);
+  //   formData.append('script[color]',            this.uploadForm.get('color')!.value);
+  //   formData.append('script[production_id]',    this.productionId.toString());
 
-  //     this.scriptService.uploadScript(this.productionId, formData).subscribe({
+  //   const description = this.uploadForm.get('description')!.value;
+  //   if (description) {
+  //     formData.append('script[description]', description);
+  //   }
+
+  //   this.scriptService.uploadScript(this.productionId, formData)
+  //     .subscribe({
   //       next: (response: Script) => {
   //         this.snackBar.open('Script uploaded successfully', 'Close', {
   //           duration: 3000,
@@ -150,18 +160,11 @@ export class ScriptUploadComponent {
   //         this.uploading = false;
   //       }
   //     });
-  //   } else {
-  //     // Mark all fields as touched to show validation errors
-  //     Object.keys(this.uploadForm.controls).forEach(key => {
-  //       this.uploadForm.get(key)?.markAsTouched();
-  //     });
-  //   }
   // }
 
   onSubmit(): void {
-    // guard against invalid form or no file
+    // 1) guard
     if (!this.uploadForm.valid || !this.selectedFile) {
-      // mark touched to show validation
       Object.keys(this.uploadForm.controls).forEach(key =>
         this.uploadForm.get(key)?.markAsTouched()
       );
@@ -170,40 +173,34 @@ export class ScriptUploadComponent {
 
     this.uploading = true;
 
-    const formData = new FormData();
-    formData.append('script[file]',             this.selectedFile);
-    formData.append('script[version_number]',    this.uploadForm.get('version_number')!.value);
-    formData.append('script[color]',            this.uploadForm.get('color')!.value);
-    formData.append('script[production_id]',    this.productionId.toString());
-
-    const description = this.uploadForm.get('description')!.value;
-    if (description) {
-      formData.append('script[description]', description);
+    // 2) build the multipart/form-data payload
+    const form = new FormData();
+    // 💥 use the un‐nested keys that Rails actually permits:
+    form.append('file',             this.selectedFile!);
+    form.append('version_number',   this.uploadForm.get('version_number')!.value);
+    form.append('color',            this.uploadForm.get('color')!.value);
+    if (this.uploadForm.get('description')!.value) {
+      form.append('description', this.uploadForm.get('description')!.value);
     }
-
-    this.scriptService.uploadScript(this.productionId, formData)
+    // 3) fire the upload
+    this.scriptService
+      .uploadScript(this.productionId, form)
       .subscribe({
-        next: (response: Script) => {
-          this.snackBar.open('Script uploaded successfully', 'Close', {
-            duration: 3000,
-            panelClass: ['success-snackbar']
-          });
+        next: (newScript) => {
+          this.snackBar.open('Script uploaded!', 'Close', { duration: 3000 });
           this.uploading = false;
           this.uploadComplete.emit();
         },
-        error: (error: any) => {
-          this.snackBar.open(
-            error.message || 'Failed to upload script',
-            'Close',
-            {
-              duration: 5000,
-              panelClass: ['error-snackbar']
-            }
-          );
+        error: (err) => {
+          this.snackBar.open(err.error?.errors?.join(', ') || 'Upload failed', 'Close', {
+            duration: 5000,
+            panelClass: ['error-snackbar']
+          });
           this.uploading = false;
         }
       });
   }
+
 
 
   onCancel(): void {

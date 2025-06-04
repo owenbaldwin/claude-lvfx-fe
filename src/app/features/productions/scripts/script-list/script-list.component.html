@@ -79,7 +79,11 @@
 
       <!-- Card Actions -->
       <mat-card-actions class="script-card-actions">
-        <button mat-button color="primary" (click)="viewScript(script)">
+        <button mat-button color="primary" (click)="parseScript(script)">
+          <mat-icon>auto_fix_high</mat-icon>
+          Parse
+        </button>
+        <button mat-button color="accent" (click)="viewScript(script)">
           <mat-icon>visibility</mat-icon>
           View
         </button>
