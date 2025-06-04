@@ -6,6 +6,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { SceneService } from '@app/core/services/scene.service';
 import { SequenceService } from '@app/core/services/sequence.service';
+import { ActionBeatService } from '@app/core/services/action-beat.service';
 import { Scene, Sequence } from '@app/shared/models';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.component';
@@ -49,6 +50,7 @@ export class UnsequencedSceneListComponent implements OnInit {
   constructor(
     private sceneService: SceneService,
     private sequenceService: SequenceService,
+    private actionBeatService: ActionBeatService,
     private snackBar: MatSnackBar
   ) {}
 
@@ -153,18 +155,8 @@ export class UnsequencedSceneListComponent implements OnInit {
         if (updateObservables.length > 0) {
           forkJoin(updateObservables).subscribe({
             next: () => {
-              this.snackBar.open(
-                `Sequence created and ${this.selectedSceneIds.size} scenes grouped successfully`,
-                'Close',
-                { duration: 3000 }
-              );
-              this.closeGroupScenesModal();
-              this.loadUnsequencedScenes();
-              this.selectedSceneIds.clear();
-
-              // Emit events to notify parent component
-              this.sequenceCreatedAndGrouped.emit();
-              this.scenesUpdated.emit();
+              // After successfully updating scenes, update their action beats with the sequence ID
+              this.updateActionBeatsWithSequenceId(createdSequence.id);
             },
             error: (err) => {
               console.error('Error updating scenes:', err);
@@ -182,6 +174,85 @@ export class UnsequencedSceneListComponent implements OnInit {
         this.creatingSequence = false;
       }
     });
+  }
+
+  private updateActionBeatsWithSequenceId(sequenceId: number): void {
+    // Get all action beats for the selected scenes
+    const getActionBeatsObservables = Array.from(this.selectedSceneIds).map(sceneId =>
+      this.actionBeatService.getActionBeatsByScene(sceneId)
+    );
+
+    if (getActionBeatsObservables.length === 0) {
+      this.finishGroupingOperation();
+      return;
+    }
+
+    forkJoin(getActionBeatsObservables).subscribe({
+      next: (allActionBeatsArrays) => {
+        // Flatten all action beats and create update observables
+        const actionBeatUpdateObservables: any[] = [];
+
+        allActionBeatsArrays.forEach((actionBeats, index) => {
+          const sceneId = Array.from(this.selectedSceneIds)[index];
+          actionBeats.forEach(actionBeat => {
+            if (actionBeat.id && typeof actionBeat.id === 'number') {
+              const updatePayload = {
+                sequenceId: sequenceId,
+                id: actionBeat.id,
+                productionId: this.productionId,
+                sceneId: sceneId
+              };
+              actionBeatUpdateObservables.push(
+                this.actionBeatService.updateUnsequencedActionBeat(
+                  this.productionId,
+                  sceneId,
+                  actionBeat.id!,
+                  updatePayload
+                )
+              );
+            }
+          });
+        });
+
+        // Execute all action beat updates
+        if (actionBeatUpdateObservables.length > 0) {
+          forkJoin(actionBeatUpdateObservables).subscribe({
+            next: () => {
+              console.log('Action beats updated successfully');
+              this.finishGroupingOperation();
+            },
+            error: (err) => {
+              console.error('Error updating action beats:', err);
+              this.snackBar.open('Scenes grouped but some action beats failed to update', 'Close', { duration: 3000 });
+              this.finishGroupingOperation();
+            }
+          });
+        } else {
+          // No action beats to update, just finish the operation
+          this.finishGroupingOperation();
+        }
+      },
+      error: (err) => {
+        console.error('Error getting action beats:', err);
+        this.snackBar.open('Scenes grouped but failed to get action beats', 'Close', { duration: 3000 });
+        this.finishGroupingOperation();
+      }
+    });
+  }
+
+  private finishGroupingOperation(): void {
+    this.snackBar.open(
+      `Sequence created and ${this.selectedSceneIds.size} scenes grouped successfully`,
+      'Close',
+      { duration: 3000 }
+    );
+    this.closeGroupScenesModal();
+    this.loadUnsequencedScenes();
+    this.selectedSceneIds.clear();
+
+    // Emit events to notify parent component
+    this.sequenceCreatedAndGrouped.emit();
+    this.scenesUpdated.emit();
   }
 
   deleteScene(sceneId: number): void {

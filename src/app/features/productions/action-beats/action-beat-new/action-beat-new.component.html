@@ -12,9 +12,9 @@
     </select>
   </div>
   <div class="mb-3">
-    <label for="actionBeatDescription" class="form-label">Description</label>
-    <textarea class="form-control" id="actionBeatDescription" name="description" [(ngModel)]="newActionBeat.description"
-      required placeholder="Action beat description" rows="3"></textarea>
+    <label for="actionBeatText" class="form-label">Text</label>
+    <textarea class="form-control" id="actionBeatText" name="text" [(ngModel)]="newActionBeat.text"
+      required placeholder="Action beat text" rows="3"></textarea>
   </div>
   <div class="mt-3">
     <button type="submit" mat-raised-button color="primary" [disabled]="!actionBeatForm.valid">

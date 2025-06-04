@@ -61,7 +61,7 @@ export class ActionBeatVersionComponent implements OnChanges {
       this.form = {
         // copy over every field you want pre‐filled:
         number: this.actionBeat.number,
-        description: this.actionBeat.description,
+        text: this.actionBeat.text,
         beat_type: this.actionBeat.beat_type,
         is_active: true,
         // bump version number by one (or start at 1)

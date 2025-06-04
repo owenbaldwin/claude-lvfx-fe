@@ -25,7 +25,6 @@ export class ActionBeatNewComponent {
 
   newActionBeat: Partial<ActionBeat> = {
     number: 1,
-    description: '',
     text: '',
     beat_type: 'action',
     is_active: true,
@@ -38,12 +37,7 @@ export class ActionBeatNewComponent {
   ) {}
 
   createActionBeat(): void {
-    if ((!this.newActionBeat.description && !this.newActionBeat.text) || !this.newActionBeat.number) return;
-
-    // Make sure text field is populated with description content if it's empty
-    if (!this.newActionBeat.text && this.newActionBeat.description) {
-      this.newActionBeat.text = this.newActionBeat.description;
-    }
+    if (!this.newActionBeat.text || !this.newActionBeat.number) return;
 
     const actionBeatToCreate: Partial<ActionBeat> = {
       ...this.newActionBeat,
@@ -68,7 +62,6 @@ export class ActionBeatNewComponent {
   resetForm(): void {
     this.newActionBeat = {
       number: 1,
-      description: '',
       text: '',
       beat_type: 'action',
       is_active: true,

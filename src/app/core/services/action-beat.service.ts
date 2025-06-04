@@ -58,6 +58,11 @@ export class ActionBeatService {
     );
   }
 
+  // Update an unsequenced action beat
+  updateUnsequencedActionBeat(productionId: number, sceneId: number, id: number, actionBeat: Partial<ActionBeat>): Observable<ActionBeat> {
+    return this.http.put<ActionBeat>(`${this.apiUrl}/${productionId}/scenes/${sceneId}/action_beats/${id}/update_unsequenced`, actionBeat);
+  }
+
   // Delete an action beat
   deleteActionBeat(productionId: number, sequenceId: number, sceneId: number, id: number): Observable<void> {
     return this.http.delete<void>(

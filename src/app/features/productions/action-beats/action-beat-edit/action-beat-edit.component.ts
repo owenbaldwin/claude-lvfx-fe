@@ -26,7 +26,6 @@ export class ActionBeatEditComponent {
 
   selectedElement: Partial<ActionBeat> = {
     number: 1,
-    description: '',
     text: '',
     beat_type: 'action'
   };
@@ -56,11 +55,6 @@ export class ActionBeatEditComponent {
     }
     if (!this.selectedElement.sceneId && this.actionBeat.sceneId) {
       this.selectedElement.sceneId = this.actionBeat.sceneId;
-    }
-
-    // Make sure text field is populated with description content if it's empty
-    if (!this.selectedElement.text && this.selectedElement.description) {
-      this.selectedElement.text = this.selectedElement.description;
     }
 
     this.actionBeatService.updateActionBeat(
