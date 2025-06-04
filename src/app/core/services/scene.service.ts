@@ -45,6 +45,12 @@ export class SceneService {
     return this.http.put<Scene>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${id}`, scene);
   }
 
+  // Update an unsequenced scene
+  updateUnsequencedScene(productionId: number, id: number, scene: Partial<Scene>): Observable<Scene> {
+    console.log('Service: updating unsequenced scene', id, 'for production', productionId, 'with data:', scene);
+    return this.http.put<Scene>(`${this.apiUrl}/${productionId}/scenes/${id}/update_unsequenced`, scene);
+  }
+
   // Delete a scene
   deleteScene(productionId: number, sequenceId: number, id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${id}`);

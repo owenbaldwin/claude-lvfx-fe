@@ -5,6 +5,14 @@
       <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
       Unsequenced Scenes
     </h5>
+
+    <button
+      class="btn btn-primary"
+      [disabled]="!hasSelectedScenes"
+      [class.btn-secondary]="!hasSelectedScenes"
+      (click)="groupScenesIntoSequence()">
+      Group Scenes Into Sequence
+    </button>
   </div>
 
   <!-- Loading spinner -->
@@ -32,7 +40,8 @@
             [id]="'check-unsequenced-scene-' + scene.id"
             [name]="'check-unsequenced-scene-' + scene.id"
             [value]="scene.id"
-            [attr.data-scene-id]="scene.id">
+            [attr.data-scene-id]="scene.id"
+            (change)="onSceneCheckboxChange(scene.id!, $event)">
         </li>
         <li style="width: 2%;" class="seq-border">
           <span class="text-muted">-</span>
@@ -94,3 +103,44 @@
     </div>
   </div>
 </div>
+
+<!-- Group Scenes Modal -->
+<app-modal [title]="'Create Sequence and Group Selected Scenes'" [isOpen]="showGroupScenesModal" (close)="closeGroupScenesModal()">
+  <div>
+    <p class="mb-3">
+      <strong>{{ selectedSceneIds.size }}</strong> scene(s) selected for grouping.
+    </p>
+
+    <!-- New Sequence Form -->
+    <form class="new-breakdown-element-form" #sequenceForm="ngForm" (ngSubmit)="createSequenceAndGroupScenes()">
+      <div class="mb-3">
+        <label for="sequenceNumber" class="form-label">Number</label>
+        <input type="number" class="form-control" id="sequenceNumber" name="number" [(ngModel)]="newSequence.number" required>
+      </div>
+      <div class="mb-3">
+        <label for="sequencePrefix" class="form-label">Prefix</label>
+        <input type="text" class="form-control" id="sequencePrefix" name="prefix" [(ngModel)]="newSequence.prefix"
+          placeholder="e.g., SEQ01" required>
+      </div>
+      <div class="mb-3">
+        <label for="sequenceName" class="form-label">Name</label>
+        <input type="text" class="form-control" id="sequenceName" name="name" [(ngModel)]="newSequence.name"
+          required placeholder="Sequence name">
+      </div>
+      <div class="mb-3">
+        <label for="sequenceDescription" class="form-label">Description</label>
+        <textarea class="form-control" id="sequenceDescription" name="description" [(ngModel)]="newSequence.description"
+          placeholder="Sequence description" rows="3"></textarea>
+      </div>
+      <div class="mt-3 d-flex gap-2">
+        <button type="submit" mat-raised-button color="primary" [disabled]="!sequenceForm.valid || creatingSequence">
+          <span *ngIf="creatingSequence" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{ creatingSequence ? 'Creating...' : 'Create Sequence & Group Scenes' }}
+        </button>
+        <button type="button" mat-button (click)="closeGroupScenesModal()" [disabled]="creatingSequence">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</app-modal>
