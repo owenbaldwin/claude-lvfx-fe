@@ -18,6 +18,7 @@ import { CommonModule } from '@angular/common';
 export class ProductionBreakdownComponent implements OnInit {
   productionId!: number;
   @ViewChild(SequenceListComponent) sequenceList!: SequenceListComponent;
+  @ViewChild(UnsequencedSceneListComponent) unsequencedSceneList!: UnsequencedSceneListComponent;
 
   isModalOpen = false;
   sequences: Sequence[] = [];
@@ -56,6 +57,19 @@ export class ProductionBreakdownComponent implements OnInit {
     this.closeModal();
     this.loadSequences();
     this.sequenceList.loadSequences();
+  }
+
+  // Handle events from unsequenced scenes component
+  onSequenceCreatedAndGrouped(): void {
+    // Refresh both sequence list and unsequenced scenes
+    this.sequenceList.loadSequences();
+    this.unsequencedSceneList.loadUnsequencedScenes();
+    this.loadSequences();
+  }
+
+  onScenesUpdated(): void {
+    // Refresh unsequenced scenes list
+    this.unsequencedSceneList.loadUnsequencedScenes();
   }
 
   loadSequences(): void {
