@@ -63,6 +63,7 @@ export class ActionBeatService {
     return this.http.put<ActionBeat>(`${this.apiUrl}/${productionId}/scenes/${sceneId}/action_beats/${id}/update_unsequenced`, actionBeat);
   }
 
+
   // Delete an action beat
   deleteActionBeat(productionId: number, sequenceId: number, sceneId: number, id: number): Observable<void> {
     return this.http.delete<void>(

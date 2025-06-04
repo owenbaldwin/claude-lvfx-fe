@@ -156,7 +156,22 @@ export class UnsequencedSceneListComponent implements OnInit {
           forkJoin(updateObservables).subscribe({
             next: () => {
               // After successfully updating scenes, update their action beats with the sequence ID
-              this.updateActionBeatsWithSequenceId(createdSequence.id);
+              if (createdSequence.id) {
+                this.updateActionBeatsWithSequenceId(createdSequence.id);
+              } else {
+                this.snackBar.open(
+                  `Sequence created and ${this.selectedSceneIds.size} scenes grouped successfully`,
+                  'Close',
+                  { duration: 3000 }
+                );
+                this.closeGroupScenesModal();
+                this.loadUnsequencedScenes();
+                this.selectedSceneIds.clear();
+
+                // Emit events to notify parent component
+                this.sequenceCreatedAndGrouped.emit();
+                this.scenesUpdated.emit();
+              }
             },
             error: (err) => {
               console.error('Error updating scenes:', err);
