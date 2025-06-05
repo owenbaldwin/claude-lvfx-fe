@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '@env/environment';
 
 export interface ShotFx {
   id: number;
@@ -14,7 +15,7 @@ export interface ShotFx {
   providedIn: 'root'
 })
 export class ShotFxService {
-  private apiUrl = '/api/v1/productions';
+  private apiUrl = `${environment.apiUrl}/v1/productions`;
 
   constructor(private http: HttpClient) {}
 

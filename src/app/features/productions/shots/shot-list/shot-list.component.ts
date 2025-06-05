@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.component';
 import { ModalComponent } from '@app/shared/modal/modal.component';
 import { ShotEditComponent } from '../shot-edit/shot-edit.component';
+import { ShotElementNewComponent } from '../../shot-elements/shot-element-new/shot-element-new.component';
 
 @Component({
   selector: 'app-shot-list',
@@ -13,7 +14,8 @@ import { ShotEditComponent } from '../shot-edit/shot-edit.component';
     CommonModule,
     CrudDropdownComponent,
     ModalComponent,
-    ShotEditComponent
+    ShotEditComponent,
+    ShotElementNewComponent
   ],
   templateUrl: './shot-list.component.html',
   styleUrl: './shot-list.component.scss'
@@ -34,7 +36,9 @@ export class ShotListComponent implements OnInit, OnDestroy {
 
   showNewShotModal = false;
   showEditModal = false;
+  showNewAssumptionModal = false;
   selectedShot: Partial<Shot> = {};
+  selectedShotId: number = 0;
 
   constructor(
     private shotService: ShotService,
@@ -99,6 +103,23 @@ export class ShotListComponent implements OnInit, OnDestroy {
   onShotUpdated(): void {
     this.loadShots();
     this.showEditModal = false;
+  }
+
+  openNewAssumptionModal(shotId: number): void {
+    this.selectedShotId = shotId;
+    this.showNewAssumptionModal = true;
+    this.changeDetectorRef.detectChanges();
+  }
+
+  openLinkAssumptionModal(shotId: number): void {
+    // TODO: Implement linking existing assumptions
+    console.log('Opening link assumption modal for shot', shotId);
+  }
+
+  onAssumptionCreated(): void {
+    this.showNewAssumptionModal = false;
+    // TODO: Refresh shot assumptions if needed
+    this.changeDetectorRef.detectChanges();
   }
 
   deleteShot(id: number): void {

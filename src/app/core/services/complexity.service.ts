@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '@env/environment';
+
 
 export interface Complexity {
   id: number;
@@ -16,7 +18,8 @@ export interface Complexity {
   providedIn: 'root'
 })
 export class ComplexityService {
-  private apiUrl = '/api/v1/productions';
+  private apiUrl = `${environment.apiUrl}/v1/productions`;
+
 
   constructor(private http: HttpClient) {}
 
@@ -39,7 +42,7 @@ export class ComplexityService {
   /**
    * POST /api/v1/productions/:productionId/complexities
    */
-  create(productionId: number, payload: Partial<Complexity>): Observable<Complexity> {
+  create(productionId: number, userId: number, payload: Partial<Complexity>): Observable<Complexity> {
     const url = `${this.apiUrl}/${productionId}/complexities`;
     return this.http.post<Complexity>(url, payload);
   }

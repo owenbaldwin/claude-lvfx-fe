@@ -69,9 +69,15 @@
 
       <!-- Assumptions -->
       <li style="width: 15%;">
-        <!-- <app-element-dropdown [icon]="'plus-circle-fill'" [shotId]="shot.id" elementType="assumption"
-          [elements]="getElementsForShot(shotAssumptions, shot.id)">
-        </app-element-dropdown> -->
+        <div class="btn-group">
+          <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
+            <i class="bi bi-plus-circle-fill"></i>
+          </button>
+          <ul class="dropdown-menu">
+            <li><button class="dropdown-item" type="button" (click)="openNewAssumptionModal(shot.id!)">Add New Assumption</button></li>
+            <li><button class="dropdown-item" type="button" (click)="openLinkAssumptionModal(shot.id!)">Link Existing Assumption</button></li>
+          </ul>
+        </div>
       </li>
 
       <!-- FX -->
@@ -96,23 +102,6 @@
 
   <p *ngIf="shots.length === 0" class="text-center">No shots available for this action beat.</p>
 
-  <!-- Add buttons for new shots -->
-  <!-- <div class="text-center mt-3 mb-5" *ngIf="actionBeatId">
-    <button class="btn btn-primary" (click)="openNewShotModal()">
-      <i class="bi bi-plus-circle me-2"></i>Add New Shot
-    </button>
-  </div> -->
-
-  <!-- New Shot Modal placeholder - would be implemented with appropriate components -->
-  <!-- <app-modal [title]="'Add New Shot'" [isOpen]="showNewShotModal" (close)="closeNewShotModal()">
-    <app-shot-new
-      [actionBeatId]="actionBeatId"
-      [sceneId]="sceneId"
-      [sequenceId]="sequenceId"
-      [productionId]="productionId"
-      (shotCreated)="onShotCreated()">
-    </app-shot-new>
-  </app-modal> -->
 
   <!-- Edit Shot Modal -->
   <app-modal [title]="'Edit Shot'" [isOpen]="showEditModal" (close)="showEditModal = false">
@@ -124,5 +113,18 @@
       [actionBeatId]="actionBeatId"
       (shotUpdated)="onShotUpdated()">
     </app-shot-edit>
+  </app-modal>
+
+  <!-- New Assumption Modal -->
+  <app-modal [title]="'Add New Assumption'" [isOpen]="showNewAssumptionModal" (close)="showNewAssumptionModal = false">
+    <app-shot-element-new
+      [elementType]="'assumption'"
+      [productionId]="productionId"
+      [sequenceId]="sequenceId"
+      [sceneId]="sceneId"
+      [actionBeatId]="actionBeatId"
+      [shotId]="selectedShotId"
+      (elementCreated)="onAssumptionCreated()">
+    </app-shot-element-new>
   </app-modal>
 </div>

@@ -1,0 +1,106 @@
+<div class="container-fluid">
+  <form [formGroup]="elementForm" (ngSubmit)="onSubmit()">
+
+    <!-- Element Name -->
+    <div class="mb-3">
+      <label for="elementName" class="form-label">{{ getElementTypeLabel() }} Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="elementName"
+        formControlName="name"
+        [class.is-invalid]="elementForm.get('name')?.invalid && elementForm.get('name')?.touched">
+      <div class="invalid-feedback" *ngIf="elementForm.get('name')?.invalid && elementForm.get('name')?.touched">
+        Name is required
+      </div>
+    </div>
+
+    <!-- Element Description -->
+    <div class="mb-3">
+      <label for="elementDescription" class="form-label">Description</label>
+      <textarea
+        class="form-control"
+        id="elementDescription"
+        rows="3"
+        formControlName="description"
+        [class.is-invalid]="elementForm.get('description')?.invalid && elementForm.get('description')?.touched"></textarea>
+      <div class="invalid-feedback" *ngIf="elementForm.get('description')?.invalid && elementForm.get('description')?.touched">
+        Description is required
+      </div>
+    </div>
+
+    <!-- Complexity Section -->
+    <div class="mb-3">
+      <label class="form-label">Complexity</label>
+
+      <!-- Existing Complexity Dropdown -->
+      <div *ngIf="!showComplexityForm" class="mb-2">
+        <select
+          class="form-select"
+          formControlName="complexity_id"
+          [class.is-invalid]="elementForm.get('complexity_id')?.invalid && elementForm.get('complexity_id')?.touched">
+          <option value="">Select a complexity</option>
+          <option [value]="complexity.id" *ngFor="let complexity of complexities">
+            {{ complexity.level }} - {{ complexity.description }}
+          </option>
+        </select>
+        <div class="invalid-feedback" *ngIf="elementForm.get('complexity_id')?.invalid && elementForm.get('complexity_id')?.touched">
+          Please select a complexity
+        </div>
+      </div>
+
+      <!-- Create New Complexity Button -->
+      <button
+        type="button"
+        class="btn btn-outline-secondary btn-sm mb-2"
+        (click)="toggleComplexityForm()"
+        [disabled]="isSubmitting">
+        {{ showComplexityForm ? 'Use Existing Complexity' : 'Create New Complexity' }}
+      </button>
+
+      <!-- New Complexity Form -->
+      <div *ngIf="showComplexityForm" [formGroup]="complexityForm" class="border p-3 rounded bg-light">
+        <h6>New Complexity</h6>
+
+        <div class="mb-2">
+          <label for="complexityLevel" class="form-label">Level</label>
+          <input
+            type="text"
+            class="form-control"
+            id="complexityLevel"
+            formControlName="level"
+            placeholder="e.g., High, Medium, Low"
+            [class.is-invalid]="complexityForm.get('level')?.invalid && complexityForm.get('level')?.touched">
+          <div class="invalid-feedback" *ngIf="complexityForm.get('level')?.invalid && complexityForm.get('level')?.touched">
+            Level is required
+          </div>
+        </div>
+
+        <div class="mb-2">
+          <label for="complexityDescription" class="form-label">Description</label>
+          <textarea
+            class="form-control"
+            id="complexityDescription"
+            rows="2"
+            formControlName="description"
+            [class.is-invalid]="complexityForm.get('description')?.invalid && complexityForm.get('description')?.touched"></textarea>
+          <div class="invalid-feedback" *ngIf="complexityForm.get('description')?.invalid && complexityForm.get('description')?.touched">
+            Description is required
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="d-flex justify-content-end">
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="isSubmitting || elementForm.invalid || (showComplexityForm && complexityForm.invalid)">
+        <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status"></span>
+        {{ isSubmitting ? 'Creating...' : 'Create ' + getElementTypeLabel() }}
+      </button>
+    </div>
+
+  </form>
+</div>
