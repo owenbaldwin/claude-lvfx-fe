@@ -69,11 +69,16 @@
           </button>
           <ul class="dropdown-menu crud-dropdown-menu">
             <li><button class="dropdown-item add-btn" type="button" (click)="openNewAssetModal(shot.id!)">Add New
-                Asset</button></li>
+                Asset</button>
+            </li>
             <li><button class="dropdown-item edit-btn" type="button" (click)="openLinkAssetModal(shot.id!)">Link Existing
-                Asset</button></li>
+                Asset</button>
+            </li>
           </ul>
         </div>
+        <!-- <ng-container *ngFor="let asset of getShotAssets(shot.id!)">
+          <p>{{ asset.name }}</p>
+        </ng-container> -->
       </li>
 
       <!-- Assumptions -->
@@ -87,6 +92,9 @@
             <li><button class="dropdown-item edit-btn" type="button" (click)="openLinkAssumptionModal(shot.id!)">Link Existing Assumption</button></li>
           </ul>
         </div>
+        <!-- <ng-container *ngFor="let assumption of getShotAssumptions(shot.id!)">
+          <p>{{ assumption.name }}</p>
+        </ng-container> -->
       </li>
 
       <!-- FX -->
@@ -103,6 +111,9 @@
                 FX</button></li>
           </ul>
         </div>
+        <!-- <ng-container *ngFor="let fx of getShotFxs(shot.id!)">
+          <p>{{ fx.name }}</p>
+        </ng-container> -->
       </li>
 
       <!-- Options Dropdown -->
@@ -136,6 +147,7 @@
   <!-- New Assumption Modal -->
   <app-modal [title]="'Add New Assumption'" [isOpen]="showNewAssumptionModal" (close)="showNewAssumptionModal = false">
     <app-shot-element-new
+      #newAssumptionComponent
       [elementType]="'assumption'"
       [productionId]="productionId"
       [sequenceId]="sequenceId"
@@ -149,6 +161,7 @@
   <!-- New Asset Modal -->
   <app-modal [title]="'Add New Asset'" [isOpen]="showNewAssetModal" (close)="showNewAssetModal = false">
     <app-shot-element-new
+      #newAssetComponent
       [elementType]="'asset'"
       [productionId]="productionId"
       [sequenceId]="sequenceId"
@@ -162,6 +175,7 @@
   <!-- New FX Modal -->
   <app-modal [title]="'Add New FX'" [isOpen]="showNewFxModal" (close)="showNewFxModal = false">
     <app-shot-element-new
+      #newFxComponent
       [elementType]="'fx'"
       [productionId]="productionId"
       [sequenceId]="sequenceId"

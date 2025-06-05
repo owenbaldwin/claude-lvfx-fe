@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, ChangeDetectorRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ShotService } from '@app/core/services/shot.service';
 import { Shot } from '@app/shared/models';
 import { CommonModule } from '@angular/common';
@@ -28,6 +28,10 @@ export class ShotListComponent implements OnInit, OnDestroy {
   @Input() sequenceId!: number;
   @Input() sequencePrefix!: string;
   @Input() productionId!: number;
+
+  @ViewChild('newAssumptionComponent') newAssumptionComponent?: ShotElementNewComponent;
+  @ViewChild('newAssetComponent') newAssetComponent?: ShotElementNewComponent;
+  @ViewChild('newFxComponent') newFxComponent?: ShotElementNewComponent;
 
   shots: Shot[] = [];
   shotAssets: any[] = [];
@@ -120,6 +124,11 @@ export class ShotListComponent implements OnInit, OnDestroy {
     this.selectedShotId = shotId;
     this.showNewAssumptionModal = true;
     this.changeDetectorRef.detectChanges();
+
+    // Initialize the component after change detection
+    setTimeout(() => {
+      this.newAssumptionComponent?.initializeModal();
+    });
   }
 
   openLinkAssumptionModal(shotId: number): void {
@@ -137,6 +146,11 @@ export class ShotListComponent implements OnInit, OnDestroy {
     this.selectedShotId = shotId;
     this.showNewAssetModal = true;
     this.changeDetectorRef.detectChanges();
+
+    // Initialize the component after change detection
+    setTimeout(() => {
+      this.newAssetComponent?.initializeModal();
+    });
   }
 
   openLinkAssetModal(shotId: number): void {
@@ -154,6 +168,11 @@ export class ShotListComponent implements OnInit, OnDestroy {
     this.selectedShotId = shotId;
     this.showNewFxModal = true;
     this.changeDetectorRef.detectChanges();
+
+    // Initialize the component after change detection
+    setTimeout(() => {
+      this.newFxComponent?.initializeModal();
+    });
   }
 
   openLinkFxModal(shotId: number): void {
@@ -193,6 +212,30 @@ export class ShotListComponent implements OnInit, OnDestroy {
   getShotStoryboards(shotId: number): any[] {
     // This would typically fetch storyboards from a service
     // For now, return an empty array
+    return [];
+  }
+
+  /**
+   * Get assets for a specific shot
+   * TODO: Implement proper data loading when needed
+   */
+  getShotAssets(shotId: number): any[] {
+    return [];
+  }
+
+  /**
+   * Get assumptions for a specific shot
+   * TODO: Implement proper data loading when needed
+   */
+  getShotAssumptions(shotId: number): any[] {
+    return [];
+  }
+
+  /**
+   * Get FX for a specific shot
+   * TODO: Implement proper data loading when needed
+   */
+  getShotFxs(shotId: number): any[] {
     return [];
   }
 }
