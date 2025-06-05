@@ -56,38 +56,28 @@
           {{ actionBeat.text }}
         </p>
         <p *ngIf="actionBeat.beat_type === 'dialogue'">
-          <!-- {{
-          (actionCharacters.find(c => c.action_beat_id === actionBeat.id)?.name || 'Unknown')
-          }}: -->
+          <strong>{{ getPrimaryCharacterName(actionBeat.id) }}: </strong>
           <em>{{ actionBeat.text }}</em>
         </p>
       </li>
 
-      <li style="width: 5%;"></li>
-
-      <!-- Characters Dropdown -->
-      <li style="width: 5%;">
-        <!-- TODO: ADD CHARACTERS!!!! -->
-        <!-- <div class="dropdown">
-          <button class="btn-transparent" data-bs-toggle="dropdown">
-            <i class="bi bi-person-fill"></i>
-            {{
-            actionCharacters.filter(c => c.action_beat_id === actionBeat.id).length
-            }}
-          </button>
-          <ul class="dropdown-menu">
-            <li *ngFor="let c of actionCharacters.filter(c => c.action_beat_id === actionBeat.id)">
-              <a class="dropdown-item">{{ c.name }}</a>
-            </li>
-          </ul>
-        </div> -->
-      </li>
 
       <li style="width: 15%;">
       </li>
 
+      <!-- Characters Dropdown -->
+      <li style="width: 5%;">
+        <button mat-button [matMenuTriggerFor]="characterMenu" (click)="selectedActionBeatForCharacters = actionBeat">
+          <i class="bi bi-person-fill"></i>
+          {{ getActionBeatCharacterCount(actionBeat.id) }}
+        </button>
+      </li>
+
+      <li style="width: 5%;"></li>
+
       <li style="width: 20%;">
       </li>
+
 
       <li style="width: 10%;">
         <!-- version dropdown -->
@@ -192,4 +182,14 @@
     Modal is {{ showNewActionBeatModal ? 'VISIBLE' : 'HIDDEN' }}
     Scene ID: {{ sceneId }}
   </div>
+
+  <!-- Character Menu (shared across all action beats) -->
+  <mat-menu #characterMenu="matMenu">
+    <div mat-menu-item *ngFor="let c of getActionBeatCharacters(selectedActionBeatForCharacters?.id)" disabled>
+      {{ c.full_name }}
+    </div>
+    <div mat-menu-item *ngIf="getActionBeatCharacterCount(selectedActionBeatForCharacters?.id) === 0" disabled>
+      <em>No characters</em>
+    </div>
+  </mat-menu>
 </div>

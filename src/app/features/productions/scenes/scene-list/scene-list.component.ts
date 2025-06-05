@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, ViewChildren, QueryList } from '@angular/core';
 import { SceneService } from '@app/core/services/scene.service';
+import { CharacterService } from '@app/core/services/character.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Scene } from '@app/shared/models';
+import { Scene, Character } from '@app/shared/models';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -60,11 +61,16 @@ export class SceneListComponent implements OnInit {
   sceneVersions: Scene[] = [];  // for later dropdown
   versionsMap: { [sceneNumber: number]: Scene[] } = {};
 
+  // Character-related properties
+  charactersMap: { [sceneId: number]: Character[] } = {};
+  selectedSceneForCharacters?: Scene;
+
   // Add ViewChildren to access ActionBeatList components
   @ViewChildren(ActionBeatListComponent) actionBeatListComponents!: QueryList<ActionBeatListComponent>;
 
   constructor(
     private sceneService: SceneService,
+    private characterService: CharacterService,
     private snackBar: MatSnackBar
   ) {}
 
@@ -136,7 +142,6 @@ export class SceneListComponent implements OnInit {
     }
   }
 
-
   loadScenes(): void {
     this.sceneService.getScenesBySequence(this.productionId, this.sequenceId)
       .subscribe({
@@ -154,6 +159,21 @@ export class SceneListComponent implements OnInit {
               .subscribe(vers => {
                 this.versionsMap[scene.number] = vers;
               });
+
+            // Load characters for each scene
+            if (scene.id) {
+              this.characterService
+                .getSceneCharacters(this.productionId, this.sequenceId, scene.id)
+                .subscribe({
+                  next: (characters) => {
+                    this.charactersMap[scene.id!] = characters;
+                  },
+                  error: (err) => {
+                    console.error('Failed to load characters for scene', scene.id, err);
+                    this.charactersMap[scene.id!] = [];
+                  }
+                });
+            }
           });
         },
         error: (err) => {
@@ -162,8 +182,6 @@ export class SceneListComponent implements OnInit {
         }
       });
   }
-
-
 
   deleteScene(sceneId: number): void {
     if (confirm('Are you sure you want to delete this scene?')) {
@@ -200,8 +218,6 @@ export class SceneListComponent implements OnInit {
       // store in a map: this.versionsMap[scene.number] = vers;
     });
   }
-
-
 
   switchVersion(scene: Scene, newVersionId: string) {
     const versionIdNum = parseInt(newVersionId, 10);
@@ -250,18 +266,23 @@ export class SceneListComponent implements OnInit {
     return this.versionsMap[scene.number]?.find(v => v.is_active);
   }
 
-
-
-
-
-
-
-
-
-
-
   // Public method to refresh scenes from outside the component
   public refreshScenes(): void {
     this.loadScenes();
+  }
+
+  // Character-related methods
+  getSceneCharacterCount(sceneId: number | undefined): number {
+    if (!sceneId || !this.charactersMap[sceneId]) {
+      return 0;
+    }
+    return this.charactersMap[sceneId].length;
+  }
+
+  getSceneCharacters(sceneId: number | undefined): Character[] {
+    if (!sceneId || !this.charactersMap[sceneId]) {
+      return [];
+    }
+    return this.charactersMap[sceneId];
   }
 }
