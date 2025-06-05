@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '@env/environment';
 
 export interface ShotAssumption {
   id: number;
@@ -14,7 +15,7 @@ export interface ShotAssumption {
   providedIn: 'root'
 })
 export class ShotAssumptionService {
-  private apiUrl = '/api/v1/productions';
+  private apiUrl = `${environment.apiUrl}/v1/productions`;
 
   constructor(private http: HttpClient) {}
 
