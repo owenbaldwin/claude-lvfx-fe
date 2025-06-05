@@ -1,6 +1,7 @@
 import { Component, Input, ChangeDetectorRef } from '@angular/core';
 import { ActionBeatService } from '@app/core/services/action-beat.service';
-import { ActionBeat } from '@app/shared/models';
+import { CharacterService } from '@app/core/services/character.service';
+import { ActionBeat, Character } from '@app/shared/models';
 import { CommonModule } from '@angular/common';
 import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.component';
 import { ModalComponent } from '@app/shared/modal/modal.component';
@@ -47,8 +48,13 @@ export class ActionBeatListComponent {
   selectedActionBeatId?: number;
   versionsMap: { [actionBeatNumber: number]: ActionBeat[] } = {};
 
+  // Character-related properties
+  actionBeatCharactersMap: { [actionBeatId: number]: Character[] } = {};
+  selectedActionBeatForCharacters?: ActionBeat;
+
   constructor(
     private actionBeatService: ActionBeatService,
+    private characterService: CharacterService,
     private changeDetectorRef: ChangeDetectorRef
   ) {}
 
@@ -90,6 +96,21 @@ export class ActionBeatListComponent {
               this.versionsMap[ab.number] = allVers
                 .sort((x, y) => (x.version_number || 1) - (y.version_number || 1));
             });
+
+          // Load characters for each action beat
+          if (ab.id) {
+            this.characterService
+              .getActionBeatCharacters(this.productionId, this.sequenceId, this.sceneId, ab.id)
+              .subscribe({
+                next: (characters) => {
+                  this.actionBeatCharactersMap[ab.id!] = characters;
+                },
+                error: (err) => {
+                  console.error('Failed to load characters for action beat', ab.id, err);
+                  this.actionBeatCharactersMap[ab.id!] = [];
+                }
+              });
+          }
         });
       });
   }
@@ -214,5 +235,28 @@ export class ActionBeatListComponent {
 
   getActiveVersion(actionBeat: ActionBeat): ActionBeat | undefined {
     return this.versionsMap[actionBeat.number]?.find(v => v.is_active);
+  }
+
+  // Character-related methods
+  getActionBeatCharacters(actionBeatId: number | undefined): Character[] {
+    if (!actionBeatId || !this.actionBeatCharactersMap[actionBeatId]) {
+      return [];
+    }
+    return this.actionBeatCharactersMap[actionBeatId];
+  }
+
+  getActionBeatCharacterCount(actionBeatId: number | undefined): number {
+    if (!actionBeatId || !this.actionBeatCharactersMap[actionBeatId]) {
+      return 0;
+    }
+    return this.actionBeatCharactersMap[actionBeatId].length;
+  }
+
+  getPrimaryCharacterName(actionBeatId: number | undefined): string {
+    const characters = this.getActionBeatCharacters(actionBeatId);
+    if (characters.length > 0) {
+      return characters[0].full_name; // Return the first character as the primary speaker
+    }
+    return 'Unknown';
   }
 }

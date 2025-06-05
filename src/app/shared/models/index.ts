@@ -111,3 +111,12 @@ export interface Shot {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface Character {
+  id?: number;
+  full_name: string;
+  description?: string;
+  productionId: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
