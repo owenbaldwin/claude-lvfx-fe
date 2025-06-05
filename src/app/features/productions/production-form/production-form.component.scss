@@ -1,0 +1,109 @@
+@import 'src/styles/variables';
+
+.dark-card {
+  background-color: $dark-grey !important;
+  border: 1px solid $light-grey !important;
+  color: $white !important;
+}
+
+.dark-card-header {
+  background-color: $mid-grey !important;
+  border-bottom: 1px solid $light-grey !important;
+  color: $lvfx-gold !important;
+
+  h2 {
+    color: $lvfx-gold !important;
+    font-family: 'Comfortaa', cursive;
+  }
+}
+
+.dark-card-body {
+  background-color: $dark-grey !important;
+  color: $white !important;
+}
+
+.dark-alert {
+  background-color: rgba($red-alert, 0.2) !important;
+  border-color: $red-alert !important;
+  color: $white !important;
+}
+
+.dark-form-field {
+  ::ng-deep {
+    .mat-mdc-text-field-wrapper {
+      background-color: $mid-grey !important;
+    }
+
+    .mat-mdc-form-field-input-control input,
+    .mat-mdc-form-field-input-control textarea {
+      color: $white !important;
+    }
+
+    .mat-mdc-form-field-label {
+      color: $light-grey !important;
+    }
+
+    .mat-mdc-form-field-label.mdc-floating-label--float-above {
+      color: $lvfx-gold !important;
+    }
+
+    .mat-mdc-form-field-outline {
+      color: $light-grey !important;
+    }
+
+    .mat-mdc-form-field-focus-overlay {
+      background-color: transparent !important;
+    }
+
+    .mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline-thick {
+      color: $lvfx-gold !important;
+    }
+
+    .mat-mdc-select-trigger {
+      color: $white !important;
+    }
+
+    .mat-mdc-select-arrow {
+      color: $light-grey !important;
+    }
+
+    .mat-datepicker-toggle {
+      color: $light-grey !important;
+    }
+
+    .mat-mdc-form-field-error {
+      color: $red-alert !important;
+    }
+  }
+}
+
+.dark-btn-primary {
+  background-color: $lvfx-gold !important;
+  color: $black !important;
+  border: none !important;
+
+  &:hover {
+    background-color: $lvfx-gold-bright !important;
+  }
+
+  &:disabled {
+    background-color: $light-grey !important;
+    color: $dark-grey !important;
+  }
+}
+
+.dark-btn-secondary {
+  background-color: transparent !important;
+  color: $lvfx-gold !important;
+  border: 1px solid $lvfx-gold !important;
+
+  &:hover {
+    background-color: rgba($lvfx-gold, 0.1) !important;
+  }
+}
+
+// Material spinner override
+::ng-deep .mat-mdc-progress-spinner .mdc-circular-progress__determinate-circle,
+::ng-deep .mat-mdc-progress-spinner .mdc-circular-progress__indeterminate-circle-graphic {
+  stroke: $lvfx-gold !important;
+}

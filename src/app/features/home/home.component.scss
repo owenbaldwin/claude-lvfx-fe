@@ -1,3 +1,5 @@
+@import 'src/styles/variables';
+
 .hero-section {
   padding: 80px 0;
   background: linear-gradient(135deg, #4527a0 0%, #2196f3 100%);
@@ -38,4 +40,108 @@
   &:hover {
     transform: translateY(-5px);
   }
+}
+
+// Dark theme styles
+.dark-theme {
+  background-color: $dark-grey !important;
+  color: $white !important;
+  min-height: 100vh;
+}
+
+.dark-hero {
+  background: linear-gradient(135deg, $dark-grey 0%, $mid-grey 100%) !important;
+  color: $white !important;
+
+  h1 {
+    color: $lvfx-gold !important;
+    font-family: 'Comfortaa', cursive;
+  }
+
+  p {
+    color: $white !important;
+  }
+}
+
+.dark-features {
+  background-color: $mid-grey !important;
+  color: $white !important;
+}
+
+.dark-section-title {
+  color: $lvfx-gold !important;
+  font-family: 'Comfortaa', cursive;
+}
+
+.dark-section-description {
+  color: $light-grey !important;
+}
+
+.dark-card {
+  background-color: $dark-grey !important;
+  border: 1px solid $light-grey !important;
+  color: $white !important;
+
+  &:hover {
+    border-color: $lvfx-gold !important;
+    box-shadow: 0 4px 16px rgba($lvfx-gold, 0.2) !important;
+  }
+}
+
+.dark-card-body {
+  background-color: $dark-grey !important;
+  color: $white !important;
+}
+
+.dark-card-title {
+  color: $lvfx-gold !important;
+  font-family: 'Comfortaa', cursive;
+}
+
+.dark-card-text {
+  color: $light-grey !important;
+}
+
+.dark-feature-icon {
+  color: $lvfx-gold !important;
+}
+
+.dark-cta {
+  background-color: $dark-grey !important;
+  color: $white !important;
+}
+
+.dark-cta-title {
+  color: $lvfx-gold !important;
+  font-family: 'Comfortaa', cursive;
+}
+
+.dark-btn-primary {
+  background-color: $lvfx-gold !important;
+  color: $black !important;
+  border: none !important;
+
+  &:hover {
+    background-color: $lvfx-gold-bright !important;
+  }
+
+  &:disabled {
+    background-color: $light-grey !important;
+    color: $dark-grey !important;
+  }
+}
+
+.dark-btn-secondary {
+  background-color: transparent !important;
+  color: $lvfx-gold !important;
+  border: 1px solid $lvfx-gold !important;
+
+  &:hover {
+    background-color: rgba($lvfx-gold, 0.1) !important;
+  }
+}
+
+.btn-large {
+  padding: 0.75rem 2rem !important;
+  font-size: 1.125rem !important;
 }
