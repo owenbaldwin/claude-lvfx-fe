@@ -65,12 +65,12 @@
         <div class="btn-group">
           <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"
             style="background: none; border: none;">
-            <i class="bi bi-plus-circle-fill"></i>
+            <i class="bi bi-plus-circle-fill add-asset"></i>
           </button>
-          <ul class="dropdown-menu">
-            <li><button class="dropdown-item" type="button" (click)="openNewAssetModal(shot.id!)">Add New
+          <ul class="dropdown-menu crud-dropdown-menu">
+            <li><button class="dropdown-item add-btn" type="button" (click)="openNewAssetModal(shot.id!)">Add New
                 Asset</button></li>
-            <li><button class="dropdown-item" type="button" (click)="openLinkAssetModal(shot.id!)">Link Existing
+            <li><button class="dropdown-item edit-btn" type="button" (click)="openLinkAssetModal(shot.id!)">Link Existing
                 Asset</button></li>
           </ul>
         </div>
@@ -80,11 +80,11 @@
       <li style="width: 15%;">
         <div class="btn-group">
           <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
-            <i class="bi bi-plus-circle-fill"></i>
+            <i class="bi bi-plus-circle-fill add-assumption"></i>
           </button>
-          <ul class="dropdown-menu">
-            <li><button class="dropdown-item" type="button" (click)="openNewAssumptionModal(shot.id!)">Add New Assumption</button></li>
-            <li><button class="dropdown-item" type="button" (click)="openLinkAssumptionModal(shot.id!)">Link Existing Assumption</button></li>
+          <ul class="dropdown-menu crud-dropdown-menu">
+            <li><button class="dropdown-item add-btn" type="button" (click)="openNewAssumptionModal(shot.id!)">Add New Assumption</button></li>
+            <li><button class="dropdown-item edit-btn" type="button" (click)="openLinkAssumptionModal(shot.id!)">Link Existing Assumption</button></li>
           </ul>
         </div>
       </li>
@@ -94,12 +94,12 @@
         <div class="btn-group">
           <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"
             style="background: none; border: none;">
-            <i class="bi bi-plus-circle-fill"></i>
+            <i class="bi bi-plus-circle-fill add-fx"></i>
           </button>
-          <ul class="dropdown-menu">
-            <li><button class="dropdown-item" type="button" (click)="openNewFxModal(shot.id!)">Add New
+          <ul class="dropdown-menu crud-dropdown-menu">
+            <li><button class="dropdown-item add-btn" type="button" (click)="openNewFxModal(shot.id!)">Add New
                 FX</button></li>
-            <li><button class="dropdown-item" type="button" (click)="openLinkFxModal(shot.id!)">Link Existing
+            <li><button class="dropdown-item edit-btn" type="button" (click)="openLinkFxModal(shot.id!)">Link Existing
                 FX</button></li>
           </ul>
         </div>

@@ -52,27 +52,33 @@ export class ActionBeatListComponent {
   actionBeatCharactersMap: { [actionBeatId: number]: Character[] } = {};
   selectedActionBeatForCharacters?: ActionBeat;
 
+  // Store event listener function to properly remove it
+  private openActionBeatModalListener: EventListener;
+
   constructor(
     private actionBeatService: ActionBeatService,
     private characterService: CharacterService,
     private changeDetectorRef: ChangeDetectorRef
-  ) {}
+  ) {
+    // Initialize the event listener as a bound function
+    this.openActionBeatModalListener = ((e: CustomEvent) => {
+      if (e.detail.sceneId === this.sceneId) {
+        console.log('Received openActionBeatModal event for scene', this.sceneId);
+        this.openNewActionBeatModal();
+      }
+    }) as EventListener;
+  }
 
   ngOnInit(): void {
     this.loadActionBeats();
 
     // Listen for custom events to open the modal
-    document.addEventListener('openActionBeatModal', ((e: CustomEvent) => {
-      if (e.detail.sceneId === this.sceneId) {
-        console.log('Received openActionBeatModal event for scene', this.sceneId);
-        this.openNewActionBeatModal();
-      }
-    }) as EventListener);
+    document.addEventListener('openActionBeatModal', this.openActionBeatModalListener);
   }
 
   ngOnDestroy(): void {
     // Clean up event listeners to prevent memory leaks
-    document.removeEventListener('openActionBeatModal', ((e: CustomEvent) => {}) as EventListener);
+    document.removeEventListener('openActionBeatModal', this.openActionBeatModalListener);
   }
 
   loadActionBeats() {

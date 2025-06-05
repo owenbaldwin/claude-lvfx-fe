@@ -42,35 +42,44 @@ export class ShotListComponent implements OnInit, OnDestroy {
   selectedShot: Partial<Shot> = {};
   selectedShotId: number = 0;
 
+  // Store event listener functions to properly remove them
+  private openShotModalListener: EventListener;
+  private refreshShotListListener: EventListener;
+
   constructor(
     private shotService: ShotService,
     private changeDetectorRef: ChangeDetectorRef
-  ) {}
+  ) {
+    // Initialize the event listeners as bound functions
+    this.openShotModalListener = ((e: CustomEvent) => {
+      if (e.detail.actionBeatId === this.actionBeatId) {
+        console.log('Received openShotModal event for action beat', this.actionBeatId);
+        this.openNewShotModal();
+      }
+    }) as EventListener;
+
+    this.refreshShotListListener = ((e: CustomEvent) => {
+      if (e.detail.actionBeatId === this.actionBeatId) {
+        console.log('Refreshing shots list for action beat', this.actionBeatId);
+        this.loadShots();
+      }
+    }) as EventListener;
+  }
 
   ngOnInit(): void {
     this.loadShots();
 
     // Listen for custom events to open the modal
-    document.addEventListener('openShotModal', ((e: CustomEvent) => {
-      if (e.detail.actionBeatId === this.actionBeatId) {
-        console.log('Received openShotModal event for action beat', this.actionBeatId);
-        this.openNewShotModal();
-      }
-    }) as EventListener);
+    document.addEventListener('openShotModal', this.openShotModalListener);
 
     // Listen for refresh events
-    document.addEventListener('refreshShotList', ((e: CustomEvent) => {
-      if (e.detail.actionBeatId === this.actionBeatId) {
-        console.log('Refreshing shots list for action beat', this.actionBeatId);
-        this.loadShots();
-      }
-    }) as EventListener);
+    document.addEventListener('refreshShotList', this.refreshShotListListener);
   }
 
   ngOnDestroy(): void {
     // Clean up event listeners to prevent memory leaks
-    document.removeEventListener('openShotModal', (() => {}) as EventListener);
-    document.removeEventListener('refreshShotList', (() => {}) as EventListener);
+    document.removeEventListener('openShotModal', this.openShotModalListener);
+    document.removeEventListener('refreshShotList', this.refreshShotListListener);
   }
 
   loadShots(): void {
