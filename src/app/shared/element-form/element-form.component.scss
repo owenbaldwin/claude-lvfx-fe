@@ -1,0 +1,61 @@
+@import 'src/styles/variables';
+
+.dark-form {
+  background-color: $dark-grey;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid $light-grey;
+}
+
+.dark-form-label {
+  color: $lvfx-gold !important;
+  font-family: 'Comfortaa', cursive;
+  font-weight: 500;
+}
+
+.dark-form-control {
+  background-color: $mid-grey !important;
+  border: 1px solid $light-grey !important;
+  color: $white !important;
+
+  &:focus {
+    background-color: $mid-grey !important;
+    border-color: $lvfx-gold !important;
+    color: $white !important;
+    box-shadow: 0 0 0 0.2rem rgba($lvfx-gold, 0.25) !important;
+  }
+
+  &::placeholder {
+    color: $light-grey !important;
+  }
+
+  option {
+    background-color: $mid-grey !important;
+    color: $white !important;
+  }
+}
+
+.dark-btn-primary {
+  background-color: $lvfx-gold !important;
+  color: $black !important;
+  border: none !important;
+
+  &:hover {
+    background-color: $lvfx-gold-bright !important;
+  }
+
+  &:disabled {
+    background-color: $light-grey !important;
+    color: $dark-grey !important;
+  }
+}
+
+.dark-btn-secondary {
+  background-color: transparent !important;
+  color: $lvfx-gold !important;
+  border: 1px solid $lvfx-gold !important;
+
+  &:hover {
+    background-color: rgba($lvfx-gold, 0.1) !important;
+  }
+}

@@ -1,16 +1,16 @@
-<div class="home-container">
+<div class="home-container dark-theme">
   <!-- Hero Section -->
-  <section class="hero-section bg-primary text-white py-5">
+  <section class="hero-section dark-hero py-5">
     <div class="container">
       <div class="row align-items-center">
         <div class="col-lg-6">
           <h1 class="display-4 fw-bold mb-4">LVFX Production Management</h1>
           <p class="lead mb-4">A comprehensive tool for film and television production management, script breakdown, and shot organization.</p>
-          
+
           <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-            <button *ngIf="!isAuthenticated" mat-raised-button color="accent" class="me-md-2" (click)="navigateToRegister()">Get Started</button>
-            <button *ngIf="!isAuthenticated" mat-stroked-button color="white" (click)="navigateToLogin()">Sign In</button>
-            <button *ngIf="isAuthenticated" mat-raised-button color="accent" (click)="navigateToProductions()">My Productions</button>
+            <button *ngIf="!isAuthenticated" mat-raised-button class="dark-btn-primary me-md-2" (click)="navigateToRegister()">Get Started</button>
+            <button *ngIf="!isAuthenticated" mat-stroked-button class="dark-btn-secondary" (click)="navigateToLogin()">Sign In</button>
+            <button *ngIf="isAuthenticated" mat-raised-button class="dark-btn-primary" (click)="navigateToProductions()">My Productions</button>
           </div>
         </div>
         <div class="col-lg-6 mt-5 mt-lg-0 text-center">
@@ -21,38 +21,38 @@
   </section>
 
   <!-- Features Section -->
-  <section class="features-section py-5">
+  <section class="features-section dark-features py-5">
     <div class="container">
       <div class="text-center mb-5">
-        <h2 class="section-title">Key Features</h2>
-        <p class="section-description">Everything you need for efficient production workflow</p>
+        <h2 class="section-title dark-section-title">Key Features</h2>
+        <p class="section-description dark-section-description">Everything you need for efficient production workflow</p>
       </div>
 
       <div class="row g-4">
         <div class="col-md-4">
-          <div class="card h-100 shadow-sm">
-            <div class="card-body text-center">
-              <mat-icon class="feature-icon">movie</mat-icon>
-              <h5 class="card-title">Production Management</h5>
-              <p class="card-text">Track multiple productions and manage team access with role-based permissions.</p>
+          <div class="card h-100 shadow-sm dark-card">
+            <div class="card-body text-center dark-card-body">
+              <mat-icon class="feature-icon dark-feature-icon">movie</mat-icon>
+              <h5 class="card-title dark-card-title">Production Management</h5>
+              <p class="card-text dark-card-text">Track multiple productions and manage team access with role-based permissions.</p>
             </div>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="card h-100 shadow-sm">
-            <div class="card-body text-center">
-              <mat-icon class="feature-icon">description</mat-icon>
-              <h5 class="card-title">Script Breakdown</h5>
-              <p class="card-text">Break down scripts into sequences, scenes, and action beats for better organization.</p>
+          <div class="card h-100 shadow-sm dark-card">
+            <div class="card-body text-center dark-card-body">
+              <mat-icon class="feature-icon dark-feature-icon">description</mat-icon>
+              <h5 class="card-title dark-card-title">Script Breakdown</h5>
+              <p class="card-text dark-card-text">Break down scripts into sequences, scenes, and action beats for better organization.</p>
             </div>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="card h-100 shadow-sm">
-            <div class="card-body text-center">
-              <mat-icon class="feature-icon">videocam</mat-icon>
-              <h5 class="card-title">Shot Management</h5>
-              <p class="card-text">Create and organize shots with detailed metadata, storyboards, and status tracking.</p>
+          <div class="card h-100 shadow-sm dark-card">
+            <div class="card-body text-center dark-card-body">
+              <mat-icon class="feature-icon dark-feature-icon">videocam</mat-icon>
+              <h5 class="card-title dark-card-title">Shot Management</h5>
+              <p class="card-text dark-card-text">Create and organize shots with detailed metadata, storyboards, and status tracking.</p>
             </div>
           </div>
         </div>
@@ -61,11 +61,11 @@
   </section>
 
   <!-- Call to Action -->
-  <section class="cta-section bg-light py-5">
+  <section class="cta-section dark-cta py-5">
     <div class="container text-center">
-      <h2 class="mb-4">Ready to streamline your production workflow?</h2>
-      <button *ngIf="!isAuthenticated" mat-raised-button color="primary" size="large" (click)="navigateToRegister()">Sign Up Now</button>
-      <button *ngIf="isAuthenticated" mat-raised-button color="primary" size="large" (click)="navigateToProductions()">Go to Dashboard</button>
+      <h2 class="mb-4 dark-cta-title">Ready to streamline your production workflow?</h2>
+      <button *ngIf="!isAuthenticated" mat-raised-button class="dark-btn-primary btn-large" (click)="navigateToRegister()">Sign Up Now</button>
+      <button *ngIf="isAuthenticated" mat-raised-button class="dark-btn-primary btn-large" (click)="navigateToProductions()">Go to Dashboard</button>
     </div>
   </section>
 </div>

@@ -1,22 +1,24 @@
-<form (ngSubmit)="onSubmit()" #elementForm="ngForm">
+<form (ngSubmit)="onSubmit()" #elementForm="ngForm" class="dark-form">
   <div *ngFor="let field of fields" class="mb-3">
-    <label class="form-label">{{ field.label }}</label>
+    <label class="form-label dark-form-label">{{ field.label }}</label>
 
     <input *ngIf="field.type !== 'textarea' && field.type !== 'select'" [type]="field.type"
-      [(ngModel)]="element[field.key]" [name]="field.key" class="form-control"
+      [(ngModel)]="element[field.key]" [name]="field.key" class="form-control dark-form-control"
       [attr.required]="field.required ? true : null">
 
-    <textarea *ngIf="field.type === 'textarea'" [(ngModel)]="element[field.key]" [name]="field.key" class="form-control"
+    <textarea *ngIf="field.type === 'textarea'" [(ngModel)]="element[field.key]" [name]="field.key" class="form-control dark-form-control"
       [attr.required]="field.required ? true : null"></textarea>
 
-    <select *ngIf="field.type === 'select'" [(ngModel)]="element[field.key]" [name]="field.key" class="form-select"
+    <select *ngIf="field.type === 'select'" [(ngModel)]="element[field.key]" [name]="field.key" class="form-select dark-form-control"
       [attr.required]="field.required ? true : null">
       <option *ngFor="let option of field.options ?? []" [value]="option">{{ option }}</option>
     </select>
   </div>
 
-  <button type="submit" mat-raised-button color="primary" [disabled]="!elementForm.form.valid">
-    {{ isEditing ? 'Update' : 'Create' }} {{ type | titlecase }}
-  </button>
-  <button type="button" mat-button (click)="onCancel()">Cancel</button>
+  <div class="d-flex gap-2">
+    <button type="submit" mat-raised-button class="dark-btn-primary" [disabled]="!elementForm.form.valid">
+      {{ isEditing ? 'Update' : 'Create' }} {{ type | titlecase }}
+    </button>
+    <button type="button" mat-button class="dark-btn-secondary" (click)="onCancel()">Cancel</button>
+  </div>
 </form>
