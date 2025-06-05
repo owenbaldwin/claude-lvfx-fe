@@ -62,9 +62,18 @@
 
       <!-- Assets -->
       <li style="width: 15%;" class="shot-element-container">
-        <!-- <app-element-dropdown [icon]="'plus-circle-fill'" [shotId]="shot.id" elementType="asset"
-          [elements]="getElementsForShot(shotAssets, shot.id)">
-        </app-element-dropdown> -->
+        <div class="btn-group">
+          <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+            style="background: none; border: none;">
+            <i class="bi bi-plus-circle-fill"></i>
+          </button>
+          <ul class="dropdown-menu">
+            <li><button class="dropdown-item" type="button" (click)="openNewAssetModal(shot.id!)">Add New
+                Asset</button></li>
+            <li><button class="dropdown-item" type="button" (click)="openLinkAssetModal(shot.id!)">Link Existing
+                Asset</button></li>
+          </ul>
+        </div>
       </li>
 
       <!-- Assumptions -->
@@ -82,9 +91,18 @@
 
       <!-- FX -->
       <li style="width: 15%;" class="shot-element-container">
-        <!-- <app-element-dropdown [icon]="'plus-circle-fill'" [shotId]="shot.id" elementType="fx"
-          [elements]="getElementsForShot(shotFx, shot.id)">
-        </app-element-dropdown> -->
+        <div class="btn-group">
+          <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+            style="background: none; border: none;">
+            <i class="bi bi-plus-circle-fill"></i>
+          </button>
+          <ul class="dropdown-menu">
+            <li><button class="dropdown-item" type="button" (click)="openNewFxModal(shot.id!)">Add New
+                FX</button></li>
+            <li><button class="dropdown-item" type="button" (click)="openLinkFxModal(shot.id!)">Link Existing
+                FX</button></li>
+          </ul>
+        </div>
       </li>
 
       <!-- Options Dropdown -->
@@ -125,6 +143,32 @@
       [actionBeatId]="actionBeatId"
       [shotId]="selectedShotId"
       (elementCreated)="onAssumptionCreated()">
+    </app-shot-element-new>
+  </app-modal>
+
+  <!-- New Asset Modal -->
+  <app-modal [title]="'Add New Asset'" [isOpen]="showNewAssetModal" (close)="showNewAssetModal = false">
+    <app-shot-element-new
+      [elementType]="'asset'"
+      [productionId]="productionId"
+      [sequenceId]="sequenceId"
+      [sceneId]="sceneId"
+      [actionBeatId]="actionBeatId"
+      [shotId]="selectedShotId"
+      (elementCreated)="onAssetCreated()">
+    </app-shot-element-new>
+  </app-modal>
+
+  <!-- New FX Modal -->
+  <app-modal [title]="'Add New FX'" [isOpen]="showNewFxModal" (close)="showNewFxModal = false">
+    <app-shot-element-new
+      [elementType]="'fx'"
+      [productionId]="productionId"
+      [sequenceId]="sequenceId"
+      [sceneId]="sceneId"
+      [actionBeatId]="actionBeatId"
+      [shotId]="selectedShotId"
+      (elementCreated)="onFxCreated()">
     </app-shot-element-new>
   </app-modal>
 </div>

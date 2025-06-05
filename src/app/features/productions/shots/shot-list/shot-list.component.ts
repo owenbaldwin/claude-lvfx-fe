@@ -37,6 +37,8 @@ export class ShotListComponent implements OnInit, OnDestroy {
   showNewShotModal = false;
   showEditModal = false;
   showNewAssumptionModal = false;
+  showNewAssetModal = false;
+  showNewFxModal = false;
   selectedShot: Partial<Shot> = {};
   selectedShotId: number = 0;
 
@@ -119,6 +121,40 @@ export class ShotListComponent implements OnInit, OnDestroy {
   onAssumptionCreated(): void {
     this.showNewAssumptionModal = false;
     // TODO: Refresh shot assumptions if needed
+    this.changeDetectorRef.detectChanges();
+  }
+
+  openNewAssetModal(shotId: number): void {
+    this.selectedShotId = shotId;
+    this.showNewAssetModal = true;
+    this.changeDetectorRef.detectChanges();
+  }
+
+  openLinkAssetModal(shotId: number): void {
+    // TODO: Implement linking existing assets
+    console.log('Opening link asset modal for shot', shotId);
+  }
+
+  onAssetCreated(): void {
+    this.showNewAssetModal = false;
+    // TODO: Refresh shot assets if needed
+    this.changeDetectorRef.detectChanges();
+  }
+
+  openNewFxModal(shotId: number): void {
+    this.selectedShotId = shotId;
+    this.showNewFxModal = true;
+    this.changeDetectorRef.detectChanges();
+  }
+
+  openLinkFxModal(shotId: number): void {
+    // TODO: Implement linking existing FX
+    console.log('Opening link FX modal for shot', shotId);
+  }
+
+  onFxCreated(): void {
+    this.showNewFxModal = false;
+    // TODO: Refresh shot FX if needed
     this.changeDetectorRef.detectChanges();
   }
 
