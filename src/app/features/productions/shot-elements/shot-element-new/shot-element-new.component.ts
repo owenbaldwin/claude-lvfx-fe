@@ -57,7 +57,18 @@ export class ShotElementNewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadComplexities();
+    // Do not automatically load complexities on init
+    // They will be loaded when the modal is opened
+  }
+
+  /**
+   * Load complexities when the modal is opened
+   * Should be called by parent component when modal opens
+   */
+  initializeModal(): void {
+    if (this.complexities.length === 0) {
+      this.loadComplexities();
+    }
   }
 
   loadComplexities(): void {
