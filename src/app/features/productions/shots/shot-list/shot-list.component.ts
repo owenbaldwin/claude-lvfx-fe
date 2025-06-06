@@ -11,6 +11,7 @@ import { AssetService, Asset } from '@app/core/services/asset.service';
 import { AssumptionService, Assumption } from '@app/core/services/assumption.service';
 import { FxService, Fx } from '@app/core/services/fx.service';
 import { MatIconModule } from '@angular/material/icon';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-shot-list',
@@ -108,6 +109,7 @@ export class ShotListComponent implements OnInit, OnDestroy {
   }
 
   private loadShotElements(): void {
+    console.log('Loading shot elements for', this.shots.length, 'shots');
     this.shots.forEach(shot => {
       if (shot.id) {
         this.loadShotAssets(shot.id);
@@ -115,6 +117,13 @@ export class ShotListComponent implements OnInit, OnDestroy {
         this.loadShotFxs(shot.id);
       }
     });
+
+    // Force change detection after all API calls are initiated
+    setTimeout(() => {
+      console.log('loadShotElements - forcing change detection');
+      this.changeDetectorRef.markForCheck();
+      this.changeDetectorRef.detectChanges();
+    }, 200);
   }
 
   private loadShotAssets(shotId: number): void {
@@ -124,10 +133,13 @@ export class ShotListComponent implements OnInit, OnDestroy {
           // If the API returns a single asset, convert to array
           const assetArray = Array.isArray(assets) ? assets : [assets];
           this.shotAssets.set(shotId, assetArray);
+          console.log(`Shot ${shotId} now has ${assetArray.length} assets:`, assetArray.map(a => a.name));
+          this.changeDetectorRef.detectChanges();
         },
         error: (err) => {
           console.error('Error loading shot assets:', err);
           this.shotAssets.set(shotId, []);
+          this.changeDetectorRef.detectChanges();
         }
       });
   }
@@ -139,10 +151,13 @@ export class ShotListComponent implements OnInit, OnDestroy {
           // If the API returns a single assumption, convert to array
           const assumptionArray = Array.isArray(assumptions) ? assumptions : [assumptions];
           this.shotAssumptions.set(shotId, assumptionArray);
+          console.log(`Shot ${shotId} now has ${assumptionArray.length} assumptions:`, assumptionArray.map(a => a.name));
+          this.changeDetectorRef.detectChanges();
         },
         error: (err) => {
           console.error('Error loading shot assumptions:', err);
           this.shotAssumptions.set(shotId, []);
+          this.changeDetectorRef.detectChanges();
         }
       });
   }
@@ -154,10 +169,13 @@ export class ShotListComponent implements OnInit, OnDestroy {
           // If the API returns a single fx, convert to array
           const fxArray = Array.isArray(fx) ? fx : [fx];
           this.shotFx.set(shotId, fxArray);
+          console.log(`Shot ${shotId} now has ${fxArray.length} fx:`, fxArray.map(f => f.name));
+          this.changeDetectorRef.detectChanges();
         },
         error: (err) => {
           console.error('Error loading shot fx:', err);
           this.shotFx.set(shotId, []);
+          this.changeDetectorRef.detectChanges();
         }
       });
   }
@@ -298,21 +316,21 @@ export class ShotListComponent implements OnInit, OnDestroy {
    * Get assets for a specific shot
    */
   getShotAssets(shotId: number): Asset[] {
-    return this.shotAssets.get(shotId) || [];
+    return [...(this.shotAssets.get(shotId) || [])];
   }
 
   /**
    * Get assumptions for a specific shot
    */
   getShotAssumptions(shotId: number): Assumption[] {
-    return this.shotAssumptions.get(shotId) || [];
+    return [...(this.shotAssumptions.get(shotId) || [])];
   }
 
   /**
    * Get FX for a specific shot
    */
   getShotFxs(shotId: number): Fx[] {
-    return this.shotFx.get(shotId) || [];
+    return [...(this.shotFx.get(shotId) || [])];
   }
 
   /**
@@ -365,6 +383,75 @@ export class ShotListComponent implements OnInit, OnDestroy {
       this.loadShotFxs(this.selectedShotId);
     }
     this.closeElementViewModal();
+  }
+
+  /**
+   * Handle when an element is assigned to multiple shots
+   */
+  onElementAssigned(updatedShotIds: number[]): void {
+    console.log('=== ELEMENT ASSIGNED - REFRESHING SPECIFIC SHOTS ===', updatedShotIds);
+
+    // Create observables for all the API calls we need to make
+    const refreshObservables = updatedShotIds.flatMap(shotId => [
+      this.assetService.getShotAssets(this.productionId, this.sequenceId, this.sceneId, this.actionBeatId, shotId),
+      this.assumptionService.getShotAssumptions(this.productionId, this.sequenceId, this.sceneId, this.actionBeatId, shotId),
+      this.fxService.getShotFxs(this.productionId, this.sequenceId, this.sceneId, this.actionBeatId, shotId)
+    ]);
+
+    // Temporarily clear the data for the updated shots to force re-render
+    updatedShotIds.forEach(shotId => {
+      this.shotAssets.delete(shotId);
+      this.shotAssumptions.delete(shotId);
+      this.shotFx.delete(shotId);
+    });
+
+    // Force immediate change detection to clear the UI
+    this.changeDetectorRef.detectChanges();
+
+    // Wait for all API calls to complete
+    forkJoin(refreshObservables).subscribe({
+      next: (results) => {
+        // Process results in groups of 3 (assets, assumptions, fx for each shot)
+        updatedShotIds.forEach((shotId, index) => {
+          const baseIndex = index * 3;
+
+          // Process assets
+          const assets = results[baseIndex];
+          const assetArray = Array.isArray(assets) ? assets : (assets ? [assets] : []);
+          this.shotAssets.set(shotId, assetArray);
+          console.log(`Shot ${shotId} refreshed with ${assetArray.length} assets:`, assetArray.map(a => a.name));
+
+          // Process assumptions
+          const assumptions = results[baseIndex + 1];
+          const assumptionArray = Array.isArray(assumptions) ? assumptions : (assumptions ? [assumptions] : []);
+          this.shotAssumptions.set(shotId, assumptionArray);
+          console.log(`Shot ${shotId} refreshed with ${assumptionArray.length} assumptions:`, assumptionArray.map(a => a.name));
+
+          // Process fx
+          const fx = results[baseIndex + 2];
+          const fxArray = Array.isArray(fx) ? fx : (fx ? [fx] : []);
+          this.shotFx.set(shotId, fxArray);
+          console.log(`Shot ${shotId} refreshed with ${fxArray.length} fx:`, fxArray.map(f => f.name));
+        });
+
+        // Force complete change detection
+        this.changeDetectorRef.markForCheck();
+        this.changeDetectorRef.detectChanges();
+
+        console.log('Assignment complete - all specific shots fully refreshed');
+        this.closeElementViewModal();
+      },
+      error: (error) => {
+        console.error('Error refreshing shot elements:', error);
+        // Re-load the shots individually as fallback
+        updatedShotIds.forEach(shotId => {
+          this.loadShotAssets(shotId);
+          this.loadShotAssumptions(shotId);
+          this.loadShotFxs(shotId);
+        });
+        this.closeElementViewModal();
+      }
+    });
   }
 
   /**
