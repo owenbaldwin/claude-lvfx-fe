@@ -1,1 +1,46 @@
-<p>shot-element-view works!</p>
+<div class="shot-element-view" *ngIf="!loading">
+  <div class="element-header">
+    <h4>{{ getElementTypeName() }} Details</h4>
+  </div>
+
+  <div class="element-content">
+    <div class="element-field">
+      <label class="field-label">Name:</label>
+      <p class="field-value">{{ element.name }}</p>
+    </div>
+
+    <div class="element-field">
+      <label class="field-label">Description:</label>
+      <p class="field-value">{{ element.description }}</p>
+    </div>
+
+    <div class="element-field" *ngIf="complexity">
+      <label class="field-label">Complexity Level:</label>
+      <p class="field-value">{{ complexity.level }}</p>
+    </div>
+
+    <div class="element-field" *ngIf="complexity">
+      <label class="field-label">Complexity Description:</label>
+      <p class="field-value">{{ complexity.description }}</p>
+    </div>
+
+    <div class="element-field" *ngIf="!complexity && element.complexity_id">
+      <label class="field-label">Complexity:</label>
+      <p class="field-value text-muted">Unable to load complexity details</p>
+    </div>
+  </div>
+
+  <div class="element-actions">
+    <button
+      class="btn btn-danger"
+      (click)="softDelete()"
+      [disabled]="deleting">
+      <span *ngIf="deleting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+      {{ deleting ? 'Removing...' : 'Remove from Shot' }}
+    </button>
+  </div>
+</div>
+
+<div class="loading-spinner" *ngIf="loading">
+  <p>Loading element details...</p>
+</div>

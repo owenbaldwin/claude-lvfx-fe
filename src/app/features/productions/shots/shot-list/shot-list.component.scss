@@ -28,12 +28,12 @@
 }
 
 .add-asset {
-  color: $assets;
+  background-color: $assets;
   position: relative;
 }
 
 .add-fx {
-  color: $fx;
+  background-color: $fx;
   position: relative;
 }
 
@@ -42,10 +42,28 @@
 }
 
 .add-assumption {
-  color: $assumptions;
+  background-color: $assumptions;
   position: relative;
 }
 
+.shot-element-btn {
+  border-radius: 10px;
+  border: none;
+  font-size: 10px;
+  transition: 0.3s ease;
+}
+
+.shot-element-btn:hover {
+  transition: 0.3s ease;
+  transform: scale(1.5);
+}
+
+.add-shot-element {
+  font-size: 12px !important;
+  font-weight: bold;
+  height: auto !important;
+  width: auto !important;
+}
 
 .add-btn:hover {
   background-color: $green-alert;

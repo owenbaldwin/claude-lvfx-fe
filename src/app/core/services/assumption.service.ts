@@ -38,6 +38,15 @@ export class AssumptionService {
   }
 
   /**
+   * GET /api/v1/productions/:production_id/sequences/:sequence_id/scenes/:scene_id/action_beats/:action_beat_id/shots/:shot_id/assumptions
+   */
+  getShotAssumptions(productionId: number, sequenceId: number, sceneId: number, actionBeatId: number, shotId: number): Observable<Assumption> {
+    const url = `${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${sceneId}/action_beats/${actionBeatId}/shots/${shotId}/assumptions`;
+    return this.http.get<Assumption>(url);
+  }
+
+
+  /**
    * POST /api/v1/productions/:productionId/assumptions
    */
   create(productionId: number, payload: Partial<Assumption>): Observable<Assumption> {

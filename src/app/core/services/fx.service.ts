@@ -38,6 +38,14 @@ export class FxService {
   }
 
   /**
+   * GET /api/v1/productions/:production_id/sequences/:sequence_id/scenes/:scene_id/action_beats/:action_beat_id/shots/:shot_id/fx
+   */
+  getShotFxs(productionId: number, sequenceId: number, sceneId: number, actionBeatId: number, shotId: number): Observable<Fx> {
+    const url = `${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${sceneId}/action_beats/${actionBeatId}/shots/${shotId}/fx`;
+    return this.http.get<Fx>(url);
+  }
+
+  /**
    * POST /api/v1/productions/:productionId/fx
    */
   create(productionId: number, payload: Partial<Fx>): Observable<Fx> {
