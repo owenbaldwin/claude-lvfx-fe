@@ -46,4 +46,9 @@ export class ShotService {
   deleteShot(productionId: number, sequenceId: number, sceneId: number, actionBeatId: number, id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${sceneId}/action_beats/${actionBeatId}/shots/${id}`);
   }
+
+  // Get all shots in a production (for search functionality)
+  getAllShotsInProduction(productionId: number): Observable<Shot[]> {
+    return this.http.get<Shot[]>(`${this.apiUrl}/${productionId}/shots`);
+  }
 }

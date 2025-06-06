@@ -1,13 +1,9 @@
 <div class="shot-element-view" *ngIf="!loading">
   <div class="element-header">
-    <h4>{{ getElementTypeName() }} Details</h4>
+    <h4>{{ element.name }}</h4>
   </div>
 
   <div class="element-content">
-    <div class="element-field">
-      <label class="field-label">Name:</label>
-      <p class="field-value">{{ element.name }}</p>
-    </div>
 
     <div class="element-field">
       <label class="field-label">Description:</label>
@@ -27,6 +23,88 @@
     <div class="element-field" *ngIf="!complexity && element.complexity_id">
       <label class="field-label">Complexity:</label>
       <p class="field-value text-muted">Unable to load complexity details</p>
+    </div>
+
+    <!-- New section for multi-shot assignment -->
+    <div class="element-field multi-shot-assignment">
+      <h5 class="section-title">Assign element to multiple other shots</h5>
+
+      <div class="search-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="searchKeyword" class="field-label">Keyword:</label>
+            <input
+              type="text"
+              id="searchKeyword"
+              class="form-control"
+              [(ngModel)]="searchKeyword"
+              placeholder="Enter search keyword..."
+              [disabled]="isSearching">
+          </div>
+
+          <div class="form-group">
+            <label for="searchScope" class="field-label">Search in:</label>
+            <select
+              id="searchScope"
+              class="form-select"
+              [(ngModel)]="searchScope"
+              [disabled]="isSearching">
+              <option *ngFor="let option of getSearchScopeOptions()" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-primary search-btn"
+          (click)="searchShots()"
+          [disabled]="isSearching || !searchKeyword.trim()">
+          <span *ngIf="isSearching" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{ isSearching ? 'Searching...' : 'Search shots' }}
+        </button>
+      </div>
+
+      <!-- Search Results -->
+      <div class="search-results" *ngIf="hasSearched">
+        <div *ngIf="searchResults.length === 0" class="no-results">
+          <p class="text-muted">No shots found matching "{{ searchKeyword }}" in {{ searchScope }}.</p>
+        </div>
+
+        <div *ngIf="searchResults.length > 0" class="results-list">
+          <h6>Found {{ searchResults.length }} shot(s):</h6>
+
+          <div class="shot-item" *ngFor="let shot of searchResults">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                [id]="'shot-' + shot.id"
+                [checked]="shot.selected"
+                (change)="toggleShotSelection(shot)">
+              <label class="form-check-label" [for]="'shot-' + shot.id">
+                <strong>{{ shot.sequence_prefix }}:{{ shot.scene_number }}:{{ shot.action_beat_number }}:{{ shot.number }}</strong>
+                <span *ngIf="shot.description" class="shot-description">- {{ shot.description }}</span>
+                <br>
+                <small class="text-muted">{{ shot.matchReason }}</small>
+              </label>
+            </div>
+          </div>
+
+          <div class="assignment-actions" *ngIf="getSelectedShots().length > 0">
+            <p><strong>{{ getSelectedShots().length }} shot(s) selected</strong></p>
+            <button
+              type="button"
+              class="btn btn-success"
+              (click)="assignToSelectedShots()"
+              [disabled]="isAssigning">
+              <span *ngIf="isAssigning" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              {{ isAssigning ? 'Assigning...' : 'Assign to selected shots' }}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

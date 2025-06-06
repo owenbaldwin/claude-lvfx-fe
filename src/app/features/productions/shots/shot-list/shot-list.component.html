@@ -156,7 +156,8 @@
       [sceneId]="sceneId"
       [actionBeatId]="actionBeatId"
       [shotId]="selectedShotId"
-      (elementDeleted)="onElementDeleted()">
+      (elementDeleted)="onElementDeleted()"
+      (elementAssigned)="onElementAssigned($event)">
     </app-shot-element-view>
   </app-modal>
 

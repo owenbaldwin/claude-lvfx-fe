@@ -110,6 +110,7 @@ export interface Shot {
   productionId: number;
   createdAt?: string;
   updatedAt?: string;
+
 }
 
 export interface Character {
