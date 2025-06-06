@@ -38,6 +38,14 @@ export class AssetService {
   }
 
   /**
+   * GET /api/v1/productions/:production_id/sequences/:sequence_id/scenes/:scene_id/action_beats/:action_beat_id/shots/:shot_id/assets
+   */
+  getShotAssets(productionId: number, sequenceId: number, sceneId: number, actionBeatId: number, shotId: number): Observable<Asset> {
+    const url = `${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${sceneId}/action_beats/${actionBeatId}/shots/${shotId}/assets`;
+    return this.http.get<Asset>(url);
+  }
+
+  /**
    * POST /api/v1/productions/:productionId/assets
    */
   create(productionId: number, payload: Partial<Asset>): Observable<Asset> {

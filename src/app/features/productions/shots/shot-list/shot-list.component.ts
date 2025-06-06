@@ -6,6 +6,11 @@ import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.c
 import { ModalComponent } from '@app/shared/modal/modal.component';
 import { ShotEditComponent } from '../shot-edit/shot-edit.component';
 import { ShotElementNewComponent } from '../../shot-elements/shot-element-new/shot-element-new.component';
+import { ShotElementViewComponent } from '../../shot-elements/shot-element-view/shot-element-view.component';
+import { AssetService, Asset } from '@app/core/services/asset.service';
+import { AssumptionService, Assumption } from '@app/core/services/assumption.service';
+import { FxService, Fx } from '@app/core/services/fx.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-shot-list',
@@ -15,7 +20,9 @@ import { ShotElementNewComponent } from '../../shot-elements/shot-element-new/sh
     CrudDropdownComponent,
     ModalComponent,
     ShotEditComponent,
-    ShotElementNewComponent
+    ShotElementNewComponent,
+    ShotElementViewComponent,
+    MatIconModule
   ],
   templateUrl: './shot-list.component.html',
   styleUrl: './shot-list.component.scss'
@@ -34,17 +41,20 @@ export class ShotListComponent implements OnInit, OnDestroy {
   @ViewChild('newFxComponent') newFxComponent?: ShotElementNewComponent;
 
   shots: Shot[] = [];
-  shotAssets: any[] = [];
-  shotAssumptions: any[] = [];
-  shotFx: any[] = [];
+  shotAssets: Map<number, Asset[]> = new Map();
+  shotAssumptions: Map<number, Assumption[]> = new Map();
+  shotFx: Map<number, Fx[]> = new Map();
 
   showNewShotModal = false;
   showEditModal = false;
   showNewAssumptionModal = false;
   showNewAssetModal = false;
   showNewFxModal = false;
+  showElementViewModal = false;
   selectedShot: Partial<Shot> = {};
   selectedShotId: number = 0;
+  selectedElement: Asset | Assumption | Fx | null = null;
+  selectedElementType: 'asset' | 'assumption' | 'fx' | null = null;
 
   // Store event listener functions to properly remove them
   private openShotModalListener: EventListener;
@@ -52,7 +62,10 @@ export class ShotListComponent implements OnInit, OnDestroy {
 
   constructor(
     private shotService: ShotService,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private assetService: AssetService,
+    private assumptionService: AssumptionService,
+    private fxService: FxService
   ) {
     // Initialize the event listeners as bound functions
     this.openShotModalListener = ((e: CustomEvent) => {
@@ -89,7 +102,64 @@ export class ShotListComponent implements OnInit, OnDestroy {
   loadShots(): void {
     this.shotService.getShots(this.productionId, this.sequenceId, this.sceneId, this.actionBeatId).subscribe((shots) => {
       this.shots = shots;
+      // Load elements for each shot
+      this.loadShotElements();
     });
+  }
+
+  private loadShotElements(): void {
+    this.shots.forEach(shot => {
+      if (shot.id) {
+        this.loadShotAssets(shot.id);
+        this.loadShotAssumptions(shot.id);
+        this.loadShotFxs(shot.id);
+      }
+    });
+  }
+
+  private loadShotAssets(shotId: number): void {
+    this.assetService.getShotAssets(this.productionId, this.sequenceId, this.sceneId, this.actionBeatId, shotId)
+      .subscribe({
+        next: (assets) => {
+          // If the API returns a single asset, convert to array
+          const assetArray = Array.isArray(assets) ? assets : [assets];
+          this.shotAssets.set(shotId, assetArray);
+        },
+        error: (err) => {
+          console.error('Error loading shot assets:', err);
+          this.shotAssets.set(shotId, []);
+        }
+      });
+  }
+
+  private loadShotAssumptions(shotId: number): void {
+    this.assumptionService.getShotAssumptions(this.productionId, this.sequenceId, this.sceneId, this.actionBeatId, shotId)
+      .subscribe({
+        next: (assumptions) => {
+          // If the API returns a single assumption, convert to array
+          const assumptionArray = Array.isArray(assumptions) ? assumptions : [assumptions];
+          this.shotAssumptions.set(shotId, assumptionArray);
+        },
+        error: (err) => {
+          console.error('Error loading shot assumptions:', err);
+          this.shotAssumptions.set(shotId, []);
+        }
+      });
+  }
+
+  private loadShotFxs(shotId: number): void {
+    this.fxService.getShotFxs(this.productionId, this.sequenceId, this.sceneId, this.actionBeatId, shotId)
+      .subscribe({
+        next: (fx) => {
+          // If the API returns a single fx, convert to array
+          const fxArray = Array.isArray(fx) ? fx : [fx];
+          this.shotFx.set(shotId, fxArray);
+        },
+        error: (err) => {
+          console.error('Error loading shot fx:', err);
+          this.shotFx.set(shotId, []);
+        }
+      });
   }
 
   openNewShotModal(): void {
@@ -138,7 +208,10 @@ export class ShotListComponent implements OnInit, OnDestroy {
 
   onAssumptionCreated(): void {
     this.showNewAssumptionModal = false;
-    // TODO: Refresh shot assumptions if needed
+    // Refresh assumptions for the selected shot
+    if (this.selectedShotId) {
+      this.loadShotAssumptions(this.selectedShotId);
+    }
     this.changeDetectorRef.detectChanges();
   }
 
@@ -160,7 +233,10 @@ export class ShotListComponent implements OnInit, OnDestroy {
 
   onAssetCreated(): void {
     this.showNewAssetModal = false;
-    // TODO: Refresh shot assets if needed
+    // Refresh assets for the selected shot
+    if (this.selectedShotId) {
+      this.loadShotAssets(this.selectedShotId);
+    }
     this.changeDetectorRef.detectChanges();
   }
 
@@ -182,7 +258,10 @@ export class ShotListComponent implements OnInit, OnDestroy {
 
   onFxCreated(): void {
     this.showNewFxModal = false;
-    // TODO: Refresh shot FX if needed
+    // Refresh FX for the selected shot
+    if (this.selectedShotId) {
+      this.loadShotFxs(this.selectedShotId);
+    }
     this.changeDetectorRef.detectChanges();
   }
 
@@ -217,25 +296,84 @@ export class ShotListComponent implements OnInit, OnDestroy {
 
   /**
    * Get assets for a specific shot
-   * TODO: Implement proper data loading when needed
    */
-  getShotAssets(shotId: number): any[] {
-    return [];
+  getShotAssets(shotId: number): Asset[] {
+    return this.shotAssets.get(shotId) || [];
   }
 
   /**
    * Get assumptions for a specific shot
-   * TODO: Implement proper data loading when needed
    */
-  getShotAssumptions(shotId: number): any[] {
-    return [];
+  getShotAssumptions(shotId: number): Assumption[] {
+    return this.shotAssumptions.get(shotId) || [];
   }
 
   /**
    * Get FX for a specific shot
-   * TODO: Implement proper data loading when needed
    */
-  getShotFxs(shotId: number): any[] {
-    return [];
+  getShotFxs(shotId: number): Fx[] {
+    return this.shotFx.get(shotId) || [];
+  }
+
+  /**
+   * Open the modal to view a shot element (asset, assumption, or fx)
+   */
+  viewElement(element: Asset | Assumption | Fx, elementType: 'asset' | 'assumption' | 'fx'): void {
+    this.selectedElement = element;
+    this.selectedElementType = elementType;
+    // Find the shot ID by looking for which shot contains this element
+    this.selectedShotId = this.findShotIdForElement(element, elementType);
+    this.showElementViewModal = true;
+    this.changeDetectorRef.detectChanges();
+  }
+
+  /**
+   * Find which shot contains the given element
+   */
+  private findShotIdForElement(element: Asset | Assumption | Fx, elementType: 'asset' | 'assumption' | 'fx'): number {
+    for (const shot of this.shots) {
+      if (!shot.id) continue;
+
+      let shotElements: any[] = [];
+      switch (elementType) {
+        case 'asset':
+          shotElements = this.getShotAssets(shot.id);
+          break;
+        case 'assumption':
+          shotElements = this.getShotAssumptions(shot.id);
+          break;
+        case 'fx':
+          shotElements = this.getShotFxs(shot.id);
+          break;
+      }
+
+      if (shotElements.some(el => el.id === element.id)) {
+        return shot.id;
+      }
+    }
+    return 0; // fallback
+  }
+
+  /**
+   * Handle when an element is deleted from a shot
+   */
+  onElementDeleted(): void {
+    // Refresh the shot elements and close the modal
+    if (this.selectedShotId) {
+      this.loadShotAssets(this.selectedShotId);
+      this.loadShotAssumptions(this.selectedShotId);
+      this.loadShotFxs(this.selectedShotId);
+    }
+    this.closeElementViewModal();
+  }
+
+  /**
+   * Close the element view modal
+   */
+  closeElementViewModal(): void {
+    this.showElementViewModal = false;
+    this.selectedElement = null;
+    this.selectedElementType = null;
+    this.changeDetectorRef.detectChanges();
   }
 }

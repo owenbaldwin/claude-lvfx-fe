@@ -63,9 +63,8 @@
       <!-- Assets -->
       <li style="width: 15%;" class="shot-element-container">
         <div class="btn-group">
-          <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"
-            style="background: none; border: none;">
-            <i class="bi bi-plus-circle-fill add-asset"></i>
+          <button class="shot-element-btn add-asset" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <mat-icon class="add-shot-element">add</mat-icon>
           </button>
           <ul class="dropdown-menu crud-dropdown-menu">
             <li><button class="dropdown-item add-btn" type="button" (click)="openNewAssetModal(shot.id!)">Add New
@@ -76,33 +75,32 @@
             </li>
           </ul>
         </div>
-        <!-- <ng-container *ngFor="let asset of getShotAssets(shot.id!)">
-          <p>{{ asset.name }}</p>
-        </ng-container> -->
+        <ng-container *ngFor="let asset of getShotAssets(shot.id!)">
+          <button (click)="viewElement(asset, 'asset')" class="shot-element-btn shot-asset">{{ asset.name }}</button>
+        </ng-container>
       </li>
 
       <!-- Assumptions -->
       <li style="width: 15%;">
         <div class="btn-group">
-          <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
-            <i class="bi bi-plus-circle-fill add-assumption"></i>
+          <button class="shot-element-btn add-assumption" type="button" data-bs-toggle="dropdown" aria-expanded="false" >
+            <mat-icon class="add-shot-element">add</mat-icon>
           </button>
           <ul class="dropdown-menu crud-dropdown-menu">
             <li><button class="dropdown-item add-btn" type="button" (click)="openNewAssumptionModal(shot.id!)">Add New Assumption</button></li>
             <li><button class="dropdown-item edit-btn" type="button" (click)="openLinkAssumptionModal(shot.id!)">Link Existing Assumption</button></li>
           </ul>
         </div>
-        <!-- <ng-container *ngFor="let assumption of getShotAssumptions(shot.id!)">
-          <p>{{ assumption.name }}</p>
-        </ng-container> -->
+        <ng-container *ngFor="let assumption of getShotAssumptions(shot.id!)">
+          <button (click)="viewElement(assumption, 'assumption')" class="shot-element-btn shot-assumption">{{ assumption.name }}</button>
+        </ng-container>
       </li>
 
       <!-- FX -->
       <li style="width: 15%;" class="shot-element-container">
         <div class="btn-group">
-          <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"
-            style="background: none; border: none;">
-            <i class="bi bi-plus-circle-fill add-fx"></i>
+          <button class="shot-element-btn add-fx" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <mat-icon class="add-shot-element">add</mat-icon>
           </button>
           <ul class="dropdown-menu crud-dropdown-menu">
             <li><button class="dropdown-item add-btn" type="button" (click)="openNewFxModal(shot.id!)">Add New
@@ -111,9 +109,9 @@
                 FX</button></li>
           </ul>
         </div>
-        <!-- <ng-container *ngFor="let fx of getShotFxs(shot.id!)">
-          <p>{{ fx.name }}</p>
-        </ng-container> -->
+        <ng-container *ngFor="let fx of getShotFxs(shot.id!)">
+          <button (click)="viewElement(fx, 'fx')" class="shot-element-btn shot-fx">{{ fx.name }}</button>
+        </ng-container>
       </li>
 
       <!-- Options Dropdown -->
@@ -142,6 +140,24 @@
       [actionBeatId]="actionBeatId"
       (shotUpdated)="onShotUpdated()">
     </app-shot-edit>
+  </app-modal>
+
+  <!-- Shot Element View Modal -->
+  <app-modal
+    [title]="'View ' + (selectedElementType === 'fx' ? 'FX' : (selectedElementType | titlecase))"
+    [isOpen]="showElementViewModal"
+    (close)="closeElementViewModal()">
+    <app-shot-element-view
+      *ngIf="selectedElement && selectedElementType"
+      [element]="selectedElement"
+      [elementType]="selectedElementType"
+      [productionId]="productionId"
+      [sequenceId]="sequenceId"
+      [sceneId]="sceneId"
+      [actionBeatId]="actionBeatId"
+      [shotId]="selectedShotId"
+      (elementDeleted)="onElementDeleted()">
+    </app-shot-element-view>
   </app-modal>
 
   <!-- New Assumption Modal -->
