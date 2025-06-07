@@ -1,0 +1,293 @@
+<div class="elements-container" [ngClass]="elementType + '-theme'">
+  <div class="elements-header">
+    <h2>Production {{ elementTypePlural }}</h2>
+    <p class="subtitle">Manage {{ elementTypePlural.toLowerCase() }} for your production</p>
+  </div>
+
+  <!-- Create New Element Section -->
+  <div class="create-section">
+    <button
+      class="btn btn-primary toggle-form-btn"
+      (click)="toggleForm()"
+      [disabled]="loading">
+      <span *ngIf="!showForm">+ Add New {{ elementTypeLabel }}</span>
+      <span *ngIf="showForm">Cancel</span>
+    </button>
+
+    <div *ngIf="showForm" class="create-form">
+      <form [formGroup]="elementForm" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name" class="form-label">Name</label>
+            <input
+              type="text"
+              id="name"
+              class="form-control"
+              formControlName="name"
+              [placeholder]="'Enter ' + elementTypeLabel.toLowerCase() + ' name...'"
+              [class.is-invalid]="elementForm.get('name')?.invalid && elementForm.get('name')?.touched">
+            <div class="invalid-feedback" *ngIf="elementForm.get('name')?.invalid && elementForm.get('name')?.touched">
+              <div *ngIf="elementForm.get('name')?.errors?.['required']">Name is required</div>
+              <div *ngIf="elementForm.get('name')?.errors?.['minlength']">Name must be at least 1 character</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="description" class="form-label">Description</label>
+            <textarea
+              id="description"
+              class="form-control"
+              formControlName="description"
+              rows="3"
+              [placeholder]="'Describe the ' + elementTypeLabel.toLowerCase() + ' details...'"
+              [class.is-invalid]="elementForm.get('description')?.invalid && elementForm.get('description')?.touched"></textarea>
+            <div class="invalid-feedback" *ngIf="elementForm.get('description')?.invalid && elementForm.get('description')?.touched">
+              <div *ngIf="elementForm.get('description')?.errors?.['required']">Description is required</div>
+              <div *ngIf="elementForm.get('description')?.errors?.['minlength']">Description must be at least 5 characters</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Complexity Selection -->
+        <div class="complexity-section">
+          <label class="form-label">Complexity</label>
+
+          <!-- Existing Complexity Dropdown -->
+          <div *ngIf="!showComplexityForm" class="mb-2">
+            <select
+              class="form-select"
+              formControlName="complexity_id"
+              [class.is-invalid]="elementForm.get('complexity_id')?.invalid && elementForm.get('complexity_id')?.touched">
+              <option value="">Select a complexity</option>
+              <option [value]="complexity.id" *ngFor="let complexity of complexities">
+                {{ complexity.level }} - {{ complexity.description }}
+              </option>
+            </select>
+            <div class="invalid-feedback" *ngIf="elementForm.get('complexity_id')?.invalid && elementForm.get('complexity_id')?.touched">
+              Please select a complexity
+            </div>
+          </div>
+
+          <!-- Create New Complexity Button -->
+          <button
+            type="button"
+            class="btn btn-outline-secondary btn-sm mb-2"
+            (click)="toggleComplexityForm()"
+            [disabled]="isSubmitting">
+            {{ showComplexityForm ? 'Use Existing Complexity' : 'Create New Complexity' }}
+          </button>
+
+          <!-- New Complexity Form -->
+          <div *ngIf="showComplexityForm" [formGroup]="complexityForm" class="complexity-form">
+            <h6>New Complexity</h6>
+
+            <div class="form-group">
+              <label for="complexityLevel" class="form-label">Level</label>
+              <input
+                type="text"
+                class="form-control"
+                id="complexityLevel"
+                formControlName="level"
+                placeholder="e.g., High, Medium, Low"
+                [class.is-invalid]="complexityForm.get('level')?.invalid && complexityForm.get('level')?.touched">
+              <div class="invalid-feedback" *ngIf="complexityForm.get('level')?.invalid && complexityForm.get('level')?.touched">
+                Level is required
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="complexityDescription" class="form-label">Description</label>
+              <textarea
+                class="form-control"
+                id="complexityDescription"
+                rows="2"
+                formControlName="description"
+                [class.is-invalid]="complexityForm.get('description')?.invalid && complexityForm.get('description')?.touched"></textarea>
+              <div class="invalid-feedback" *ngIf="complexityForm.get('description')?.invalid && complexityForm.get('description')?.touched">
+                Description is required
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="elementForm.invalid || isSubmitting || (showComplexityForm && complexityForm.invalid)">
+            <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
+            {{ isSubmitting ? 'Creating...' : 'Create ' + elementTypeLabel }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="toggleForm()"
+            [disabled]="isSubmitting">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading {{ elementTypePlural.toLowerCase() }}...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-state">
+    <div class="error-message">
+      <strong>Error:</strong> {{ error }}
+    </div>
+    <button class="btn btn-primary" (click)="loadElements()">Try Again</button>
+  </div>
+
+  <!-- Elements Grid -->
+  <div *ngIf="!loading && !error" class="elements-grid">
+    <div *ngIf="elements.length === 0" class="empty-state">
+      <h3>No {{ elementTypePlural }} Found</h3>
+      <p>No {{ elementTypePlural.toLowerCase() }} have been created for this production yet.</p>
+    </div>
+
+    <div *ngFor="let element of elements" class="element-card">
+      <div class="element-header">
+        <h3 class="element-name" *ngIf="editingElement?.id !== element.id">{{ element.name }}</h3>
+        <div class="element-meta">
+          <small class="element-id">ID: {{ element.id }}</small>
+          <app-crud-dropdown
+            [entityLabel]="elementTypeLabel"
+            [elementId]="element.id"
+            [showAdd]="false"
+            [showVersion]="false"
+            [showEdit]="true"
+            [showDelete]="true"
+            (edit)="editElement(element)"
+            (delete)="deleteElement(element)">
+          </app-crud-dropdown>
+        </div>
+      </div>
+
+      <!-- Edit Form (shown when editing) -->
+      <div *ngIf="editingElement?.id === element.id" class="edit-form">
+        <form [formGroup]="editForm" (ngSubmit)="saveEdit()">
+          <div class="form-group">
+            <label for="editName" class="form-label">Name</label>
+            <input
+              type="text"
+              id="editName"
+              class="form-control"
+              formControlName="name"
+              [class.is-invalid]="editForm.get('name')?.invalid && editForm.get('name')?.touched">
+            <div class="invalid-feedback" *ngIf="editForm.get('name')?.invalid && editForm.get('name')?.touched">
+              <div *ngIf="editForm.get('name')?.errors?.['required']">Name is required</div>
+              <div *ngIf="editForm.get('name')?.errors?.['minlength']">Name must be at least 1 character</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="editDescription" class="form-label">Description</label>
+            <textarea
+              id="editDescription"
+              class="form-control"
+              formControlName="description"
+              rows="3"
+              [class.is-invalid]="editForm.get('description')?.invalid && editForm.get('description')?.touched"></textarea>
+            <div class="invalid-feedback" *ngIf="editForm.get('description')?.invalid && editForm.get('description')?.touched">
+              <div *ngIf="editForm.get('description')?.errors?.['required']">Description is required</div>
+              <div *ngIf="editForm.get('description')?.errors?.['minlength']">Description must be at least 5 characters</div>
+            </div>
+          </div>
+
+          <!-- Edit Complexity Selection -->
+          <div class="complexity-section">
+            <label class="form-label">Complexity</label>
+
+            <!-- Existing Complexity Dropdown -->
+            <div *ngIf="!showEditComplexityForm" class="mb-2">
+              <select
+                class="form-select"
+                formControlName="complexity_id"
+                [class.is-invalid]="editForm.get('complexity_id')?.invalid && editForm.get('complexity_id')?.touched">
+                <option value="">Select a complexity</option>
+                <option [value]="complexity.id" *ngFor="let complexity of complexities">
+                  {{ complexity.level }} - {{ complexity.description }}
+                </option>
+              </select>
+              <div class="invalid-feedback" *ngIf="editForm.get('complexity_id')?.invalid && editForm.get('complexity_id')?.touched">
+                Please select a complexity
+              </div>
+            </div>
+
+            <!-- Create New Complexity Button -->
+            <button
+              type="button"
+              class="btn btn-outline-secondary btn-sm mb-2"
+              (click)="toggleEditComplexityForm()">
+              {{ showEditComplexityForm ? 'Use Existing Complexity' : 'Create New Complexity' }}
+            </button>
+
+            <!-- New Complexity Form -->
+            <div *ngIf="showEditComplexityForm" [formGroup]="editComplexityForm" class="complexity-form">
+              <h6>New Complexity</h6>
+
+              <div class="form-group">
+                <label for="editComplexityLevel" class="form-label">Level</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editComplexityLevel"
+                  formControlName="level"
+                  placeholder="e.g., High, Medium, Low"
+                  [class.is-invalid]="editComplexityForm.get('level')?.invalid && editComplexityForm.get('level')?.touched">
+                <div class="invalid-feedback" *ngIf="editComplexityForm.get('level')?.invalid && editComplexityForm.get('level')?.touched">
+                  Level is required
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="editComplexityDescription" class="form-label">Description</label>
+                <textarea
+                  class="form-control"
+                  id="editComplexityDescription"
+                  rows="2"
+                  formControlName="description"
+                  [class.is-invalid]="editComplexityForm.get('description')?.invalid && editComplexityForm.get('description')?.touched"></textarea>
+                <div class="invalid-feedback" *ngIf="editComplexityForm.get('description')?.invalid && editComplexityForm.get('description')?.touched">
+                  Description is required
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="edit-actions">
+            <button type="submit" class="btn btn-success btn-sm" [disabled]="editForm.invalid || (showEditComplexityForm && editComplexityForm.invalid)">
+              Save Changes
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" (click)="cancelEdit()">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="element-body" *ngIf="editingElement?.id !== element.id">
+        <p class="element-description">{{ element.description }}</p>
+        <div class="element-complexity" *ngIf="getComplexityById(element.complexity_id)">
+          <span class="complexity-label">Complexity:</span>
+          <span class="complexity-level">{{ getComplexityById(element.complexity_id)?.level }}</span>
+          <span class="complexity-description">{{ getComplexityById(element.complexity_id)?.description }}</span>
+        </div>
+      </div>
+      <div class="element-footer" *ngIf="editingElement?.id !== element.id">
+        <small class="element-dates">
+          Created: {{ element.created_at | date:'short' }}
+          <span *ngIf="element.updated_at !== element.created_at">
+            • Updated: {{ element.updated_at | date:'short' }}
+          </span>
+        </small>
+      </div>
+    </div>
+  </div>
+</div>
