@@ -26,6 +26,7 @@ export class ProductionBreakdownComponent implements OnInit {
   error: string = '';
   isAllExpanded: boolean = false;
   isScriptViewExpanded: boolean = false;
+  isAllSelected: boolean = false;
 
   constructor(
     private sequenceService: SequenceService,
@@ -89,6 +90,30 @@ export class ProductionBreakdownComponent implements OnInit {
   }
 
   toggleAll(): void {
+    // Toggle the master checkbox state
+    this.isAllSelected = !this.isAllSelected;
+
+    // Get the master checkbox element and update its state
+    const masterCheckbox = document.getElementById('check-all-shots') as HTMLInputElement;
+    if (masterCheckbox) {
+      masterCheckbox.checked = this.isAllSelected;
+    }
+
+    // Select all checkboxes at each level
+    this.selectAllCheckboxes('input[id^="check-sequence-"]', this.isAllSelected);
+    this.selectAllCheckboxes('input[id^="check-scene-"]', this.isAllSelected);
+    this.selectAllCheckboxes('input[id^="check-actionB-"]', this.isAllSelected);
+    this.selectAllCheckboxes('input[id^="check-shot-"]', this.isAllSelected);
+  }
+
+  private selectAllCheckboxes(selector: string, checked: boolean): void {
+    const checkboxes = document.querySelectorAll(selector) as NodeListOf<HTMLInputElement>;
+    checkboxes.forEach(checkbox => {
+      checkbox.checked = checked;
+    });
+  }
+
+  expandAll(): void {
     this.isAllExpanded = !this.isAllExpanded;
 
     // Toggle all sequence collapses
@@ -132,9 +157,9 @@ export class ProductionBreakdownComponent implements OnInit {
     });
 
     // Update the button text
-    const toggleButton = document.querySelector('.sticky-buttons button:first-child');
-    if (toggleButton) {
-      toggleButton.textContent = this.isAllExpanded ? 'Close All' : 'Open All';
+    const expandButton = document.querySelector('.sticky-buttons button:first-child');
+    if (expandButton) {
+      expandButton.textContent = this.isAllExpanded ? 'Close All' : 'Open All';
     }
   }
 

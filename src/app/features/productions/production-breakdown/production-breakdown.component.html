@@ -1,5 +1,5 @@
 <div class="sticky-buttons">
-  <button class="btn btn-primary" (click)="toggleAll()">Open All</button>
+  <button class="btn btn-primary" (click)="expandAll()">Open All</button>
   <!-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSequenceModal">Add Sequence</button> -->
   <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-sequence-modal">
     <i class="bi bi-plus-circle"></i> Create Sequence
@@ -20,7 +20,11 @@
 
 <ul class="breakdown-rows sticky-headers">
   <li style="width: 2%;">
-    <input type="checkbox" id="check-all-shots" />
+    <input
+      type="checkbox"
+      id="check-all-shots"
+      [checked]="isAllSelected"
+      (change)="toggleAll()" />
   </li>
   <li style="width: 2%;" class="seq-border">
     <p class="rotate90">Seq.</p>

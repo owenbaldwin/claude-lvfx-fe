@@ -15,7 +15,8 @@
               class="shot-checkbox individual-seq-checkbox"
               [id]="'check-sequence-' + sequence.id"
               [name]="'check-sequence-' + sequence.id"
-              [value]="sequence.id">
+              [value]="sequence.id"
+              (change)="onSequenceCheckboxChange($event, sequence.id!)">
       </li>
       <a style="width: 8%;"
         class="table-collapse-btn"
