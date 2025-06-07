@@ -51,24 +51,15 @@
     </div>
 
     <div *ngIf="selectedSection === 'assets'" class="content-panel">
-      <div class="placeholder-content">
-        <h3>Assets</h3>
-        <p>Asset management panel coming soon...</p>
-      </div>
+      <app-sidebar-elements [productionId]="productionId" elementType="assets"></app-sidebar-elements>
     </div>
 
     <div *ngIf="selectedSection === 'assumptions'" class="content-panel">
-      <div class="placeholder-content">
-        <h3>Assumptions</h3>
-        <p>Assumptions management panel coming soon...</p>
-      </div>
+      <app-sidebar-elements [productionId]="productionId" elementType="assumptions"></app-sidebar-elements>
     </div>
 
     <div *ngIf="selectedSection === 'fx'" class="content-panel">
-      <div class="placeholder-content">
-        <h3>FX</h3>
-        <p>FX management panel coming soon...</p>
-      </div>
+      <app-sidebar-elements [productionId]="productionId" elementType="fx"></app-sidebar-elements>
     </div>
 
     <div *ngIf="selectedSection === 'reports'" class="content-panel">
