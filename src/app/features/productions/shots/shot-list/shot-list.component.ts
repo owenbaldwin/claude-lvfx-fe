@@ -7,6 +7,7 @@ import { ModalComponent } from '@app/shared/modal/modal.component';
 import { ShotEditComponent } from '../shot-edit/shot-edit.component';
 import { ShotElementNewComponent } from '../../shot-elements/shot-element-new/shot-element-new.component';
 import { ShotElementViewComponent } from '../../shot-elements/shot-element-view/shot-element-view.component';
+import { ShotElementLinkComponent } from '../../shot-elements/shot-element-link/shot-element-link.component';
 import { AssetService, Asset } from '@app/core/services/asset.service';
 import { AssumptionService, Assumption } from '@app/core/services/assumption.service';
 import { FxService, Fx } from '@app/core/services/fx.service';
@@ -23,6 +24,7 @@ import { forkJoin } from 'rxjs';
     ShotEditComponent,
     ShotElementNewComponent,
     ShotElementViewComponent,
+    ShotElementLinkComponent,
     MatIconModule
   ],
   templateUrl: './shot-list.component.html',
@@ -51,6 +53,9 @@ export class ShotListComponent implements OnInit, OnDestroy {
   showNewAssumptionModal = false;
   showNewAssetModal = false;
   showNewFxModal = false;
+  showLinkAssetModal = false;
+  showLinkAssumptionModal = false;
+  showLinkFxModal = false;
   showElementViewModal = false;
   selectedShot: Partial<Shot> = {};
   selectedShotId: number = 0;
@@ -220,12 +225,22 @@ export class ShotListComponent implements OnInit, OnDestroy {
   }
 
   openLinkAssumptionModal(shotId: number): void {
-    // TODO: Implement linking existing assumptions
-    console.log('Opening link assumption modal for shot', shotId);
+    this.selectedShotId = shotId;
+    this.showLinkAssumptionModal = true;
+    this.changeDetectorRef.detectChanges();
   }
 
   onAssumptionCreated(): void {
     this.showNewAssumptionModal = false;
+    // Refresh assumptions for the selected shot
+    if (this.selectedShotId) {
+      this.loadShotAssumptions(this.selectedShotId);
+    }
+    this.changeDetectorRef.detectChanges();
+  }
+
+  onAssumptionLinked(): void {
+    this.showLinkAssumptionModal = false;
     // Refresh assumptions for the selected shot
     if (this.selectedShotId) {
       this.loadShotAssumptions(this.selectedShotId);
@@ -245,12 +260,22 @@ export class ShotListComponent implements OnInit, OnDestroy {
   }
 
   openLinkAssetModal(shotId: number): void {
-    // TODO: Implement linking existing assets
-    console.log('Opening link asset modal for shot', shotId);
+    this.selectedShotId = shotId;
+    this.showLinkAssetModal = true;
+    this.changeDetectorRef.detectChanges();
   }
 
   onAssetCreated(): void {
     this.showNewAssetModal = false;
+    // Refresh assets for the selected shot
+    if (this.selectedShotId) {
+      this.loadShotAssets(this.selectedShotId);
+    }
+    this.changeDetectorRef.detectChanges();
+  }
+
+  onAssetLinked(): void {
+    this.showLinkAssetModal = false;
     // Refresh assets for the selected shot
     if (this.selectedShotId) {
       this.loadShotAssets(this.selectedShotId);
@@ -270,12 +295,22 @@ export class ShotListComponent implements OnInit, OnDestroy {
   }
 
   openLinkFxModal(shotId: number): void {
-    // TODO: Implement linking existing FX
-    console.log('Opening link FX modal for shot', shotId);
+    this.selectedShotId = shotId;
+    this.showLinkFxModal = true;
+    this.changeDetectorRef.detectChanges();
   }
 
   onFxCreated(): void {
     this.showNewFxModal = false;
+    // Refresh FX for the selected shot
+    if (this.selectedShotId) {
+      this.loadShotFxs(this.selectedShotId);
+    }
+    this.changeDetectorRef.detectChanges();
+  }
+
+  onFxLinked(): void {
+    this.showLinkFxModal = false;
     // Refresh FX for the selected shot
     if (this.selectedShotId) {
       this.loadShotFxs(this.selectedShotId);

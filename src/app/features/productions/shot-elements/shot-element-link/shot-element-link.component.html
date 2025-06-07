@@ -1,1 +1,82 @@
-<p>shot-element-link works!</p>
+<div class="shot-element-link-container" [attr.data-element-type]="elementType">
+  <!-- Loading state -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Loading {{ getElementTypeLabel() }}s...</p>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="error && !loading" class="alert alert-danger" role="alert">
+    {{ error }}
+    <button type="button" class="btn btn-sm btn-outline-danger ms-2" (click)="loadElements()">
+      Retry
+    </button>
+  </div>
+
+  <!-- Elements list -->
+  <div *ngIf="!loading && !error" class="elements-container">
+    <div class="header-section">
+      <h5>Select {{ getElementTypeLabel() }}s to Link to Shot</h5>
+      <p class="text-muted">
+        Choose one or more {{ getElementTypeLabel().toLowerCase() }}s from the production to link to this shot.
+      </p>
+    </div>
+
+    <!-- No elements available -->
+    <div *ngIf="allElements.length === 0" class="no-elements">
+      <div class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>
+        No available {{ getElementTypeLabel().toLowerCase() }}s to link to this shot.
+        <br>
+        <small>All {{ getElementTypeLabel().toLowerCase() }}s in this production are either already linked to this shot or none exist yet.</small>
+      </div>
+    </div>
+
+    <!-- Elements list with checkboxes -->
+    <form [formGroup]="linkForm" *ngIf="allElements.length > 0">
+      <div formArrayName="selectedElements" class="elements-list">
+        <div
+          *ngFor="let element of allElements; let i = index"
+          class="element-item"
+          [class.selected]="getSelectedElementsFormArray().at(i).value">
+
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              [id]="'element-' + element.id"
+              [formControlName]="i">
+            <label class="form-check-label element-label" [for]="'element-' + element.id">
+              <div class="element-info">
+                <h6 class="element-name mb-1">{{ element.name }}</h6>
+                <p class="element-description mb-0">{{ element.description }}</p>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Selection summary and action button -->
+      <div class="action-section" *ngIf="allElements.length > 0">
+        <div class="selection-summary">
+          <span class="badge bg-primary me-2">{{ selectedCount }} selected</span>
+          <span class="text-muted">
+            {{ selectedCount === 0 ? 'No' : selectedCount }}
+            {{ getElementTypeLabel().toLowerCase() }}{{ selectedCount !== 1 ? 's' : '' }} selected
+          </span>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-success"
+          [disabled]="selectedCount === 0 || linking"
+          (click)="linkSelectedElements()">
+          <span *ngIf="linking" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{ linking ? 'Linking...' : 'Assign to Shot' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
