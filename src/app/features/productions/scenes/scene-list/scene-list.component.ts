@@ -287,4 +287,44 @@ export class SceneListComponent implements OnInit {
     }
     return this.charactersMap[sceneId];
   }
+
+  onSceneCheckboxChange(event: Event, sceneId: number): void {
+    const checkbox = event.target as HTMLInputElement;
+    const isChecked = checkbox.checked;
+
+    // Select all child checkboxes for this scene
+    this.selectSceneChildCheckboxes(sceneId, isChecked);
+  }
+
+  private selectSceneChildCheckboxes(sceneId: number, checked: boolean): void {
+    // Find the scene collapse container
+    const sceneContainer = document.querySelector(`#collapse-scene-${sceneId}`);
+
+    if (sceneContainer) {
+      // Select all checkboxes within this scene container
+      const allChildCheckboxes = sceneContainer.querySelectorAll('input[type="checkbox"]') as NodeListOf<HTMLInputElement>;
+      console.log(`Found ${allChildCheckboxes.length} total child checkboxes for scene ${sceneId}`);
+
+      allChildCheckboxes.forEach(checkbox => {
+        checkbox.checked = checked;
+      });
+    } else {
+      console.warn(`Scene container #collapse-scene-${sceneId} not found`);
+
+      // Fallback to attribute-based selection
+      const actionBeatCheckboxes = document.querySelectorAll(`input[data-scene-id="${sceneId}"][id^="check-actionB-"]`) as NodeListOf<HTMLInputElement>;
+      const shotCheckboxes = document.querySelectorAll(`input[data-scene-id="${sceneId}"][id^="check-shot-"]`) as NodeListOf<HTMLInputElement>;
+
+      console.log(`Fallback: Found ${actionBeatCheckboxes.length} action beats, ${shotCheckboxes.length} shots for scene ${sceneId}`);
+
+      const allCheckboxes = [
+        ...Array.from(actionBeatCheckboxes),
+        ...Array.from(shotCheckboxes)
+      ];
+
+      allCheckboxes.forEach(checkbox => {
+        checkbox.checked = checked;
+      });
+    }
+  }
 }

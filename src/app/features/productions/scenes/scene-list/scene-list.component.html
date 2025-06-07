@@ -26,7 +26,8 @@
             [name]="'check-scene-' + scene.id"
             [value]="scene.id"
             [attr.data-scene-id]="scene.id"
-            [attr.data-sequence-id]="scene.sequenceId">
+            [attr.data-sequence-id]="scene.sequenceId"
+            (change)="onSceneCheckboxChange($event, scene.id!)">
         </li>
         <a
           style="width: 8%;"
