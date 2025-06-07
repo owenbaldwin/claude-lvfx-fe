@@ -43,27 +43,27 @@
 
       <!-- Type Icon -->
       <li style="width: 5%;">
-        <button type="button" class="btn-transparent" data-bs-toggle="tooltip" [attr.title]="actionBeat.beat_type | titlecase">
-          <i class="bi" [ngClass]="actionBeat.beat_type === 'action' ? 'bi-stars' : 'bi-chat-dots-fill'"></i>
+        <button type="button" class="btn-transparent" [matTooltip]="actionBeat.beat_type | titlecase" matTooltipPosition="above">
+          <mat-icon *ngIf="actionBeat.beat_type === 'action'">stars</mat-icon>
+          <mat-icon *ngIf="actionBeat.beat_type === 'dialogue'">sms</mat-icon>
         </button>
       </li>
 
-      <li style="width: 5%;"></li>
 
       <!-- Text Display -->
-      <li style="width: 20%;" class="inline-cell">
+      <li style="width: 35%;" class="inline-cell script-text script-page">
         <p *ngIf="actionBeat.beat_type === 'action'">
           {{ actionBeat.text }}
         </p>
-        <p *ngIf="actionBeat.beat_type === 'dialogue'">
+        <p *ngIf="actionBeat.beat_type === 'dialogue'" class="dialogue-text">
           <strong>{{ getPrimaryCharacterName(actionBeat.id) }}: </strong>
-          <em>{{ actionBeat.text }}</em>
+          {{ actionBeat.text }}
         </p>
       </li>
 
-
-      <li style="width: 15%;">
+      <li style="width: 5%;">
       </li>
+
 
       <!-- Characters Dropdown -->
       <li style="width: 5%;">
