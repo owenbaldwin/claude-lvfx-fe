@@ -24,15 +24,11 @@ export class CharacterService {
 
   // Get characters for a specific scene
   getSceneCharacters(productionId: number, sequenceId: number, sceneId: number): Observable<Character[]> {
-    return this.http.get<Character[]>(
-      `${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${sceneId}/characters`
-    );
+    return this.http.get<Character[]>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${sceneId}/characters`);
   }
 
   // Get characters for a specific action beat
   getActionBeatCharacters(productionId: number, sequenceId: number, sceneId: number, actionBeatId: number): Observable<Character[]> {
-    return this.http.get<Character[]>(
-      `${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${sceneId}/action_beats/${actionBeatId}/characters`
-    );
+    return this.http.get<Character[]>(`${this.apiUrl}/${productionId}/sequences/${sequenceId}/scenes/${sceneId}/action_beats/${actionBeatId}/characters`);
   }
 }

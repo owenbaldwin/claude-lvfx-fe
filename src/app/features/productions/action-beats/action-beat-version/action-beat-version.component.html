@@ -8,11 +8,99 @@
   <!-- Beat Type -->
   <div class="mb-3">
     <label for="versionBeatType" class="form-label">Type</label>
-    <select class="form-select" id="versionBeatType" name="beat_type" [(ngModel)]="form.beat_type" required>
+    <select class="form-select" id="versionBeatType" name="beat_type" [(ngModel)]="form.beat_type" required (change)="onBeatTypeChange()">
       <option value="" disabled>Select Type</option>
       <option value="action">Action</option>
       <option value="dialogue">Dialogue</option>
     </select>
+  </div>
+
+  <!-- Character Selection Section -->
+  <div class="mb-3" *ngIf="!isLoadingCharacters">
+    <label class="form-label">
+      Characters
+      <span *ngIf="form.beat_type === 'dialogue'" class="text-muted">(Select one character)</span>
+      <span *ngIf="form.beat_type === 'action'" class="text-muted">(Select multiple characters)</span>
+    </label>
+
+    <!-- Dialogue: Single Character Selection -->
+    <div *ngIf="form.beat_type === 'dialogue'">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Select Character</mat-label>
+        <mat-select [(value)]="selectedCharacterId">
+          <mat-option *ngFor="let character of productionCharacters" [value]="character.id">
+            {{ character.full_name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Action: Multiple Character Selection -->
+    <div *ngIf="form.beat_type === 'action'">
+      <!-- Selected Characters Display -->
+      <div *ngIf="selectedCharacters.length > 0" class="mb-2">
+        <mat-chip-set>
+          <mat-chip *ngFor="let character of selectedCharacters" (removed)="removeCharacterFromAction(character)">
+            {{ character.full_name }}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+        </mat-chip-set>
+      </div>
+
+      <!-- Add Character Dropdown -->
+      <mat-form-field appearance="outline" class="w-100" *ngIf="getAvailableCharactersForAction().length > 0">
+        <mat-label>Add Character</mat-label>
+        <mat-select #characterSelect (selectionChange)="addCharacterToAction($event.value); characterSelect.value = null">
+          <mat-option *ngFor="let character of getAvailableCharactersForAction()" [value]="character.id">
+            {{ character.full_name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div *ngIf="getAvailableCharactersForAction().length === 0 && selectedCharacters.length === 0" class="text-muted">
+        No characters available. Create a new character below.
+      </div>
+    </div>
+
+    <!-- Create New Character Section -->
+    <div class="mt-2">
+      <button type="button" class="btn btn-sm btn-outline-secondary"
+              *ngIf="!showCreateCharacterForm"
+              (click)="showCreateCharacterForm = true">
+        <mat-icon>add</mat-icon> Create New Character
+      </button>
+
+      <div *ngIf="showCreateCharacterForm" class="mt-2 p-3 border rounded">
+        <div class="mb-2">
+          <label for="newCharacterName" class="form-label">Character Name</label>
+          <input type="text" class="form-control" id="newCharacterName"
+                 [(ngModel)]="newCharacterName" name="newCharacterName"
+                 placeholder="Enter character name">
+        </div>
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-sm btn-primary"
+                  (click)="createNewCharacter()"
+                  [disabled]="!newCharacterName.trim() || isCreatingCharacter">
+            <mat-icon *ngIf="isCreatingCharacter">refresh</mat-icon>
+            <mat-icon *ngIf="!isCreatingCharacter">check</mat-icon>
+            {{ isCreatingCharacter ? 'Creating...' : 'Create' }}
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary"
+                  (click)="cancelCreateCharacter()"
+                  [disabled]="isCreatingCharacter">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Characters Indicator -->
+  <div *ngIf="isLoadingCharacters" class="mb-3">
+    <label class="form-label">Characters</label>
+    <div class="text-muted">
+      <mat-icon>refresh</mat-icon> Loading characters...
+    </div>
   </div>
 
   <!-- Text -->
