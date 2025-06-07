@@ -132,9 +132,14 @@
     font-size: 1.25rem;
     font-weight: 600;
     color: $lvfx-gold;
+    flex: 1;
   }
 
   .complexity-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
     .complexity-id {
       color: $light-grey;
       font-size: 0.8rem;
@@ -336,6 +341,99 @@
             width: 0.875rem;
             height: 0.875rem;
           }
+        }
+      }
+    }
+  }
+}
+
+// Edit form styles
+.edit-form {
+  padding: 1rem 1.25rem;
+  background-color: $shot-grey;
+  border-top: 1px solid $action-beat-blue;
+
+  .form-group {
+    margin-bottom: 1rem;
+
+    .form-label {
+      color: $lvfx-gold;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      display: block;
+      font-size: 0.9rem;
+    }
+
+    .form-control {
+      background-color: $mid-grey;
+      border: 1px solid $action-beat-blue;
+      color: $white;
+      border-radius: 4px;
+      padding: 0.5rem 0.75rem;
+
+      &:focus {
+        background-color: $mid-grey;
+        border-color: $lvfx-gold;
+        box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+        color: $white;
+      }
+
+      &.is-invalid {
+        border-color: #dc3545;
+      }
+
+      &::placeholder {
+        color: $light-grey;
+      }
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .invalid-feedback {
+      color: #dc3545;
+      font-size: 0.8rem;
+      margin-top: 0.25rem;
+    }
+  }
+
+  .edit-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    margin-top: 1rem;
+
+    .btn {
+      padding: 0.375rem 1rem;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &.btn-success {
+        background-color: #28a745;
+        color: white;
+
+        &:hover:not(:disabled) {
+          background-color: #218838;
+        }
+
+        &:disabled {
+          background-color: #6c757d;
+          cursor: not-allowed;
+        }
+      }
+
+      &.btn-secondary {
+        background-color: $action-beat-blue;
+        color: $white;
+
+        &:hover {
+          background-color: darken($action-beat-blue, 10%);
         }
       }
     }

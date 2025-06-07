@@ -14,6 +14,12 @@ export class CrudDropdownComponent {
   @Input() elementId!: string | number;           // Unique ID
   @Input() addLabel: string = 'Add New';   // Optional custom label
 
+  // Optional boolean inputs to control which options are shown
+  @Input() showAdd: boolean = true;
+  @Input() showEdit: boolean = true;
+  @Input() showVersion: boolean = true;
+  @Input() showDelete: boolean = true;
+
   @Output() add = new EventEmitter<void>();
   @Output() edit = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();

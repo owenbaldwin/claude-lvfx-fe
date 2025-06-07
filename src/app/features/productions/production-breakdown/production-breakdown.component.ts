@@ -159,8 +159,8 @@ export class ProductionBreakdownComponent implements OnInit {
       }
     });
 
-    // Update the button text
-    const expandButton = document.querySelector('.sticky-buttons button:first-child');
+    // Update the button text - target the "Open All" button specifically (second button)
+    const expandButton = document.querySelector('.sticky-buttons button:nth-child(2)');
     if (expandButton) {
       expandButton.textContent = this.isAllExpanded ? 'Close All' : 'Open All';
     }
