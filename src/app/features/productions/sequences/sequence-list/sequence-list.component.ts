@@ -158,4 +158,46 @@ export class SequenceListComponent implements OnInit, AfterViewInit {
     }
   }
 
+  onSequenceCheckboxChange(event: Event, sequenceId: number): void {
+    const checkbox = event.target as HTMLInputElement;
+    const isChecked = checkbox.checked;
+
+    // Select all child checkboxes for this sequence
+    this.selectChildCheckboxes(sequenceId, isChecked);
+  }
+
+  private selectChildCheckboxes(sequenceId: number, checked: boolean): void {
+    // Find the sequence collapse container
+    const sequenceContainer = document.querySelector(`#collapse-seq-${sequenceId}`);
+
+    if (sequenceContainer) {
+      // Select all checkboxes within this sequence container
+      const allChildCheckboxes = sequenceContainer.querySelectorAll('input[type="checkbox"]') as NodeListOf<HTMLInputElement>;
+      console.log(`Found ${allChildCheckboxes.length} total child checkboxes for sequence ${sequenceId}`);
+
+      allChildCheckboxes.forEach(checkbox => {
+        checkbox.checked = checked;
+      });
+    } else {
+      console.warn(`Sequence container #collapse-seq-${sequenceId} not found`);
+
+      // Fallback to attribute-based selection
+      const sceneCheckboxes = document.querySelectorAll(`input[data-sequence-id="${sequenceId}"][id^="check-scene-"]`) as NodeListOf<HTMLInputElement>;
+      const actionBeatCheckboxes = document.querySelectorAll(`input[data-sequence-id="${sequenceId}"][id^="check-actionB-"]`) as NodeListOf<HTMLInputElement>;
+      const shotCheckboxes = document.querySelectorAll(`input[data-sequence-id="${sequenceId}"][id^="check-shot-"]`) as NodeListOf<HTMLInputElement>;
+
+      console.log(`Fallback: Found ${sceneCheckboxes.length} scenes, ${actionBeatCheckboxes.length} action beats, ${shotCheckboxes.length} shots`);
+
+      const allCheckboxes = [
+        ...Array.from(sceneCheckboxes),
+        ...Array.from(actionBeatCheckboxes),
+        ...Array.from(shotCheckboxes)
+      ];
+
+      allCheckboxes.forEach(checkbox => {
+        checkbox.checked = checked;
+      });
+    }
+  }
+
 }

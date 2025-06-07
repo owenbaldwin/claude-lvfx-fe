@@ -26,7 +26,8 @@
           [value]="actionBeat.id"
           [attr.data-actionbeat-id]="actionBeat.id"
           [attr.data-scene-id]="sceneId"
-          [attr.data-sequence-id]="sequenceId" />
+          [attr.data-sequence-id]="sequenceId"
+          (change)="onActionBeatCheckboxChange($event, actionBeat.id!)" />
       </li>
 
       <!-- Collapse Trigger -->

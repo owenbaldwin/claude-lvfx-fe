@@ -265,8 +265,42 @@ export class ActionBeatListComponent {
   getPrimaryCharacterName(actionBeatId: number | undefined): string {
     const characters = this.getActionBeatCharacters(actionBeatId);
     if (characters.length > 0) {
-      return characters[0].full_name; // Return the first character as the primary speaker
+      return characters[0].full_name;
     }
-    return 'Unknown';
+    return '';
+  }
+
+  onActionBeatCheckboxChange(event: Event, actionBeatId: number): void {
+    const checkbox = event.target as HTMLInputElement;
+    const isChecked = checkbox.checked;
+
+    // Select all child checkboxes for this action beat
+    this.selectActionBeatChildCheckboxes(actionBeatId, isChecked);
+  }
+
+  private selectActionBeatChildCheckboxes(actionBeatId: number, checked: boolean): void {
+    // Find the action beat collapse container
+    const actionBeatContainer = document.querySelector(`#collapse-actionB-${actionBeatId}`);
+
+    if (actionBeatContainer) {
+      // Select all checkboxes within this action beat container
+      const allChildCheckboxes = actionBeatContainer.querySelectorAll('input[type="checkbox"]') as NodeListOf<HTMLInputElement>;
+      console.log(`Found ${allChildCheckboxes.length} total child checkboxes for action beat ${actionBeatId}`);
+
+      allChildCheckboxes.forEach(checkbox => {
+        checkbox.checked = checked;
+      });
+    } else {
+      console.warn(`Action beat container #collapse-actionB-${actionBeatId} not found`);
+
+      // Fallback to attribute-based selection
+      const shotCheckboxes = document.querySelectorAll(`input[data-actionbeat-id="${actionBeatId}"][id^="check-shot-"]`) as NodeListOf<HTMLInputElement>;
+
+      console.log(`Fallback: Found ${shotCheckboxes.length} shots for action beat ${actionBeatId}`);
+
+      shotCheckboxes.forEach(checkbox => {
+        checkbox.checked = checked;
+      });
+    }
   }
 }
