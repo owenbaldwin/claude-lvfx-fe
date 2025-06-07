@@ -61,12 +61,38 @@
          [active]="rlaBreakdown.isActive">
         Breakdown
       </a>
+      <a class="production-tab" mat-tab-link
+        [routerLink]="['/productions', productionId, 'script-versions']"
+        routerLinkActive #rlaScript="routerLinkActive"
+        [active]="rlaScript.isActive">
+        Script Versions
+      </a>
       <a class="production-tab"
           mat-tab-link
          [routerLink]="['/productions', productionId, 'budget']"
          routerLinkActive #rlaBudget="routerLinkActive"
          [active]="rlaBudget.isActive">
         Budget
+      </a>
+      <a class="production-tab" mat-tab-link
+        [routerLink]="['/productions', productionId, 'characters']"
+        routerLinkActive #rlaCharacters="routerLinkActive"
+        [active]="rlaCharacters.isActive">
+        Characters
+      </a>
+      <a class="production-tab" mat-tab-link
+        [routerLink]="['/productions', productionId, 'locations']"
+        routerLinkActive #rlaLocations="routerLinkActive"
+        [active]="rlaLocations.isActive">
+        Locations
+      </a>
+      <a class="production-tab" mat-tab-link [routerLink]="['/productions', productionId, 'bids']" routerLinkActive
+        #rlaBids="routerLinkActive" [active]="rlaBids.isActive">
+        Bids
+      </a>
+      <a class="production-tab" mat-tab-link [routerLink]="['/productions', productionId, 'contracts']" routerLinkActive
+        #rlaContracts="routerLinkActive" [active]="rlaContracts.isActive">
+        Contracts
       </a>
     </nav>
     <router-outlet></router-outlet>

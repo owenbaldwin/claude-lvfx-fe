@@ -25,6 +25,7 @@ export class ProductionBreakdownComponent implements OnInit {
   loading: boolean = false;
   error: string = '';
   isAllExpanded: boolean = false;
+  isScriptViewExpanded: boolean = false;
 
   constructor(
     private sequenceService: SequenceService,
@@ -134,6 +135,43 @@ export class ProductionBreakdownComponent implements OnInit {
     const toggleButton = document.querySelector('.sticky-buttons button:first-child');
     if (toggleButton) {
       toggleButton.textContent = this.isAllExpanded ? 'Close All' : 'Open All';
+    }
+  }
+
+  openScenesAndActionBeats(): void {
+    // Toggle the script view state
+    this.isScriptViewExpanded = !this.isScriptViewExpanded;
+
+    // Get all collapse elements
+    const sequenceCollapses = document.querySelectorAll('[id^="collapse-seq-"]');
+    const sceneCollapses = document.querySelectorAll('[id^="collapse-scene-"]');
+    const actionBeatCollapses = document.querySelectorAll('[id^="collapse-actionB-"]');
+
+    if (this.isScriptViewExpanded) {
+      // Open sequences and scenes only - keep action beats closed to hide shots
+      sequenceCollapses.forEach(collapse => {
+        collapse.classList.add('show');
+      });
+
+      sceneCollapses.forEach(collapse => {
+        collapse.classList.add('show');
+      });
+
+      // Keep action beats closed since they contain shots
+      actionBeatCollapses.forEach(collapse => {
+        collapse.classList.remove('show');
+      });
+    } else {
+      // Close sequences and scenes
+      sequenceCollapses.forEach(collapse => {
+        collapse.classList.remove('show');
+      });
+
+      sceneCollapses.forEach(collapse => {
+        collapse.classList.remove('show');
+      });
+
+      // Don't change action beat state when closing script view
     }
   }
 }

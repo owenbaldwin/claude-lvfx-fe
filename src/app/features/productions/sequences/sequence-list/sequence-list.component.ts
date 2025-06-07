@@ -11,6 +11,7 @@ import { ModalComponent } from '@app/shared/modal/modal.component';
 import { SceneNewComponent } from '@app/features/productions/scenes/scene-new/scene-new.component';
 import { SequenceEditComponent } from '@app/features/productions/sequences/sequence-edit/sequence-edit.component';
 import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-sequence-list',
@@ -23,7 +24,8 @@ import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.c
     ModalComponent,
     SceneNewComponent,
     SequenceEditComponent,
-    CrudDropdownComponent
+    CrudDropdownComponent,
+    MatTooltipModule
     ],
   templateUrl: './sequence-list.component.html',
   styleUrl: './sequence-list.component.scss'

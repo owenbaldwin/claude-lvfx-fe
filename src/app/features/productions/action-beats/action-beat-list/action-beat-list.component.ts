@@ -12,6 +12,8 @@ import { ShotNewComponent } from '../../shots/shot-new/shot-new.component';
 import { ShotListComponent } from '../../shots/shot-list/shot-list.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-action-beat-list',
@@ -27,6 +29,8 @@ import { MatButtonModule } from '@angular/material/button';
     ShotListComponent,
     MatMenuModule,
     MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
   ],
   templateUrl: './action-beat-list.component.html',
   styleUrl: './action-beat-list.component.scss'

@@ -16,6 +16,7 @@ import { ActionBeatListComponent } from '@app/features/productions/action-beats/
 import { ActionBeatNewComponent } from '@app/features/productions/action-beats/action-beat-new/action-beat-new.component';
 import { SceneVersionComponent } from '../scene-version/scene-version.component';
 import { MatMenuModule }   from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-scene-list',
@@ -34,6 +35,7 @@ import { MatMenuModule }   from '@angular/material/menu';
     ActionBeatNewComponent,
     SceneVersionComponent,
     MatMenuModule,
+    MatTooltipModule,
   ],
   templateUrl: './scene-list.component.html',
   styleUrl: './scene-list.component.scss'

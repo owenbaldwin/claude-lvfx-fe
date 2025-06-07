@@ -101,3 +101,18 @@ th, td {
   margin-right: 0.5rem;
   vertical-align: middle;
 }
+
+.script-text {
+  font-family: 'Courier Prime', monospace;
+}
+
+.script-page {
+  background-color: $script-scenes;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  p {
+    margin: 0;
+  }
+}
