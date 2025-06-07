@@ -202,4 +202,46 @@
       (elementCreated)="onFxCreated()">
     </app-shot-element-new>
   </app-modal>
+
+  <!-- Link Asset Modal -->
+  <app-modal [title]="'Link Existing Asset'" [isOpen]="showLinkAssetModal" (close)="showLinkAssetModal = false">
+    <app-shot-element-link
+      [elementType]="'asset'"
+      [productionId]="productionId"
+      [sequenceId]="sequenceId"
+      [sceneId]="sceneId"
+      [actionBeatId]="actionBeatId"
+      [shotId]="selectedShotId"
+      [isVisible]="showLinkAssetModal"
+      (elementsLinked)="onAssetLinked()">
+    </app-shot-element-link>
+  </app-modal>
+
+  <!-- Link Assumption Modal -->
+  <app-modal [title]="'Link Existing Assumption'" [isOpen]="showLinkAssumptionModal" (close)="showLinkAssumptionModal = false">
+    <app-shot-element-link
+      [elementType]="'assumption'"
+      [productionId]="productionId"
+      [sequenceId]="sequenceId"
+      [sceneId]="sceneId"
+      [actionBeatId]="actionBeatId"
+      [shotId]="selectedShotId"
+      [isVisible]="showLinkAssumptionModal"
+      (elementsLinked)="onAssumptionLinked()">
+    </app-shot-element-link>
+  </app-modal>
+
+  <!-- Link FX Modal -->
+  <app-modal [title]="'Link Existing FX'" [isOpen]="showLinkFxModal" (close)="showLinkFxModal = false">
+    <app-shot-element-link
+      [elementType]="'fx'"
+      [productionId]="productionId"
+      [sequenceId]="sequenceId"
+      [sceneId]="sceneId"
+      [actionBeatId]="actionBeatId"
+      [shotId]="selectedShotId"
+      [isVisible]="showLinkFxModal"
+      (elementsLinked)="onFxLinked()">
+    </app-shot-element-link>
+  </app-modal>
 </div>
