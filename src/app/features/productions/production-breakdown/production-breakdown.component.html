@@ -1,4 +1,7 @@
 <div class="sticky-buttons">
+  <button (click)="expandSidebar()" class="btn btn-primary">
+    <mat-icon>menu</mat-icon>
+  </button>
   <button class="btn btn-primary" (click)="expandAll()">Open All</button>
   <!-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSequenceModal">Add Sequence</button> -->
   <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-sequence-modal">
@@ -53,3 +56,16 @@
   (sequenceCreatedAndGrouped)="onSequenceCreatedAndGrouped()"
   (scenesUpdated)="onScenesUpdated()">
 </app-unsequenced-scene-list>
+
+<!-- Sidebar overlay -->
+<div class="sidebar-overlay" [class.open]="isSidebarOpen" (click)="expandSidebar()">
+  <div class="sidebar-content" (click)="$event.stopPropagation()">
+    <div class="sidebar-header">
+      <h3>Sidebar</h3>
+      <button class="close-btn" (click)="expandSidebar()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <app-sidebar [productionId]="productionId"></app-sidebar>
+  </div>
+</div>

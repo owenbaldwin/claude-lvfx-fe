@@ -7,11 +7,13 @@ import { ModalComponent } from '@app/shared/modal/modal.component';
 import { SequenceService } from '@app/core/services/sequence.service';
 import { Sequence } from '@app/shared/models';
 import { CommonModule } from '@angular/common';
+import { SidebarComponent } from '@app/features/productions/sidebar/sidebar/sidebar.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-production-breakdown',
   standalone: true,
-  imports: [SequenceListComponent, ModalComponent, SequenceNewComponent, UnsequencedSceneListComponent, CommonModule],
+  imports: [SequenceListComponent, ModalComponent, SequenceNewComponent, UnsequencedSceneListComponent, CommonModule, SidebarComponent, MatIconModule],
   templateUrl: './production-breakdown.component.html',
   styleUrl: './production-breakdown.component.scss'
 })
@@ -27,6 +29,7 @@ export class ProductionBreakdownComponent implements OnInit {
   isAllExpanded: boolean = false;
   isScriptViewExpanded: boolean = false;
   isAllSelected: boolean = false;
+  isSidebarOpen: boolean = false;
 
   constructor(
     private sequenceService: SequenceService,
@@ -198,5 +201,9 @@ export class ProductionBreakdownComponent implements OnInit {
 
       // Don't change action beat state when closing script view
     }
+  }
+
+  expandSidebar(): void {
+    this.isSidebarOpen = !this.isSidebarOpen;
   }
 }
