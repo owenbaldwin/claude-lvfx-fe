@@ -117,6 +117,13 @@ export class ShotElementViewComponent implements OnInit {
       return;
     }
 
+    // Validate shotId before making API calls
+    if (!this.shotId || this.shotId <= 0) {
+      console.error('Invalid shot ID for deleting element relationship:', this.shotId);
+      alert('Invalid shot ID. Cannot remove element from shot.');
+      return;
+    }
+
     this.deleting = true;
 
     // First, we need to find the relationship ID by getting all relationships and finding the one that matches our element

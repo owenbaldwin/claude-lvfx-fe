@@ -148,7 +148,7 @@
     [isOpen]="showElementViewModal"
     (close)="closeElementViewModal()">
     <app-shot-element-view
-      *ngIf="selectedElement && selectedElementType"
+      *ngIf="selectedElement && selectedElementType && selectedShotId > 0"
       [element]="selectedElement"
       [elementType]="selectedElementType"
       [productionId]="productionId"
@@ -164,6 +164,7 @@
   <!-- New Assumption Modal -->
   <app-modal [title]="'Add New Assumption'" [isOpen]="showNewAssumptionModal" (close)="showNewAssumptionModal = false">
     <app-shot-element-new
+      *ngIf="selectedShotId > 0"
       #newAssumptionComponent
       [elementType]="'assumption'"
       [productionId]="productionId"
@@ -178,6 +179,7 @@
   <!-- New Asset Modal -->
   <app-modal [title]="'Add New Asset'" [isOpen]="showNewAssetModal" (close)="showNewAssetModal = false">
     <app-shot-element-new
+      *ngIf="selectedShotId > 0"
       #newAssetComponent
       [elementType]="'asset'"
       [productionId]="productionId"
@@ -192,6 +194,7 @@
   <!-- New FX Modal -->
   <app-modal [title]="'Add New FX'" [isOpen]="showNewFxModal" (close)="showNewFxModal = false">
     <app-shot-element-new
+      *ngIf="selectedShotId > 0"
       #newFxComponent
       [elementType]="'fx'"
       [productionId]="productionId"
@@ -206,6 +209,7 @@
   <!-- Link Asset Modal -->
   <app-modal [title]="'Link Existing Asset'" [isOpen]="showLinkAssetModal" (close)="showLinkAssetModal = false">
     <app-shot-element-link
+      *ngIf="selectedShotId > 0"
       [elementType]="'asset'"
       [productionId]="productionId"
       [sequenceId]="sequenceId"
@@ -220,6 +224,7 @@
   <!-- Link Assumption Modal -->
   <app-modal [title]="'Link Existing Assumption'" [isOpen]="showLinkAssumptionModal" (close)="showLinkAssumptionModal = false">
     <app-shot-element-link
+      *ngIf="selectedShotId > 0"
       [elementType]="'assumption'"
       [productionId]="productionId"
       [sequenceId]="sequenceId"
@@ -234,6 +239,7 @@
   <!-- Link FX Modal -->
   <app-modal [title]="'Link Existing FX'" [isOpen]="showLinkFxModal" (close)="showLinkFxModal = false">
     <app-shot-element-link
+      *ngIf="selectedShotId > 0"
       [elementType]="'fx'"
       [productionId]="productionId"
       [sequenceId]="sequenceId"
