@@ -205,7 +205,7 @@ export class GenerateShotsComponent implements OnDestroy {
     action_beat_text: string;
     shots: GeneratedShot[];
   }> {
-    if (!this.results) return [];
+    if (!this.results || !this.results.action_beats) return [];
 
     return Object.values(this.results.action_beats);
   }
