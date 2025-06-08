@@ -19,12 +19,12 @@ export class ProductionUserService {
 
   // Get production users for a specific production
   getProductionUsersByProduction(productionId: number): Observable<ProductionUser[]> {
-    return this.http.get<ProductionUser[]>(`${environment.apiUrl}/productions/${productionId}/users`);
+    return this.http.get<ProductionUser[]>(`${this.apiUrl}/productions/${productionId}/users`);
   }
 
   // Get production users for a specific user
   getProductionsByUser(userId: number): Observable<ProductionUser[]> {
-    return this.http.get<ProductionUser[]>(`${environment.apiUrl}/users/${userId}/productions`);
+    return this.http.get<ProductionUser[]>(`${this.apiUrl}/users/${userId}/productions`);
   }
 
   // Get a specific production user by ID

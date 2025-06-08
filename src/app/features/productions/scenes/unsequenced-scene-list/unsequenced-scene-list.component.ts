@@ -9,6 +9,7 @@ import { SequenceService } from '@app/core/services/sequence.service';
 import { ActionBeatService } from '@app/core/services/action-beat.service';
 import { Scene, Sequence } from '@app/shared/models';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { CrudDropdownComponent } from '@app/shared/crud-dropdown/crud-dropdown.component';
 import { ModalComponent } from '@app/shared/modal/modal.component';
 import { forkJoin } from 'rxjs';
@@ -23,7 +24,8 @@ import { forkJoin } from 'rxjs';
     MatProgressSpinnerModule,
     MatButtonModule,
     CrudDropdownComponent,
-    ModalComponent
+    ModalComponent,
+    MatTooltipModule
   ],
   templateUrl: './unsequenced-scene-list.component.html',
   styleUrl: './unsequenced-scene-list.component.scss'
@@ -131,18 +133,21 @@ export class UnsequencedSceneListComponent implements OnInit {
 
     this.sequenceService.createSequence(this.productionId, sequenceToCreate as Sequence).subscribe({
       next: (createdSequence) => {
-        // Now update all selected scenes with the new sequence ID using the regular updateScene method
+        if (!createdSequence.id) {
+          this.snackBar.open('Sequence created but has no ID', 'Close', { duration: 3000 });
+          this.creatingSequence = false;
+          return;
+        }
+
+        // Now update all selected scenes with the new sequence ID
         const updateObservables = Array.from(this.selectedSceneIds).map(sceneId => {
           const scene = this.scenes.find(s => s.id === sceneId);
           if (scene) {
-            // Try sending only the fields that need to be updated
             const updatePayload = {
               sequenceId: createdSequence.id,
               id: scene.id,
               productionId: this.productionId
             };
-            console.log('Updating scene:', sceneId, 'with minimal payload:', updatePayload);
-            console.log('Full scene object for reference:', scene);
             return this.sceneService.updateUnsequencedScene(
               this.productionId,
               sceneId,
@@ -154,7 +159,7 @@ export class UnsequencedSceneListComponent implements OnInit {
 
         if (updateObservables.length > 0) {
           forkJoin(updateObservables).subscribe({
-            next: () => {
+            next: (sceneResults) => {
               // After successfully updating scenes, update their action beats with the sequence ID
               if (createdSequence.id) {
                 this.updateActionBeatsWithSequenceId(createdSequence.id);
@@ -192,9 +197,9 @@ export class UnsequencedSceneListComponent implements OnInit {
   }
 
   private updateActionBeatsWithSequenceId(sequenceId: number): void {
-    // Get all action beats for the selected scenes
+    // Get all action beats for the selected scenes using the ALT pattern
     const getActionBeatsObservables = Array.from(this.selectedSceneIds).map(sceneId =>
-      this.actionBeatService.getActionBeatsByScene(sceneId)
+      this.actionBeatService.getUnsequencedActionBeatsBySceneAlt(this.productionId, sceneId)
     );
 
     if (getActionBeatsObservables.length === 0) {
@@ -209,6 +214,7 @@ export class UnsequencedSceneListComponent implements OnInit {
 
         allActionBeatsArrays.forEach((actionBeats, index) => {
           const sceneId = Array.from(this.selectedSceneIds)[index];
+
           actionBeats.forEach(actionBeat => {
             if (actionBeat.id && typeof actionBeat.id === 'number') {
               const updatePayload = {
@@ -217,6 +223,7 @@ export class UnsequencedSceneListComponent implements OnInit {
                 productionId: this.productionId,
                 sceneId: sceneId
               };
+
               actionBeatUpdateObservables.push(
                 this.actionBeatService.updateUnsequencedActionBeat(
                   this.productionId,
@@ -232,8 +239,7 @@ export class UnsequencedSceneListComponent implements OnInit {
         // Execute all action beat updates
         if (actionBeatUpdateObservables.length > 0) {
           forkJoin(actionBeatUpdateObservables).subscribe({
-            next: () => {
-              console.log('Action beats updated successfully');
+            next: (results) => {
               this.finishGroupingOperation();
             },
             error: (err) => {
