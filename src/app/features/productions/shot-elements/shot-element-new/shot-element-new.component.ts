@@ -161,6 +161,13 @@ export class ShotElementNewComponent implements OnInit {
   }
 
   private createShotElementRelation(elementId: number): void {
+    // Validate shotId before making API calls
+    if (!this.shotId || this.shotId <= 0) {
+      console.error('Invalid shot ID for creating element relation:', this.shotId);
+      this.isSubmitting = false;
+      return;
+    }
+
     let relationService$: Observable<any>;
     let payload: any;
 

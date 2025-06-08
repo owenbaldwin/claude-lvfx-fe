@@ -62,6 +62,14 @@ export class ShotElementLinkComponent implements OnInit, OnChanges {
     this.loading = true;
     this.error = null;
 
+    // Validate shotId before making API calls
+    if (!this.shotId || this.shotId <= 0) {
+      console.error('Invalid shot ID for loading elements:', this.shotId);
+      this.error = 'Invalid shot ID. Cannot load elements.';
+      this.loading = false;
+      return;
+    }
+
     let allElementsService$;
     let assignedElementsService$;
 
@@ -177,6 +185,13 @@ export class ShotElementLinkComponent implements OnInit, OnChanges {
     const selectedElements = this.getSelectedElements();
 
     if (selectedElements.length === 0) {
+      return;
+    }
+
+    // Validate shotId before making API calls
+    if (!this.shotId || this.shotId <= 0) {
+      console.error('Invalid shot ID for linking elements:', this.shotId);
+      this.error = 'Invalid shot ID. Cannot link elements.';
       return;
     }
 

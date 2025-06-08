@@ -58,7 +58,7 @@ export class ShotListComponent implements OnInit, OnDestroy {
   showLinkFxModal = false;
   showElementViewModal = false;
   selectedShot: Partial<Shot> = {};
-  selectedShotId: number = 0;
+  selectedShotId: number = -1;
   selectedElement: Asset | Assumption | Fx | null = null;
   selectedElementType: 'asset' | 'assumption' | 'fx' | null = null;
 
@@ -116,7 +116,7 @@ export class ShotListComponent implements OnInit, OnDestroy {
   private loadShotElements(): void {
     console.log('Loading shot elements for', this.shots.length, 'shots');
     this.shots.forEach(shot => {
-      if (shot.id) {
+      if (shot.id && shot.id > 0) {
         this.loadShotAssets(shot.id);
         this.loadShotAssumptions(shot.id);
         this.loadShotFxs(shot.id);
@@ -233,7 +233,7 @@ export class ShotListComponent implements OnInit, OnDestroy {
   onAssumptionCreated(): void {
     this.showNewAssumptionModal = false;
     // Refresh assumptions for the selected shot
-    if (this.selectedShotId) {
+    if (this.selectedShotId && this.selectedShotId > 0) {
       this.loadShotAssumptions(this.selectedShotId);
     }
     this.changeDetectorRef.detectChanges();
@@ -242,7 +242,7 @@ export class ShotListComponent implements OnInit, OnDestroy {
   onAssumptionLinked(): void {
     this.showLinkAssumptionModal = false;
     // Refresh assumptions for the selected shot
-    if (this.selectedShotId) {
+    if (this.selectedShotId && this.selectedShotId > 0) {
       this.loadShotAssumptions(this.selectedShotId);
     }
     this.changeDetectorRef.detectChanges();
@@ -268,7 +268,7 @@ export class ShotListComponent implements OnInit, OnDestroy {
   onAssetCreated(): void {
     this.showNewAssetModal = false;
     // Refresh assets for the selected shot
-    if (this.selectedShotId) {
+    if (this.selectedShotId && this.selectedShotId > 0) {
       this.loadShotAssets(this.selectedShotId);
     }
     this.changeDetectorRef.detectChanges();
@@ -277,7 +277,7 @@ export class ShotListComponent implements OnInit, OnDestroy {
   onAssetLinked(): void {
     this.showLinkAssetModal = false;
     // Refresh assets for the selected shot
-    if (this.selectedShotId) {
+    if (this.selectedShotId && this.selectedShotId > 0) {
       this.loadShotAssets(this.selectedShotId);
     }
     this.changeDetectorRef.detectChanges();
@@ -303,7 +303,7 @@ export class ShotListComponent implements OnInit, OnDestroy {
   onFxCreated(): void {
     this.showNewFxModal = false;
     // Refresh FX for the selected shot
-    if (this.selectedShotId) {
+    if (this.selectedShotId && this.selectedShotId > 0) {
       this.loadShotFxs(this.selectedShotId);
     }
     this.changeDetectorRef.detectChanges();
@@ -312,7 +312,7 @@ export class ShotListComponent implements OnInit, OnDestroy {
   onFxLinked(): void {
     this.showLinkFxModal = false;
     // Refresh FX for the selected shot
-    if (this.selectedShotId) {
+    if (this.selectedShotId && this.selectedShotId > 0) {
       this.loadShotFxs(this.selectedShotId);
     }
     this.changeDetectorRef.detectChanges();
@@ -385,7 +385,7 @@ export class ShotListComponent implements OnInit, OnDestroy {
    */
   private findShotIdForElement(element: Asset | Assumption | Fx, elementType: 'asset' | 'assumption' | 'fx'): number {
     for (const shot of this.shots) {
-      if (!shot.id) continue;
+      if (!shot.id || shot.id <= 0) continue;
 
       let shotElements: any[] = [];
       switch (elementType) {
@@ -404,7 +404,7 @@ export class ShotListComponent implements OnInit, OnDestroy {
         return shot.id;
       }
     }
-    return 0; // fallback
+    return -1;
   }
 
   /**
@@ -412,7 +412,7 @@ export class ShotListComponent implements OnInit, OnDestroy {
    */
   onElementDeleted(): void {
     // Refresh the shot elements and close the modal
-    if (this.selectedShotId) {
+    if (this.selectedShotId && this.selectedShotId > 0) {
       this.loadShotAssets(this.selectedShotId);
       this.loadShotAssumptions(this.selectedShotId);
       this.loadShotFxs(this.selectedShotId);
