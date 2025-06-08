@@ -11,6 +11,7 @@ import { SharedModule } from './shared/shared.module';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MatTabsModule } from '@angular/material/tabs';
+import { ProgressNotificationsComponent } from './shared/components/progress-notifications/progress-notifications.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { MatTabsModule } from '@angular/material/tabs';
     AppRoutingModule,
     CoreModule,
     SharedModule,
-    MatTabsModule
+    MatTabsModule,
+    ProgressNotificationsComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

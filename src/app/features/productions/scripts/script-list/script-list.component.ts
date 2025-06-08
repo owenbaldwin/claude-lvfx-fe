@@ -7,6 +7,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { ScriptService } from '@app/core/services/script.service';
+import { ProgressNotificationService } from '@app/core/services/progress-notification.service';
 import { Script } from '@app/shared/models';
 
 @Component({
@@ -30,7 +31,10 @@ export class ScriptListComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
-  constructor(private scriptService: ScriptService) {}
+  constructor(
+    private scriptService: ScriptService,
+    private progressService: ProgressNotificationService
+  ) {}
 
   ngOnInit(): void {
     console.log('ScriptListComponent ngOnInit - productionId:', this.productionId);
@@ -100,14 +104,23 @@ export class ScriptListComponent implements OnInit {
 
   parseScript(script: Script): void {
     console.log('Parsing script:', script);
-    this.scriptService.parseScript(this.productionId, script.id).subscribe({
+
+    // Start the asynchronous parsing job
+    this.scriptService.parseScriptAsync(this.productionId, script.id).subscribe({
       next: (response) => {
-        console.log('Script parsed successfully:', response);
-        // TODO: Handle successful parse response (show notification, update UI, etc.)
+        console.log('Script parsing job started:', response);
+
+        // Start monitoring the job progress
+        this.progressService.monitorScriptParsing(
+          this.productionId,
+          script.id,
+          response.job_id,
+          script.title || `Script ${script.id}`
+        );
       },
       error: (error) => {
-        console.error('Error parsing script:', error);
-        // TODO: Handle parse error (show error notification)
+        console.error('Error starting script parsing job:', error);
+        // TODO: Show error notification
       }
     });
   }
