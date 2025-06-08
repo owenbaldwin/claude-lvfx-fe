@@ -4,6 +4,25 @@ import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
 import { Script } from '@app/shared/models';
 
+export interface ParseScriptJobResponse {
+  job_id: string;
+}
+
+export interface ParseJobStatusResponse {
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  progress?: number;
+  error?: string;
+  current_step?: string;
+}
+
+export interface ParseScriptResults {
+  success: boolean;
+  scenes_parsed?: number;
+  action_beats_parsed?: number;
+  characters_found?: number;
+  error?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -42,10 +61,6 @@ export class ScriptService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  // // Upload a script file
-  // uploadScript(productionId: number, formData: FormData): Observable<Script> {
-  //   return this.http.post<Script>(`${this.apiUrl}/${productionId}/scripts`, formData);
-  // }
   /** POST multipart/form-data to create a new Script with an attached PDF */
   uploadScript(productionId: number, formData: FormData): Observable<Script> {
     // NOTE: we do _not_ set any Content-Type header here – the browser will do it
@@ -55,10 +70,29 @@ export class ScriptService {
     );
   }
 
-  // Parse a script
+  /**
+   * Initiate script parsing as an asynchronous job
+   */
+  parseScriptAsync(productionId: number, scriptId: number): Observable<ParseScriptJobResponse> {
+    return this.http.post<ParseScriptJobResponse>(`${this.apiUrl}/${productionId}/scripts/${scriptId}/parse`, {});
+  }
+
+  /**
+   * Check the status of a script parsing job
+   */
+  getParseJobStatus(productionId: number, scriptId: number, jobId: string): Observable<ParseJobStatusResponse> {
+    return this.http.get<ParseJobStatusResponse>(`${this.apiUrl}/${productionId}/scripts/${scriptId}/parse/${jobId}/status`);
+  }
+
+  /**
+   * Get the results of a completed script parsing job
+   */
+  getParseJobResults(productionId: number, scriptId: number, jobId: string): Observable<ParseScriptResults> {
+    return this.http.get<ParseScriptResults>(`${this.apiUrl}/${productionId}/scripts/${scriptId}/parse/${jobId}/results`);
+  }
+
+  // Parse a script (legacy synchronous method - deprecated)
   parseScript(productionId: number, scriptId: number): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/${productionId}/scripts/${scriptId}/parse`, {});
   }
-
-
 }

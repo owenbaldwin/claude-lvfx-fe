@@ -1,0 +1,47 @@
+<div class="progress-notifications-container">
+  <div
+    *ngFor="let notification of notifications; trackBy: trackByNotificationId"
+    class="notification-card"
+    [class.notification-completed]="notification.status === 'completed'"
+    [class.notification-failed]="notification.status === 'failed'"
+  >
+    <div class="notification-header">
+      <div class="notification-title">
+        <span class="status-icon" [style.color]="getProgressColor(notification.status)">
+          {{ getStatusIcon(notification.status) }}
+        </span>
+        <span class="title-text">{{ notification.title }}</span>
+      </div>
+      <button
+        class="dismiss-button"
+        (click)="dismissNotification(notification.id)"
+        aria-label="Dismiss notification"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="notification-content">
+      <p class="notification-message">{{ notification.message }}</p>
+
+      <div *ngIf="notification.currentStep" class="current-step">
+        {{ notification.currentStep }}
+      </div>
+
+      <div class="progress-bar-container">
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            [style.width.%]="notification.progress"
+            [style.background-color]="getProgressColor(notification.status)"
+          ></div>
+        </div>
+        <span class="progress-text">{{ notification.progress }}%</span>
+      </div>
+
+      <div *ngIf="notification.error" class="error-message">
+        {{ notification.error }}
+      </div>
+    </div>
+  </div>
+</div>
