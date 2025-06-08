@@ -1,0 +1,116 @@
+<div class="generate-shots-container">
+  <!-- Generate Button -->
+  <div class="generate-section" *ngIf="!isGenerating && !results">
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="generateShots()"
+      [disabled]="isGenerating">
+      <mat-icon>auto_fix_high</mat-icon>
+      Generate Shots
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-section" *ngIf="isGenerating || isPolling">
+    <mat-card class="status-card">
+      <mat-card-content>
+        <div class="loading-content">
+          <mat-spinner diameter="40"></mat-spinner>
+          <h3>{{ getStatusText() }}</h3>
+          <p *ngIf="jobId" class="job-id">Job ID: {{ jobId }}</p>
+
+          <!-- Progress Bar -->
+          <div class="progress-section" *ngIf="shouldShowProgress()">
+            <mat-progress-bar
+              mode="determinate"
+              [value]="getProgress()">
+            </mat-progress-bar>
+            <span class="progress-text">{{ getProgress() }}%</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-section" *ngIf="error && !isGenerating">
+    <mat-card class="error-card">
+      <mat-card-content>
+        <div class="error-content">
+          <mat-icon color="warn">error</mat-icon>
+          <h3>Error</h3>
+          <p>{{ error }}</p>
+          <button mat-button color="primary" (click)="resetState()">
+            Try Again
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Results Section -->
+  <div class="results-section" *ngIf="results && !isGenerating">
+    <mat-card class="results-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon color="primary">check_circle</mat-icon>
+          Shot Generation Complete
+        </mat-card-title>
+        <mat-card-subtitle>
+          Generated {{ results.total_shots }} shots across {{ getActionBeatResults().length }} action beats
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Action Beat Results -->
+        <div class="action-beats-results">
+          <div
+            class="action-beat-result"
+            *ngFor="let beatResult of getActionBeatResults()">
+
+            <div class="action-beat-header">
+              <h4>Action Beat {{ beatResult.action_beat_id }}</h4>
+              <p class="action-beat-text">{{ beatResult.action_beat_text }}</p>
+              <span class="shot-count">{{ beatResult.shots.length }} shots</span>
+            </div>
+
+            <!-- Generated Shots -->
+            <div class="shots-grid">
+              <div
+                class="shot-item"
+                *ngFor="let shot of beatResult.shots">
+
+                <div class="shot-header">
+                  <h5>{{ shot.shot_number }}</h5>
+                  <span class="shot-type">{{ shot.shot_type }}</span>
+                </div>
+
+                <p class="shot-description">{{ shot.description }}</p>
+
+                <div class="shot-details" *ngIf="shot.duration || shot.notes">
+                  <span class="duration" *ngIf="shot.duration">
+                    Duration: {{ shot.duration }}s
+                  </span>
+                  <p class="notes" *ngIf="shot.notes">
+                    Notes: {{ shot.notes }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button mat-raised-button color="primary" (click)="resetState()">
+            Generate More Shots
+          </button>
+          <button mat-button>
+            Export Results
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

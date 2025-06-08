@@ -8,7 +8,7 @@
     <i class="bi bi-plus-circle"></i> Create Sequence
   </button> -->
   <button class="btn btn-primary" (click)="openModal()">New Sequence</button>
-  <button class="btn btn-primary" id="generateShotsBtn">Generate Shots</button>
+  <button class="btn btn-primary" (click)="openGenerateShotsModal()">Generate Shots</button>
   <button class="btn btn-primary" id="generateAssumptionsBtn">Generate VFX Assumptions</button>
   <button class="btn btn-primary" id="generateCostEstimatesBtn">Generate Cost Estimates</button>
   <input class="form-control search-bar" id="shot-filtering-breakdown" placeholder="Search…">
@@ -19,6 +19,10 @@
     [productionId]="productionId"
     (sequenceCreated)="onSequenceCreated()">
   </app-sequence-new>
+</app-modal>
+
+<app-modal [title]="'Generate Shots'" [isOpen]="isGenerateShotsModalOpen" (close)="closeGenerateShotsModal()">
+  <app-generate-shots [productionId]="productionId"></app-generate-shots>
 </app-modal>
 
 <ul class="breakdown-rows sticky-headers">

@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { SequenceListComponent } from '@app/features/productions/sequences/sequence-list/sequence-list.component';
 import { SequenceNewComponent } from '@app/features/productions/sequences/sequence-new/sequence-new.component';
 import { UnsequencedSceneListComponent } from '@app/features/productions/scenes/unsequenced-scene-list/unsequenced-scene-list.component';
+import { GenerateShotsComponent } from '@app/features/productions/generate-shots/generate-shots.component';
 import { ModalComponent } from '@app/shared/modal/modal.component';
 import { SequenceService } from '@app/core/services/sequence.service';
 import { Sequence } from '@app/shared/models';
@@ -13,7 +14,16 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-production-breakdown',
   standalone: true,
-  imports: [SequenceListComponent, ModalComponent, SequenceNewComponent, UnsequencedSceneListComponent, CommonModule, SidebarComponent, MatIconModule],
+  imports: [
+    SequenceListComponent,
+    ModalComponent,
+    SequenceNewComponent,
+    UnsequencedSceneListComponent,
+    GenerateShotsComponent,
+    CommonModule,
+    SidebarComponent,
+    MatIconModule
+  ],
   templateUrl: './production-breakdown.component.html',
   styleUrl: './production-breakdown.component.scss'
 })
@@ -21,8 +31,10 @@ export class ProductionBreakdownComponent implements OnInit {
   productionId!: number;
   @ViewChild(SequenceListComponent) sequenceList!: SequenceListComponent;
   @ViewChild(UnsequencedSceneListComponent) unsequencedSceneList!: UnsequencedSceneListComponent;
+  @ViewChild(GenerateShotsComponent) generateShotsComponent!: GenerateShotsComponent;
 
   isModalOpen = false;
+  isGenerateShotsModalOpen = false;
   sequences: Sequence[] = [];
   loading: boolean = false;
   error: string = '';
@@ -205,5 +217,13 @@ export class ProductionBreakdownComponent implements OnInit {
 
   expandSidebar(): void {
     this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  openGenerateShotsModal(): void {
+    this.isGenerateShotsModalOpen = true;
+  }
+
+  closeGenerateShotsModal(): void {
+    this.isGenerateShotsModalOpen = false;
   }
 }
