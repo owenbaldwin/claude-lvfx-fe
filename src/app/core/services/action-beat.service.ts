@@ -23,7 +23,17 @@ export class ActionBeatService {
 
   // Get action beats for a specific scene
   getActionBeatsByScene(sceneId: number): Observable<ActionBeat[]> {
-    return this.http.get<ActionBeat[]>(`${environment.apiUrl}/scenes/${sceneId}/action_beats`);
+    return this.http.get<ActionBeat[]>(`${this.apiUrl}/scenes/${sceneId}/action_beats`);
+  }
+
+  // Get unsequenced action beats for a specific scene (includes production ID in path)
+  getUnsequencedActionBeatsByScene(productionId: number, sceneId: number): Observable<ActionBeat[]> {
+    return this.http.get<ActionBeat[]>(`${this.apiUrl}/${productionId}/scenes/${sceneId}/action_beats`);
+  }
+
+  // Alternative: Get unsequenced action beats with /unsequenced suffix (like unsequenced scenes)
+  getUnsequencedActionBeatsBySceneAlt(productionId: number, sceneId: number): Observable<ActionBeat[]> {
+    return this.http.get<ActionBeat[]>(`${this.apiUrl}/${productionId}/scenes/${sceneId}/action_beats/unsequenced`);
   }
 
   // Get a specific action beat by ID
