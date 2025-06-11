@@ -11,6 +11,11 @@ export interface ShotAssumption {
   updated_at: string;
 }
 
+export interface AssumptionResponse {
+  shot_id: number;
+  assumptions: ShotAssumption[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -116,5 +121,16 @@ export class ShotAssumptionService {
   ): Observable<void> {
     const url = `${this.buildBasePath(productionId, sequenceId, sceneId, actionBeatId, shotId)}/${id}`;
     return this.http.delete<void>(url);
+  }
+
+  /**
+   * POST /api/v1/shots/generate_assumptions
+   *
+   * Generate assumptions for multiple shots
+   */
+  generateAssumptions(productionId: number, shotIds: number[]): Observable<AssumptionResponse[]> {
+    const url = `${this.apiUrl}/${productionId}/shots/generate_assumptions`;
+    const payload = { shot_ids: shotIds };
+    return this.http.post<AssumptionResponse[]>(url, payload);
   }
 }
