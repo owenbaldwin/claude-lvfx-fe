@@ -7,6 +7,7 @@ import { GenerateShotsComponent } from '@app/features/productions/generate-shots
 import { ModalComponent } from '@app/shared/modal/modal.component';
 import { SequenceService } from '@app/core/services/sequence.service';
 import { ShotAssumptionService, AssumptionResponse } from '@app/core/services/shot-assumption.service';
+import { AssumptionService } from '@app/core/services/assumption.service';
 import { Sequence } from '@app/shared/models';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '@app/features/productions/sidebar/sidebar/sidebar.component';
@@ -51,6 +52,7 @@ export class ProductionBreakdownComponent implements OnInit {
   constructor(
     private sequenceService: SequenceService,
     private shotAssumptionService: ShotAssumptionService,
+    private assumptionService: AssumptionService,
     private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute
@@ -297,21 +299,35 @@ export class ProductionBreakdownComponent implements OnInit {
         console.log('Generate assumptions response:', responses);
         console.log('Response type:', typeof responses);
         console.log('Is array:', Array.isArray(responses));
+        console.log('Selected shot IDs sent to API:', selectedIds);
 
         // Update the view for the selected shots
         this.updateShotsWithAssumptions(responses);
 
-        // Determine count for success message
-        let count = 0;
+        // Determine count for success message - use the actual number of shots we sent
+        let count = selectedIds.length; // Default to the number of shots we actually sent
+
         if (Array.isArray(responses)) {
+          // If responses is an array of AssumptionResponse objects
           count = responses.length;
+          console.log('Using response array length for count:', count);
         } else if (responses && typeof responses === 'object') {
-          // If it's a single object, count as 1
-          count = 1;
-        } else {
-          // Fallback to selected shots count
-          count = selectedIds.length;
+          const responseObj = responses as any; // Type assertion to handle dynamic response format
+          if (responseObj.shot_ids && Array.isArray(responseObj.shot_ids)) {
+            // Processing response with shot_ids array - use the length of shot_ids
+            count = responseObj.shot_ids.length;
+            console.log('Using shot_ids array length for count:', count);
+          } else if (responseObj.shot_id) {
+            // Single shot response
+            count = 1;
+            console.log('Using single shot response for count:', count);
+          } else {
+            // Fallback to selected shots count
+            console.log('Using fallback selected shots count:', count);
+          }
         }
+
+        console.log(`Final success message count: ${count} shots`);
 
         this.snackBar.open(
           `Successfully generated assumptions for ${count} shot(s)`,
@@ -387,7 +403,7 @@ export class ProductionBreakdownComponent implements OnInit {
         setTimeout(() => {
           this.clearSelectedShotCheckboxes(updatedShotIds);
         }, 500);
-      }, 2000); // Increased delay to 2 seconds to allow backend processing
+      }, 5000); // Increased delay to 5 seconds to allow backend processing
     }
 
     // Force immediate change detection
@@ -410,22 +426,53 @@ export class ProductionBreakdownComponent implements OnInit {
       }
     });
 
+    // Clear all parent checkboxes (sequences, scenes, action beats) that might have been used to select shots
+    this.clearParentCheckboxes();
+
     // Update the selected shot IDs array
     this.selectedShotIds = this.selectedShotIds.filter(id => !shotIds.includes(id));
 
-    // Update master checkbox state if no shots are selected
-    if (this.selectedShotIds.length === 0) {
-      this.isAllSelected = false;
-      const masterCheckbox = document.getElementById('check-all-shots') as HTMLInputElement;
-      if (masterCheckbox) {
-        masterCheckbox.checked = false;
-        console.log('Unchecked master checkbox');
-      }
+    // Update master checkbox state
+    this.isAllSelected = false;
+    const masterCheckbox = document.getElementById('check-all-shots') as HTMLInputElement;
+    if (masterCheckbox) {
+      masterCheckbox.checked = false;
+      console.log('Unchecked master checkbox');
     }
 
     // Force change detection to update button visibility
     this.cdr.detectChanges();
 
     console.log('Checkbox clearing complete. Remaining selected shots:', this.selectedShotIds);
+  }
+
+  /**
+   * Clear all parent checkboxes (sequences, scenes, action beats)
+   */
+  private clearParentCheckboxes(): void {
+    console.log('Clearing parent checkboxes...');
+
+    // Clear sequence checkboxes
+    const sequenceCheckboxes = document.querySelectorAll('input[id^="check-sequence-"]:checked') as NodeListOf<HTMLInputElement>;
+    sequenceCheckboxes.forEach(checkbox => {
+      checkbox.checked = false;
+      console.log(`Unchecked sequence checkbox: ${checkbox.id}`);
+    });
+
+    // Clear scene checkboxes
+    const sceneCheckboxes = document.querySelectorAll('input[id^="check-scene-"]:checked') as NodeListOf<HTMLInputElement>;
+    sceneCheckboxes.forEach(checkbox => {
+      checkbox.checked = false;
+      console.log(`Unchecked scene checkbox: ${checkbox.id}`);
+    });
+
+    // Clear action beat checkboxes
+    const actionBeatCheckboxes = document.querySelectorAll('input[id^="check-actionB-"]:checked') as NodeListOf<HTMLInputElement>;
+    actionBeatCheckboxes.forEach(checkbox => {
+      checkbox.checked = false;
+      console.log(`Unchecked action beat checkbox: ${checkbox.id}`);
+    });
+
+    console.log('Parent checkbox clearing complete');
   }
 }

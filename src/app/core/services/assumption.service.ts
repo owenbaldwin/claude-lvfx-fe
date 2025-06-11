@@ -69,4 +69,15 @@ export class AssumptionService {
     const url = `${this.apiUrl}/${productionId}/assumptions/${id}`;
     return this.http.delete<void>(url);
   }
+
+  /**
+   * POST /api/v1/productions/:productionId/assumptions/generate
+   *
+   * Generate assumptions for multiple shots
+   */
+  generateAssumptions(productionId: number, shotIds: number[]): Observable<any> {
+    const url = `${this.apiUrl}/${productionId}/assumptions/generate`;
+    const payload = { shot_ids: shotIds };
+    return this.http.post<any>(url, payload);
+  }
 }

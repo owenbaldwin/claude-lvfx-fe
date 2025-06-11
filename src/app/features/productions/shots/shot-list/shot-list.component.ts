@@ -203,17 +203,17 @@ export class ShotListComponent implements OnInit, OnDestroy {
    * Load shot assumptions using ShotAssumptionService (for newly generated assumptions)
    */
   private loadShotAssumptionsFromShotAssumptionService(shotId: number): void {
-    console.log(`Loading shot assumptions from ShotAssumptionService for shot ${shotId}`);
+    console.log(`[ShotAssumptionService] Loading assumptions for shot ${shotId} in action beat ${this.actionBeatId}`);
     this.shotAssumptionService.getAll(this.productionId, this.sequenceId, this.sceneId, this.actionBeatId, shotId)
       .subscribe({
         next: (shotAssumptions) => {
-          console.log(`Raw shot assumptions response for shot ${shotId}:`, shotAssumptions);
+          console.log(`[ShotAssumptionService] Raw response for shot ${shotId}:`, shotAssumptions);
 
           // Convert ShotAssumption records to Assumption objects for display
           // We need to fetch the actual Assumption details for each shot assumption
           if (shotAssumptions && shotAssumptions.length > 0) {
             const assumptionIds = shotAssumptions.map(sa => sa.assumption_id);
-            console.log(`Found assumption IDs for shot ${shotId}:`, assumptionIds);
+            console.log(`[ShotAssumptionService] Found ${assumptionIds.length} assumption IDs for shot ${shotId}:`, assumptionIds);
 
             // Fetch the actual assumption details
             const assumptionObservables = assumptionIds.map(assumptionId =>
@@ -224,23 +224,23 @@ export class ShotListComponent implements OnInit, OnDestroy {
               next: (assumptions) => {
                 const assumptionArray = Array.isArray(assumptions) ? assumptions : [assumptions];
                 this.shotAssumptions.set(shotId, assumptionArray);
-                console.log(`Shot ${shotId} now has ${assumptionArray.length} assumptions from ShotAssumptionService:`, assumptionArray.map(a => a.name));
+                console.log(`[ShotAssumptionService] ✅ Shot ${shotId} now has ${assumptionArray.length} assumptions:`, assumptionArray.map(a => a.name));
                 this.changeDetectorRef.detectChanges();
               },
               error: (err) => {
-                console.error('Error loading assumption details:', err);
+                console.error(`[ShotAssumptionService] ❌ Error loading assumption details for shot ${shotId}:`, err);
                 this.shotAssumptions.set(shotId, []);
                 this.changeDetectorRef.detectChanges();
               }
             });
           } else {
-            console.log(`No shot assumptions found for shot ${shotId}`);
+            console.log(`[ShotAssumptionService] ℹ️ No shot assumptions found for shot ${shotId}`);
             this.shotAssumptions.set(shotId, []);
             this.changeDetectorRef.detectChanges();
           }
         },
         error: (err) => {
-          console.error('Error loading shot assumptions from ShotAssumptionService:', err);
+          console.error(`[ShotAssumptionService] ❌ Error loading shot assumptions for shot ${shotId}:`, err);
           this.shotAssumptions.set(shotId, []);
           this.changeDetectorRef.detectChanges();
         }
@@ -586,19 +586,21 @@ export class ShotListComponent implements OnInit, OnDestroy {
     console.log(`=== REFRESH SHOT ASSUMPTIONS CALLED ===`);
     console.log(`Action Beat ID: ${this.actionBeatId}`);
     console.log(`Requested shot IDs: [${shotIds.join(', ')}]`);
-    console.log(`Available shots in this component:`, this.shots.map(s => `ID:${s.id}`));
+    console.log(`Available shots in this component:`, this.shots.map(s => `ID:${s.id}, Number:${s.number}`));
 
     const relevantShots = this.shots.filter(shot => shot.id && shotIds.includes(shot.id));
-    console.log(`Found ${relevantShots.length} relevant shots to refresh:`, relevantShots.map(s => `ID:${s.id}`));
+    console.log(`Found ${relevantShots.length} relevant shots to refresh:`, relevantShots.map(s => `ID:${s.id}, Number:${s.number}`));
 
     if (relevantShots.length === 0) {
       console.log(`No relevant shots found in action beat ${this.actionBeatId} - skipping refresh`);
       return;
     }
 
+    console.log(`Processing ${relevantShots.length} shots for assumption refresh...`);
+
     // Clear existing assumptions for these shots to force re-render
     relevantShots.forEach(shot => {
-      console.log(`Clearing assumptions for shot ${shot.id}`);
+      console.log(`Clearing assumptions for shot ${shot.id} (Number: ${shot.number})`);
       this.shotAssumptions.delete(shot.id!);
     });
 
@@ -608,10 +610,12 @@ export class ShotListComponent implements OnInit, OnDestroy {
 
     // Refresh assumptions for each relevant shot using ShotAssumptionService
     console.log('Loading fresh assumptions using ShotAssumptionService...');
-    relevantShots.forEach(shot => {
+
+    relevantShots.forEach((shot, index) => {
+      console.log(`Starting assumption load for shot ${shot.id} (${index + 1}/${relevantShots.length})`);
       this.loadShotAssumptionsFromShotAssumptionService(shot.id!);
     });
 
-    console.log(`=== REFRESH COMPLETE FOR ACTION BEAT ${this.actionBeatId} ===`);
+    console.log(`=== REFRESH INITIATED FOR ACTION BEAT ${this.actionBeatId} ===`);
   }
 }
