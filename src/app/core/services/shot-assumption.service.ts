@@ -124,7 +124,7 @@ export class ShotAssumptionService {
   }
 
   /**
-   * POST /api/v1/shots/generate_assumptions
+   * POST /api/v1/productions/:productionId/shots/generate_assumptions
    *
    * Generate assumptions for multiple shots
    */
