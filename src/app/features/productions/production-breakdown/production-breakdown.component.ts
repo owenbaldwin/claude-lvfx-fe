@@ -294,11 +294,27 @@ export class ProductionBreakdownComponent implements OnInit {
       next: (responses) => {
         this.isGeneratingAssumptions = false;
 
+        console.log('Generate assumptions response:', responses);
+        console.log('Response type:', typeof responses);
+        console.log('Is array:', Array.isArray(responses));
+
         // Update the view for the selected shots
         this.updateShotsWithAssumptions(responses);
 
+        // Determine count for success message
+        let count = 0;
+        if (Array.isArray(responses)) {
+          count = responses.length;
+        } else if (responses && typeof responses === 'object') {
+          // If it's a single object, count as 1
+          count = 1;
+        } else {
+          // Fallback to selected shots count
+          count = selectedIds.length;
+        }
+
         this.snackBar.open(
-          `Successfully generated assumptions for ${responses.length} shot(s)`,
+          `Successfully generated assumptions for ${count} shot(s)`,
           'Close',
           {
             duration: 5000,
@@ -325,13 +341,91 @@ export class ProductionBreakdownComponent implements OnInit {
   /**
    * Update the shots in the view with their new assumptions
    */
-  private updateShotsWithAssumptions(responses: AssumptionResponse[]): void {
-    // Trigger refresh of shot list components to show new assumptions
-    // This will cause the shot-list components to reload their data
-    if (this.sequenceList) {
-      this.sequenceList.loadSequences();
+  private updateShotsWithAssumptions(responses: any): void {
+    console.log('updateShotsWithAssumptions called with:', responses);
+
+    let updatedShotIds: number[] = [];
+
+    if (Array.isArray(responses)) {
+      // If responses is an array of AssumptionResponse objects
+      updatedShotIds = responses.map(response => response.shot_id);
+    } else if (responses && typeof responses === 'object') {
+      // If responses is a single object
+      if (responses.shot_id) {
+        // Single AssumptionResponse object
+        updatedShotIds = [responses.shot_id];
+      } else if (responses.shot_ids && Array.isArray(responses.shot_ids)) {
+        // Object with shot_ids array (processing response)
+        updatedShotIds = responses.shot_ids;
+      } else {
+        // Fallback: use the originally selected shot IDs
+        console.warn('Unexpected response format, using selected shot IDs as fallback');
+        updatedShotIds = this.selectedShotIds;
+      }
+    } else {
+      // Fallback: use the originally selected shot IDs
+      console.warn('Unexpected response format, using selected shot IDs as fallback');
+      updatedShotIds = this.selectedShotIds;
     }
 
+    console.log('=== BULK ASSUMPTIONS GENERATED - REFRESHING SPECIFIC SHOTS ===', updatedShotIds);
+
+    if (updatedShotIds.length > 0) {
+      // Since the API returns a "processing" status, we need to wait longer for the assumptions to be generated
+      // and then refresh the shots. We'll do this only once to avoid infinite loops.
+      setTimeout(() => {
+        console.log('Dispatching single refresh event for shots:', updatedShotIds);
+
+        // Dispatch a custom event to notify shot-list components to refresh specific shots
+        const refreshEvent = new CustomEvent('refreshShotAssumptions', {
+          detail: { shotIds: updatedShotIds }
+        });
+
+        document.dispatchEvent(refreshEvent);
+
+        // Clear the checkboxes after a short delay to allow the refresh to complete
+        setTimeout(() => {
+          this.clearSelectedShotCheckboxes(updatedShotIds);
+        }, 500);
+      }, 2000); // Increased delay to 2 seconds to allow backend processing
+    }
+
+    // Force immediate change detection
+    this.cdr.markForCheck();
     this.cdr.detectChanges();
+  }
+
+  /**
+   * Clear checkboxes for the specified shot IDs and update the selection state
+   */
+  private clearSelectedShotCheckboxes(shotIds: number[]): void {
+    console.log('Clearing checkboxes for shots:', shotIds);
+
+    // Uncheck individual shot checkboxes
+    shotIds.forEach(shotId => {
+      const checkbox = document.getElementById(`check-shot-${shotId}`) as HTMLInputElement;
+      if (checkbox) {
+        checkbox.checked = false;
+        console.log(`Unchecked shot ${shotId}`);
+      }
+    });
+
+    // Update the selected shot IDs array
+    this.selectedShotIds = this.selectedShotIds.filter(id => !shotIds.includes(id));
+
+    // Update master checkbox state if no shots are selected
+    if (this.selectedShotIds.length === 0) {
+      this.isAllSelected = false;
+      const masterCheckbox = document.getElementById('check-all-shots') as HTMLInputElement;
+      if (masterCheckbox) {
+        masterCheckbox.checked = false;
+        console.log('Unchecked master checkbox');
+      }
+    }
+
+    // Force change detection to update button visibility
+    this.cdr.detectChanges();
+
+    console.log('Checkbox clearing complete. Remaining selected shots:', this.selectedShotIds);
   }
 }

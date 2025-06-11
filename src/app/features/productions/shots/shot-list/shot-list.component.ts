@@ -10,6 +10,7 @@ import { ShotElementViewComponent } from '../../shot-elements/shot-element-view/
 import { ShotElementLinkComponent } from '../../shot-elements/shot-element-link/shot-element-link.component';
 import { AssetService, Asset } from '@app/core/services/asset.service';
 import { AssumptionService, Assumption } from '@app/core/services/assumption.service';
+import { ShotAssumptionService } from '@app/core/services/shot-assumption.service';
 import { FxService, Fx } from '@app/core/services/fx.service';
 import { MatIconModule } from '@angular/material/icon';
 import { forkJoin } from 'rxjs';
@@ -65,12 +66,17 @@ export class ShotListComponent implements OnInit, OnDestroy {
   // Store event listener functions to properly remove them
   private openShotModalListener: EventListener;
   private refreshShotListListener: EventListener;
+  private refreshShotAssumptionsListener: EventListener;
+
+  // Debounce mechanism for refresh
+  private refreshTimeout: any = null;
 
   constructor(
     private shotService: ShotService,
     private changeDetectorRef: ChangeDetectorRef,
     private assetService: AssetService,
     private assumptionService: AssumptionService,
+    private shotAssumptionService: ShotAssumptionService,
     private fxService: FxService
   ) {
     // Initialize the event listeners as bound functions
@@ -87,6 +93,22 @@ export class ShotListComponent implements OnInit, OnDestroy {
         this.loadShots();
       }
     }) as EventListener;
+
+    this.refreshShotAssumptionsListener = ((e: CustomEvent) => {
+      const shotIds = e.detail.shotIds;
+      console.log('Received refreshShotAssumptions event with shot IDs:', shotIds);
+
+      // Clear any existing timeout to debounce rapid calls
+      if (this.refreshTimeout) {
+        clearTimeout(this.refreshTimeout);
+      }
+
+      // Set a new timeout to call the refresh method after a short delay
+      this.refreshTimeout = setTimeout(() => {
+        this.refreshSpecificShotAssumptions(shotIds);
+        this.refreshTimeout = null;
+      }, 100); // 100ms debounce
+    }) as EventListener;
   }
 
   ngOnInit(): void {
@@ -97,12 +119,22 @@ export class ShotListComponent implements OnInit, OnDestroy {
 
     // Listen for refresh events
     document.addEventListener('refreshShotList', this.refreshShotListListener);
+
+    // Listen for bulk assumption refresh events
+    document.addEventListener('refreshShotAssumptions', this.refreshShotAssumptionsListener);
   }
 
   ngOnDestroy(): void {
     // Clean up event listeners to prevent memory leaks
     document.removeEventListener('openShotModal', this.openShotModalListener);
     document.removeEventListener('refreshShotList', this.refreshShotListListener);
+    document.removeEventListener('refreshShotAssumptions', this.refreshShotAssumptionsListener);
+
+    // Clean up any pending timeout
+    if (this.refreshTimeout) {
+      clearTimeout(this.refreshTimeout);
+      this.refreshTimeout = null;
+    }
   }
 
   loadShots(): void {
@@ -161,6 +193,54 @@ export class ShotListComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.error('Error loading shot assumptions:', err);
+          this.shotAssumptions.set(shotId, []);
+          this.changeDetectorRef.detectChanges();
+        }
+      });
+  }
+
+  /**
+   * Load shot assumptions using ShotAssumptionService (for newly generated assumptions)
+   */
+  private loadShotAssumptionsFromShotAssumptionService(shotId: number): void {
+    console.log(`Loading shot assumptions from ShotAssumptionService for shot ${shotId}`);
+    this.shotAssumptionService.getAll(this.productionId, this.sequenceId, this.sceneId, this.actionBeatId, shotId)
+      .subscribe({
+        next: (shotAssumptions) => {
+          console.log(`Raw shot assumptions response for shot ${shotId}:`, shotAssumptions);
+
+          // Convert ShotAssumption records to Assumption objects for display
+          // We need to fetch the actual Assumption details for each shot assumption
+          if (shotAssumptions && shotAssumptions.length > 0) {
+            const assumptionIds = shotAssumptions.map(sa => sa.assumption_id);
+            console.log(`Found assumption IDs for shot ${shotId}:`, assumptionIds);
+
+            // Fetch the actual assumption details
+            const assumptionObservables = assumptionIds.map(assumptionId =>
+              this.assumptionService.getOne(this.productionId, assumptionId)
+            );
+
+            forkJoin(assumptionObservables).subscribe({
+              next: (assumptions) => {
+                const assumptionArray = Array.isArray(assumptions) ? assumptions : [assumptions];
+                this.shotAssumptions.set(shotId, assumptionArray);
+                console.log(`Shot ${shotId} now has ${assumptionArray.length} assumptions from ShotAssumptionService:`, assumptionArray.map(a => a.name));
+                this.changeDetectorRef.detectChanges();
+              },
+              error: (err) => {
+                console.error('Error loading assumption details:', err);
+                this.shotAssumptions.set(shotId, []);
+                this.changeDetectorRef.detectChanges();
+              }
+            });
+          } else {
+            console.log(`No shot assumptions found for shot ${shotId}`);
+            this.shotAssumptions.set(shotId, []);
+            this.changeDetectorRef.detectChanges();
+          }
+        },
+        error: (err) => {
+          console.error('Error loading shot assumptions from ShotAssumptionService:', err);
           this.shotAssumptions.set(shotId, []);
           this.changeDetectorRef.detectChanges();
         }
@@ -497,5 +577,41 @@ export class ShotListComponent implements OnInit, OnDestroy {
     this.selectedElement = null;
     this.selectedElementType = null;
     this.changeDetectorRef.detectChanges();
+  }
+
+  /**
+   * Refresh assumptions for specific shots (called after bulk assumption generation)
+   */
+  refreshSpecificShotAssumptions(shotIds: number[]): void {
+    console.log(`=== REFRESH SHOT ASSUMPTIONS CALLED ===`);
+    console.log(`Action Beat ID: ${this.actionBeatId}`);
+    console.log(`Requested shot IDs: [${shotIds.join(', ')}]`);
+    console.log(`Available shots in this component:`, this.shots.map(s => `ID:${s.id}`));
+
+    const relevantShots = this.shots.filter(shot => shot.id && shotIds.includes(shot.id));
+    console.log(`Found ${relevantShots.length} relevant shots to refresh:`, relevantShots.map(s => `ID:${s.id}`));
+
+    if (relevantShots.length === 0) {
+      console.log(`No relevant shots found in action beat ${this.actionBeatId} - skipping refresh`);
+      return;
+    }
+
+    // Clear existing assumptions for these shots to force re-render
+    relevantShots.forEach(shot => {
+      console.log(`Clearing assumptions for shot ${shot.id}`);
+      this.shotAssumptions.delete(shot.id!);
+    });
+
+    // Force immediate change detection
+    this.changeDetectorRef.markForCheck();
+    this.changeDetectorRef.detectChanges();
+
+    // Refresh assumptions for each relevant shot using ShotAssumptionService
+    console.log('Loading fresh assumptions using ShotAssumptionService...');
+    relevantShots.forEach(shot => {
+      this.loadShotAssumptionsFromShotAssumptionService(shot.id!);
+    });
+
+    console.log(`=== REFRESH COMPLETE FOR ACTION BEAT ${this.actionBeatId} ===`);
   }
 }

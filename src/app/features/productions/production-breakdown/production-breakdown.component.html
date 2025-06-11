@@ -11,9 +11,8 @@
   <button class="btn btn-primary" (click)="openGenerateShotsModal()">Generate Shots</button>
   <button
     class="btn btn-primary"
-    *ngIf="selectedShotIds.length > 0"
     (click)="onGenerateAssumptions()"
-    [disabled]="isGeneratingAssumptions">
+    [disabled]="isGeneratingAssumptions || selectedShotIds.length === 0">
     <span *ngIf="isGeneratingAssumptions" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
     {{ isGeneratingAssumptions ? 'Generating...' : 'Generate VFX Assumptions' }}
   </button>
