@@ -9,7 +9,14 @@
   </button> -->
   <button class="btn btn-primary" (click)="openModal()">New Sequence</button>
   <button class="btn btn-primary" (click)="openGenerateShotsModal()">Generate Shots</button>
-  <button class="btn btn-primary" id="generateAssumptionsBtn">Generate VFX Assumptions</button>
+  <button
+    class="btn btn-primary"
+    *ngIf="selectedShotIds.length > 0"
+    (click)="onGenerateAssumptions()"
+    [disabled]="isGeneratingAssumptions">
+    <span *ngIf="isGeneratingAssumptions" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+    {{ isGeneratingAssumptions ? 'Generating...' : 'Generate VFX Assumptions' }}
+  </button>
   <button class="btn btn-primary" id="generateCostEstimatesBtn">Generate Cost Estimates</button>
   <input class="form-control search-bar" id="shot-filtering-breakdown" placeholder="Search…">
 </div>

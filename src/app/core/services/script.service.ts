@@ -74,10 +74,9 @@ export class ScriptService {
    * Initiate script parsing as an asynchronous job
    */
   parseScriptAsync(productionId: number, scriptId: number): Observable<ParseScriptJobResponse> {
-    // return this.http.post<ParseScriptJobResponse>(`${this.apiUrl}/${productionId}/scripts/${scriptId}/parse`, {});
     return this.http.post<ParseScriptJobResponse>(`${this.apiUrl}/${productionId}/scripts/${scriptId}/parse_with_agents`, {});
-
   }
+  // return this.http.post<ParseScriptJobResponse>(`${this.apiUrl}/${productionId}/scripts/${scriptId}/parse`, {});
 
   /**
    * Check the status of a script parsing job
