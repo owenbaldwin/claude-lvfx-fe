@@ -1,0 +1,34 @@
+@import 'src/styles/variables';
+
+.budget-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.budget-tabs {
+  background-color: $dark-grey;
+
+  .mat-mdc-tab-links {
+    background-color: $dark-grey;
+  }
+}
+
+.budget-tab {
+  color: $light-grey;
+  cursor: pointer;
+
+  &.mat-mdc-tab-link-active {
+    color: $lvfx-gold;
+    border-bottom: 2px solid $lvfx-gold;
+  }
+
+  &:hover {
+    color: $white;
+  }
+}
+
+router-outlet {
+  flex: 1;
+  overflow: auto;
+}
