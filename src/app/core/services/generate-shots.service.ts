@@ -23,14 +23,21 @@ export interface GeneratedShot {
 }
 
 export interface GeneratedShotsResults {
-  action_beats: {
-    [actionBeatId: number]: {
-      action_beat_id: number;
-      action_beat_text: string;
-      shots: GeneratedShot[];
-    };
+  action_beat_ids: number[];
+  shots_per_beat: number;
+  shots_created: number;
+  shots_by_beat: {
+    [actionBeatId: string]: GeneratedShot[];
   };
-  total_shots: number;
+  completed_at: string;
+}
+
+export interface GeneratedShotsJobResults {
+  job_id: string;
+  status: string;
+  results: GeneratedShotsResults;
+  created_at: string;
+  completed_at?: string;
 }
 
 @Injectable({
@@ -44,9 +51,10 @@ export class GenerateShotsService {
   /**
    * Initiate shot generation for selected action beats
    */
-  generateShots(productionId: number, beatIds: number[]): Observable<GenerateShotsJobResponse> {
+  generateShots(productionId: number, beatIds: number[], shotsPerBeat: number = 1): Observable<GenerateShotsJobResponse> {
     return this.http.post<GenerateShotsJobResponse>(`${this.apiUrl}/${productionId}/action_beats/generate_shots`, {
-      action_beat_ids: beatIds
+      action_beat_ids: beatIds,
+      shots_per_beat: shotsPerBeat
     });
   }
 
@@ -60,7 +68,7 @@ export class GenerateShotsService {
   /**
    * Get the results of a completed shot generation job
    */
-  getJobResults(productionId: number, jobId: string): Observable<GeneratedShotsResults> {
-    return this.http.get<GeneratedShotsResults>(`${this.apiUrl}/${productionId}/action_beats/generate_shots/${jobId}/results`);
+  getJobResults(productionId: number, jobId: string): Observable<GeneratedShotsJobResults> {
+    return this.http.get<GeneratedShotsJobResults>(`${this.apiUrl}/${productionId}/action_beats/generate_shots/${jobId}/results`);
   }
 }
