@@ -88,9 +88,17 @@ export class ShotListComponent implements OnInit, OnDestroy {
     }) as EventListener;
 
     this.refreshShotListListener = ((e: CustomEvent) => {
+      console.log('🔔 REFRESH EVENT RECEIVED in ShotListComponent');
+      console.log('Event detail:', e.detail);
+      console.log('This component actionBeatId:', this.actionBeatId);
+      console.log('Event actionBeatId:', e.detail.actionBeatId);
+      console.log('ActionBeatId types - this:', typeof this.actionBeatId, 'event:', typeof e.detail.actionBeatId);
+
       if (e.detail.actionBeatId === this.actionBeatId) {
-        console.log('Refreshing shots list for action beat', this.actionBeatId);
+        console.log(`✅ MATCH! Refreshing shots list for action beat ${this.actionBeatId}`);
         this.loadShots();
+      } else {
+        console.log(`❌ NO MATCH. Event for ${e.detail.actionBeatId}, this component is for ${this.actionBeatId}`);
       }
     }) as EventListener;
 
@@ -117,8 +125,26 @@ export class ShotListComponent implements OnInit, OnDestroy {
     // Listen for custom events to open the modal
     document.addEventListener('openShotModal', this.openShotModalListener);
 
-    // Listen for refresh events
+    // Listen for refresh events on both document and window
     document.addEventListener('refreshShotList', this.refreshShotListListener);
+    window.addEventListener('refreshShotList', this.refreshShotListListener);
+
+    // Listen for global refresh events
+    const globalRefreshListener = ((e: CustomEvent) => {
+      console.log('🌍 GLOBAL REFRESH EVENT RECEIVED in ShotListComponent');
+      console.log('Event detail:', e.detail);
+      console.log('This component actionBeatId:', this.actionBeatId);
+      console.log('Event actionBeatIds:', e.detail.actionBeatIds);
+      if (e.detail.actionBeatIds && e.detail.actionBeatIds.includes(this.actionBeatId)) {
+        console.log(`✅ GLOBAL MATCH! Refreshing shots list for action beat ${this.actionBeatId}`);
+        this.loadShots();
+      } else {
+        console.log(`❌ GLOBAL NO MATCH. Event actionBeatIds: ${e.detail.actionBeatIds}, this component is for ${this.actionBeatId}`);
+      }
+    }) as EventListener;
+
+    document.addEventListener('refreshAllShotLists', globalRefreshListener);
+    window.addEventListener('refreshAllShotLists', globalRefreshListener);
 
     // Listen for bulk assumption refresh events
     document.addEventListener('refreshShotAssumptions', this.refreshShotAssumptionsListener);
@@ -128,6 +154,7 @@ export class ShotListComponent implements OnInit, OnDestroy {
     // Clean up event listeners to prevent memory leaks
     document.removeEventListener('openShotModal', this.openShotModalListener);
     document.removeEventListener('refreshShotList', this.refreshShotListListener);
+    window.removeEventListener('refreshShotList', this.refreshShotListListener);
     document.removeEventListener('refreshShotAssumptions', this.refreshShotAssumptionsListener);
 
     // Clean up any pending timeout
@@ -138,10 +165,20 @@ export class ShotListComponent implements OnInit, OnDestroy {
   }
 
   loadShots(): void {
-    this.shotService.getShots(this.productionId, this.sequenceId, this.sceneId, this.actionBeatId).subscribe((shots) => {
-      this.shots = shots;
-      // Load elements for each shot
-      this.loadShotElements();
+    console.log(`🔄 LOADING SHOTS for action beat ${this.actionBeatId}`);
+    this.shotService.getShots(this.productionId, this.sequenceId, this.sceneId, this.actionBeatId).subscribe({
+      next: (shots) => {
+        console.log(`📸 SHOTS LOADED for action beat ${this.actionBeatId}: ${shots.length} shots`);
+        this.shots = shots;
+        // Load elements for each shot
+        this.loadShotElements();
+        // Force change detection
+        this.changeDetectorRef.markForCheck();
+        this.changeDetectorRef.detectChanges();
+      },
+      error: (error) => {
+        console.error(`❌ ERROR loading shots for action beat ${this.actionBeatId}:`, error);
+      }
     });
   }
 

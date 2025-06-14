@@ -1,6 +1,22 @@
 <div class="generate-shots-container">
   <!-- Generate Button -->
   <div class="generate-section" *ngIf="!isGenerating && !results">
+    <!-- Shots per Beat Slider -->
+    <div class="shots-per-beat-section">
+      <label for="shots-per-beat-slider" class="slider-label">
+        Shots per Action Beat: {{ shotsPerBeat }}
+      </label>
+      <mat-slider
+        id="shots-per-beat-slider"
+        class="shots-per-beat-slider"
+        [min]="1"
+        [max]="10"
+        [step]="1"
+        discrete>
+        <input matSliderThumb [(ngModel)]="shotsPerBeat">
+      </mat-slider>
+    </div>
+
     <button
       mat-raised-button
       color="primary"
@@ -58,7 +74,7 @@
           Shot Generation Complete
         </mat-card-title>
         <mat-card-subtitle>
-          Generated {{ results.total_shots }} shots across {{ getActionBeatResults().length }} action beats
+          Generated {{ results.results.shots_created }} shots across {{ getActionBeatResults().length }} action beats
         </mat-card-subtitle>
       </mat-card-header>
 
@@ -71,32 +87,42 @@
 
             <div class="action-beat-header">
               <h4>Action Beat {{ beatResult.action_beat_id }}</h4>
-              <p class="action-beat-text">{{ beatResult.action_beat_text }}</p>
-              <span class="shot-count">{{ beatResult.shots.length }} shots</span>
+              <p class="action-beat-text" *ngIf="beatResult.action_beat_text">{{ beatResult.action_beat_text }}</p>
+              <span class="shot-count">{{ beatResult.shots.length || 0 }} shot(s) generated</span>
             </div>
 
             <!-- Generated Shots -->
-            <div class="shots-grid">
+            <div class="shots-grid" *ngIf="beatResult.shots && beatResult.shots.length > 0">
               <div
                 class="shot-item"
                 *ngFor="let shot of beatResult.shots">
 
                 <div class="shot-header">
-                  <h5>{{ shot.shot_number }}</h5>
-                  <span class="shot-type">{{ shot.shot_type }}</span>
+                  <h5 class="shot-number">{{ shot.shot_number }}</h5>
+                  <span class="shot-type" *ngIf="shot.shot_type">{{ shot.shot_type }}</span>
                 </div>
 
-                <p class="shot-description">{{ shot.description }}</p>
+                <div class="shot-content">
+                  <p class="shot-description" *ngIf="shot.description">{{ shot.description }}</p>
 
-                <div class="shot-details" *ngIf="shot.duration || shot.notes">
-                  <span class="duration" *ngIf="shot.duration">
-                    Duration: {{ shot.duration }}s
-                  </span>
-                  <p class="notes" *ngIf="shot.notes">
-                    Notes: {{ shot.notes }}
-                  </p>
+                  <div class="shot-metadata">
+                    <span class="shot-id" *ngIf="shot.id">ID: {{ shot.id }}</span>
+                    <span class="duration" *ngIf="shot.duration">
+                      Duration: {{ shot.duration }}s
+                    </span>
+                  </div>
+
+                  <div class="shot-notes" *ngIf="shot.notes">
+                    <strong>Notes:</strong>
+                    <p>{{ shot.notes }}</p>
+                  </div>
                 </div>
               </div>
+            </div>
+
+            <!-- No shots message -->
+            <div class="no-shots" *ngIf="!beatResult.shots || beatResult.shots.length === 0">
+              <p>No shots were generated for this action beat.</p>
             </div>
           </div>
         </div>
@@ -104,9 +130,11 @@
         <!-- Action Buttons -->
         <div class="action-buttons">
           <button mat-raised-button color="primary" (click)="resetState()">
+            <mat-icon>add</mat-icon>
             Generate More Shots
           </button>
-          <button mat-button>
+          <button mat-stroked-button>
+            <mat-icon>download</mat-icon>
             Export Results
           </button>
         </div>
