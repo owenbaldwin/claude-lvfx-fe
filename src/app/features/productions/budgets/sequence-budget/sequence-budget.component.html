@@ -1,4 +1,58 @@
 <div class="budget-content">
   <h2>Shots Budget</h2>
   <p>This section will display budget information organized by sequences and shots, including shot complexity, duration, and resource requirements.</p>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <mat-spinner></mat-spinner>
+    <p>Loading budget data...</p>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    <mat-icon>error</mat-icon>
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="!loading && !error" class="budget-table-container">
+    <table class="budget-table">
+      <!-- Headers -->
+      <thead>
+        <tr class="budget-headers">
+          <th class="number-col">Number</th>
+          <th class="title-col">Title</th>
+          <th class="elements-col">Shot Elements</th>
+          <th class="rate-col">Shot Rate</th>
+          <th class="margin-col">Shot Margin</th>
+          <th class="gross-col">Gross</th>
+          <th class="incentive-col">Incentive</th>
+          <th class="net-col">Net</th>
+        </tr>
+      </thead>
+
+      <!-- Budget Rows -->
+      <tbody>
+        <ng-container *ngFor="let sequence of sequences">
+          <!-- Sequence Row -->
+          <tr class="sequence-row">
+            <td class="number-col">{{ sequence.prefix }}</td>
+            <td class="title-col">{{ sequence.name }}</td>
+            <td class="elements-col"></td>
+            <td class="rate-col">{{ getShotCountForSequence(sequence) }}</td>
+            <td class="margin-col">-</td>
+            <td class="gross-col">-</td>
+            <td class="incentive-col">-</td>
+            <td class="net-col">-</td>
+          </tr>
+
+          <!-- Scene Rows (which will include their action beats and shots) -->
+          <ng-container *ngFor="let scene of sequence.scenes">
+            <app-scene-budget
+              [sequence]="sequence"
+              [scene]="scene"
+              [shotCount]="getShotCountForScene(scene)">
+            </app-scene-budget>
+          </ng-container>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
 </div>

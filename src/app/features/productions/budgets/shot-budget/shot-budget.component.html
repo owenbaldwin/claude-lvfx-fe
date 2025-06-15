@@ -1,1 +1,38 @@
-<p>shot-budget works!</p>
+<tr class="shot-row">
+  <td class="number-col">{{ getShotNumber() }}</td>
+  <td class="title-col">{{ getShotTitle() }}</td>
+  <td class="elements-col">{{ getShotElements() }}</td>
+  <td class="rate-col">
+    <input
+      type="number"
+      class="budget-input"
+      [(ngModel)]="shotRate"
+      (change)="onBudgetChange()"
+      min="0"
+      step="0.01"
+      placeholder="0.00">
+  </td>
+  <td class="margin-col">
+    <input
+      type="number"
+      class="budget-input"
+      [(ngModel)]="shotMargin"
+      (change)="onBudgetChange()"
+      min="0"
+      max="100"
+      step="0.1"
+      placeholder="0.0">
+  </td>
+  <td class="gross-col">{{ getGross() | currency:'USD':'symbol':'1.2-2' }}</td>
+  <td class="incentive-col">
+    <select
+      class="budget-select"
+      [(ngModel)]="incentive"
+      (change)="onBudgetChange()">
+      <option *ngFor="let option of incentiveOptions" [value]="option.value">
+        {{ option.label }}
+      </option>
+    </select>
+  </td>
+  <td class="net-col">{{ getNet() | currency:'USD':'symbol':'1.2-2' }}</td>
+</tr>
