@@ -1,1 +1,54 @@
-<p>production-budget works!</p>
+<div class="budget-container">
+  <nav mat-tab-nav-bar class="budget-tabs">
+    <a class="budget-tab"
+       mat-tab-link
+       [routerLink]="['/productions', productionId, 'budget', 'summary']"
+       routerLinkActive #rlaSummary="routerLinkActive"
+       [active]="rlaSummary.isActive">
+      Summary
+    </a>
+    <a class="budget-tab"
+       mat-tab-link
+       [routerLink]="['/productions', productionId, 'budget', 'shots']"
+       routerLinkActive #rlaShots="routerLinkActive"
+       [active]="rlaShots.isActive">
+      Shots
+    </a>
+    <a class="budget-tab"
+       mat-tab-link
+       [routerLink]="['/productions', productionId, 'budget', 'assets']"
+       routerLinkActive #rlaAssets="routerLinkActive"
+       [active]="rlaAssets.isActive">
+      Assets
+    </a>
+    <a class="budget-tab"
+       mat-tab-link
+       [routerLink]="['/productions', productionId, 'budget', 'fx']"
+       routerLinkActive #rlaFx="routerLinkActive"
+       [active]="rlaFx.isActive">
+      FX
+    </a>
+    <a class="budget-tab"
+       mat-tab-link
+       [routerLink]="['/productions', productionId, 'budget', 'facility-overheads']"
+       routerLinkActive #rlaFacilityOverheads="routerLinkActive"
+       [active]="rlaFacilityOverheads.isActive">
+      Facility Overheads
+    </a>
+    <a class="budget-tab"
+       mat-tab-link
+       [routerLink]="['/productions', productionId, 'budget', 'vfx-overheads']"
+       routerLinkActive #rlaVfxOverheads="routerLinkActive"
+       [active]="rlaVfxOverheads.isActive">
+      VFX Overheads
+    </a>
+    <a class="budget-tab"
+       mat-tab-link
+       [routerLink]="['/productions', productionId, 'budget', '3d']"
+       routerLinkActive #rla3d="routerLinkActive"
+       [active]="rla3d.isActive">
+      3D
+    </a>
+  </nav>
+  <router-outlet></router-outlet>
+</div>

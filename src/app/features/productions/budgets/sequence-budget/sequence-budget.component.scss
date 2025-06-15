@@ -1,0 +1,443 @@
+@import 'src/styles/variables';
+
+.budget-content {
+  padding: 24px;
+  background-color: $dark-grey;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+  h2 {
+    color: $white;
+    margin-bottom: 24px;
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  p {
+    color: $light-grey;
+    line-height: 1.6;
+  }
+
+  .loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+
+    p {
+      margin-top: 16px;
+      color: $light-grey;
+    }
+  }
+
+  .error-message {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    background-color: rgba($red-alert, 0.1);
+    border: 1px solid $red-alert;
+    border-radius: 4px;
+    color: $red-alert;
+
+    mat-icon {
+      margin-right: 8px;
+    }
+  }
+
+  .budget-table-container {
+    overflow-x: auto;
+    border: 1px solid $mid-grey;
+    border-radius: 4px;
+    background-color: $dark-grey;
+  }
+
+  .budget-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    min-width: 1200px;
+    background-color: $dark-grey;
+
+    // Header styling
+    thead {
+      background-color: $script-header;
+      border-bottom: 2px solid $mid-grey;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+
+      .budget-headers {
+        th {
+          padding: 12px 8px;
+          text-align: left;
+          font-weight: 600;
+          color: $white;
+          border-right: 1px solid $mid-grey;
+          white-space: nowrap;
+
+          &:last-child {
+            border-right: none;
+          }
+
+          &.number-col { width: 15%; min-width: 150px; }
+          &.title-col { width: 25%; min-width: 200px; }
+          &.elements-col { width: 15%; min-width: 120px; }
+          &.rate-col { width: 10%; min-width: 100px; text-align: center; }
+          &.margin-col { width: 10%; min-width: 100px; text-align: center; }
+          &.gross-col { width: 10%; min-width: 100px; text-align: right; }
+          &.incentive-col { width: 10%; min-width: 120px; text-align: center; }
+          &.net-col { width: 10%; min-width: 100px; text-align: right; }
+        }
+      }
+    }
+
+    // Body styling
+    tbody {
+      // Sequence rows (top level)
+      .sequence-row {
+        background-color: $sequence-blue;
+        color: $white;
+        font-weight: 600;
+        border-bottom: 1px solid $mid-grey;
+
+        &:hover {
+          background-color: lighten($sequence-blue, 5%);
+        }
+
+        td {
+          padding: 12px 8px;
+          border-right: 1px solid $mid-grey;
+          vertical-align: middle;
+
+          &:last-child {
+            border-right: none;
+          }
+
+          &.number-col {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+          }
+
+          &.title-col {
+            font-weight: 600;
+          }
+        }
+      }
+
+      // Scene rows (second level)
+      .scene-row {
+        background-color: $scene-blue;
+        color: $white;
+        font-weight: 500;
+        border-bottom: 1px solid $mid-grey;
+
+        &:hover {
+          background-color: lighten($scene-blue, 5%);
+        }
+
+        td {
+          padding: 10px 8px;
+          padding-left: 28px; // Indent for hierarchy
+          border-right: 1px solid $mid-grey;
+          vertical-align: middle;
+
+          &:last-child {
+            border-right: none;
+          }
+
+          &.number-col {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+          }
+
+          &.title-col {
+            font-weight: 500;
+          }
+        }
+      }
+
+      // Action beat rows (third level)
+      .action-beat-row {
+        background-color: $action-beat-blue;
+        color: $white;
+        font-weight: 400;
+        border-bottom: 1px solid $mid-grey;
+
+        &:hover {
+          background-color: lighten($action-beat-blue, 5%);
+        }
+
+        td {
+          padding: 8px 8px;
+          padding-left: 48px; // More indent for hierarchy
+          border-right: 1px solid $mid-grey;
+          vertical-align: middle;
+
+          &:last-child {
+            border-right: none;
+          }
+
+          &.number-col {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+          }
+
+          &.title-col {
+            font-weight: 400;
+          }
+        }
+      }
+
+      // Shot rows (fourth level - most detailed)
+      .shot-row {
+        background-color: $shot-grey;
+        color: $white;
+        border-bottom: 1px solid $mid-grey;
+
+        &:hover {
+          background-color: lighten($shot-grey, 10%);
+        }
+
+        td {
+          padding: 8px 8px;
+          padding-left: 68px; // Maximum indent for hierarchy
+          border-right: 1px solid $mid-grey;
+          vertical-align: middle;
+
+          &:last-child {
+            border-right: none;
+          }
+
+          &.number-col {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: $lvfx-gold;
+          }
+
+          &.title-col {
+            font-weight: 400;
+          }
+
+          &.rate-col,
+          &.margin-col {
+            text-align: center;
+
+            .budget-input {
+              width: 80px;
+              padding: 4px 6px;
+              border: 1px solid $mid-grey;
+              border-radius: 3px;
+              font-size: 13px;
+              text-align: center;
+              background-color: $dark-grey;
+              color: $white;
+              transition: border-color 0.2s ease;
+
+              &:focus {
+                outline: none;
+                border-color: $lvfx-gold;
+                box-shadow: 0 0 0 2px rgba($lvfx-gold, 0.2);
+              }
+
+              &:hover {
+                border-color: $light-grey;
+              }
+
+              &::placeholder {
+                color: $light-grey;
+              }
+            }
+          }
+
+          &.gross-col,
+          &.net-col {
+            text-align: right;
+            font-weight: 500;
+            font-family: 'Courier New', monospace;
+            color: $lvfx-gold-bright;
+          }
+
+          &.incentive-col {
+            text-align: center;
+
+            .budget-select {
+              width: 100px;
+              padding: 4px 6px;
+              border: 1px solid $mid-grey;
+              border-radius: 3px;
+              font-size: 13px;
+              background-color: $dark-grey;
+              color: $white;
+              transition: border-color 0.2s ease;
+
+              &:focus {
+                outline: none;
+                border-color: $lvfx-gold;
+                box-shadow: 0 0 0 2px rgba($lvfx-gold, 0.2);
+              }
+
+              &:hover {
+                border-color: $light-grey;
+              }
+
+              option {
+                background-color: $dark-grey;
+                color: $white;
+              }
+            }
+          }
+        }
+      }
+
+      // General row styling
+      tr {
+        transition: background-color 0.2s ease;
+
+        td {
+          border-right: 1px solid $mid-grey;
+          vertical-align: middle;
+
+          &:last-child {
+            border-right: none;
+          }
+
+          &.number-col {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+          }
+
+          &.title-col {
+            font-weight: 500;
+          }
+
+          &.rate-col,
+          &.margin-col {
+            text-align: center;
+
+            .budget-input {
+              width: 80px;
+              padding: 4px 6px;
+              border: 1px solid $mid-grey;
+              border-radius: 3px;
+              font-size: 13px;
+              text-align: center;
+              background-color: $dark-grey;
+              color: $white;
+              transition: border-color 0.2s ease;
+
+              &:focus {
+                outline: none;
+                border-color: $lvfx-gold;
+                box-shadow: 0 0 0 2px rgba($lvfx-gold, 0.2);
+              }
+
+              &:hover {
+                border-color: $light-grey;
+              }
+
+              &::placeholder {
+                color: $light-grey;
+              }
+            }
+          }
+
+          &.gross-col,
+          &.net-col {
+            text-align: right;
+            font-weight: 500;
+            font-family: 'Courier New', monospace;
+            color: $lvfx-gold-bright;
+          }
+
+          &.incentive-col {
+            text-align: center;
+
+            .budget-select {
+              width: 100px;
+              padding: 4px 6px;
+              border: 1px solid $mid-grey;
+              border-radius: 3px;
+              font-size: 13px;
+              background-color: $dark-grey;
+              color: $white;
+              transition: border-color 0.2s ease;
+
+              &:focus {
+                outline: none;
+                border-color: $lvfx-gold;
+                box-shadow: 0 0 0 2px rgba($lvfx-gold, 0.2);
+              }
+
+              &:hover {
+                border-color: $light-grey;
+              }
+
+              option {
+                background-color: $dark-grey;
+                color: $white;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Responsive design
+  @media (max-width: 768px) {
+    padding: 16px;
+
+    h2 {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    .budget-table {
+      font-size: 12px;
+
+      thead .budget-headers th {
+        padding: 8px 4px;
+        font-size: 12px;
+      }
+
+      tbody {
+        .sequence-row td {
+          padding: 8px 4px;
+        }
+
+        .scene-row td {
+          padding: 6px 4px;
+          padding-left: 20px;
+        }
+
+        .action-beat-row td {
+          padding: 6px 4px;
+          padding-left: 32px;
+        }
+
+        .shot-row td {
+          padding: 6px 4px;
+          padding-left: 44px;
+
+          &.rate-col,
+          &.margin-col {
+            .budget-input {
+              width: 60px;
+              padding: 2px 4px;
+              font-size: 11px;
+            }
+          }
+
+          &.incentive-col {
+            .budget-select {
+              width: 80px;
+              padding: 2px 4px;
+              font-size: 11px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

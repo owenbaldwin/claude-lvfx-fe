@@ -1,0 +1,20 @@
+<tr class="scene-row">
+  <td class="number-col">{{ getSceneNumber() }}</td>
+  <td class="title-col">{{ getSceneTitle() }}</td>
+  <td class="elements-col"></td>
+  <td class="rate-col">{{ shotCount }}</td>
+  <td class="margin-col">-</td>
+  <td class="gross-col">-</td>
+  <td class="incentive-col">-</td>
+  <td class="net-col">-</td>
+</tr>
+
+<!-- Action Beat Rows for this Scene -->
+<ng-container *ngFor="let actionBeat of getActionBeats()">
+  <app-action-beat-budget
+    [sequence]="sequence"
+    [scene]="scene"
+    [actionBeat]="actionBeat"
+    [shotCount]="getShotCountForActionBeat(actionBeat)">
+  </app-action-beat-budget>
+</ng-container>
